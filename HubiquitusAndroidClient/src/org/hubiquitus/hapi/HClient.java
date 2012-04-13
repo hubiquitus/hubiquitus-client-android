@@ -25,9 +25,11 @@ import org.hubiquitus.hapi.codes.Error;
 import org.hubiquitus.hapi.example.HubiquitusAndroidClientActivity;
 import org.hubiquitus.hapi.hmessage.Data;
 import org.hubiquitus.hapi.options.HOptions;
-import org.hubiquitus.hapi.tranport.xmpp.HTransportXMPP;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketIO;
+import org.hubiquitus.hapi.transport.xmpp.HTransportXMPP;
+
+import android.app.Activity;
 
 public class HClient implements HTransportCallback {
 
@@ -39,23 +41,25 @@ public class HClient implements HTransportCallback {
 	/**
 	 * the callback
 	 */
-	private HubiquitusAndroidClientActivity client;
+	private HTransportCallback client;
 	
 	/**
 	 * the class constructor
 	 * @param client
 	 */
-	public HClient(HubiquitusAndroidClientActivity client){
+	public HClient(HTransportCallback client){
 		connect(new HOptions());
 		this.client = client;
 	}
 	
 	/**
 	 * The constructor with options
-	 * @param hOptions
+	 * @param username
+	 * @param password
 	 * @param client
+	 * @param hOptions
 	 */
-	public HClient(String username, String password, HubiquitusAndroidClientActivity client, HOptions hOptions){
+	public HClient(String username, String password, HTransportCallback client, HOptions hOptions){
 		hOptions.setUsername(username);
 		hOptions.setPassword(password);
 		connect(hOptions);
@@ -101,10 +105,7 @@ public class HClient implements HTransportCallback {
 
 	@Override
 	public void hCallbackConnection(Context context, Data data) {
-		
 		client.hCallbackConnection(context, data);
-		
-		
 	}
 
 
