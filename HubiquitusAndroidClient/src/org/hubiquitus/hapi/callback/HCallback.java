@@ -21,6 +21,7 @@ package org.hubiquitus.hapi.callback;
 
 import org.hubiquitus.hapi.codes.Context;
 import org.hubiquitus.hapi.codes.Status;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface HCallback {

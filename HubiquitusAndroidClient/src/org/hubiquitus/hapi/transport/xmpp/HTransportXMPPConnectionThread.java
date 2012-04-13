@@ -90,16 +90,15 @@ public class HTransportXMPPConnectionThread implements Runnable {
         // Creates a new ConnectionConfiguration for a connection that will connect to the desired host and port.
         ConnectionConfiguration config = new ConnectionConfiguration(options.getDomain(), options.getPorts()[0]);
         
-        config.setSecurityMode(SecurityMode.disabled);
         // Sets whether the client will use SASL authentication when logging into the server.
-//        config.setSASLAuthenticationEnabled(true);
-//        
-//        // Sets the TLS security mode used when making the connection.
-//        config.setSecurityMode(SecurityMode.required);
-//        
-//        // Encrypt connection
-//        config.setTruststorePath("/system/etc/security/cacerts.bks");
-//        config.setTruststoreType("bks");
+        config.setSASLAuthenticationEnabled(true);
+        
+        // Sets the TLS security mode used when making the connection.
+        config.setSecurityMode(SecurityMode.required);
+        
+        // Encrypt connection
+        config.setTruststorePath("/system/etc/security/cacerts.bks");
+        config.setTruststoreType("bks");
   
         // Creates a connection with the options specified above
         connection = new XMPPConnection(config);
@@ -111,89 +110,161 @@ public class HTransportXMPPConnectionThread implements Runnable {
 			// Establishes a connection to the XMPP server and performs an automatic login 
 	    	// only if the previous connection state was logged (authenticated).
 			connection.connect();
-			Log.i(getClass().getCanonicalName(), "Host : " + connection.getHost());
-			Log.i(getClass().getCanonicalName(), "Service : " + connection.getServiceName());
-			Log.i(getClass().getCanonicalName(), "Port : " + connection.getPort());
+//			Log.i(getClass().getCanonicalName(), "Host : " + connection.getHost());
+//			Log.i(getClass().getCanonicalName(), "Service : " + connection.getServiceName());
+//			Log.i(getClass().getCanonicalName(), "Port : " + connection.getPort());
 		} catch (XMPPException e) {
 			Log.i(getClass().getCanonicalName(),"Connection failed to host : "+ options.getDomain());
 			Log.i(getClass().getCanonicalName(), e.getMessage());
-		}
-		
-		if(connection.isConnected()){
-			
-			try {
-				 // Logs in to the server using the strongest authentication mode supported by the server, 
-				 // then sets presence to available.
-				connection.login(options.getUsername(), options.getPassword());
-			
-				// Set the status to available
-	           Presence presence = new Presence(Presence.Type.available);
-	           connection.sendPacket(presence);
-	           Log.i(getClass().getCanonicalName(), "User : " + connection.getUser());
-	           
-	           status = Status.CONNECTED;
-	           error = Error.NO_ERROR;
-	           hCallback(status, error);
-			} catch (XMPPException e) {
-				Log.i(getClass().getCanonicalName(),"Failed to log as "+ options.getUsername() +" :");
-				Log.i(getClass().getCanonicalName(), e.getMessage());
-				
-				status = Status.ERROR;
-		        error = Error.AUTH_FAILED;
-		        hCallback(status, error);
-			}
-		}
-		else {
-			// TODO the reconnection process
 			
 			status = Status.DISCONNECTED;
 			error = Error.CONNECTION_FAILED;
 			hCallback(status, error);
 		}
 		
-		// Creation of a packet filter
-		PacketFilter packetFilter = new PacketFilter() {
+		
+		try {
+			// Logs in to the server using the strongest authentication mode supported by the server, 
+			// then sets presence to available.
+			connection.login(options.getUsername(), options.getPassword());
+		
+			// Set the status to available
+			Presence presence = new Presence(Presence.Type.available);
+           	connection.sendPacket(presence);
+//	       	Log.i(getClass().getCanonicalName(), "User : " + connection.getUser());
+           
+           	status = Status.CONNECTED;
+           	error = Error.NO_ERROR;
+           	hCallback(status, error);
+		} catch (XMPPException e) {
+			Log.i(getClass().getCanonicalName(),"Failed to log as "+ options.getUsername() +" :");
+			Log.i(getClass().getCanonicalName(), e.getMessage());
 			
-			@Override
-			public boolean accept(Packet arg0) {
-				return true;
-			}
-		};
-		
-		// Creation of a packet listener to get incoming message
-		PacketListener packetListener = new PacketListener() {
-			
-			@Override
-			public void processPacket(Packet arg0) {
-				Log.i(getClass().getCanonicalName(), "Received a packet");
-				Log.i(getClass().getCanonicalName(), arg0.toXML());
-				hTransportXMPP.hCallbackConnection(Context.MESSAGE, new Data(null, null, null , arg0.getFrom(), null, arg0.toXML()));
-			}
-		};
-		
-		connection.addPacketListener(packetListener, packetFilter);
-		
-		/* packet listener: listen for incoming messages of type IQ on the connection (whatever the buddy) */
-//	    PacketFilter filter = new IQTypeFilter(IQ.Type.SET); // or IQ.Type.GET etc. according to what you like to filter. 
-//
-//	    connection.addPacketListener(new PacketListener() { 
-//	        public void processPacket(Packet packet) {
-//	        	Log.i(getClass().getCanonicalName(), "Received an IQ packet");
-//				Log.i(getClass().getCanonicalName(), packet.toXML());
-//	        }
-//	    }, filter);  
+			status = Status.ERROR;
+	        error = Error.AUTH_FAILED;
+	        hCallback(status, error);
 
+		}
+		
+		if(!connection.isConnected() || !connection.isAuthenticated())
+			try {
+				tryToReconnect();
+			} catch (InterruptedException e) {
+				Log.i(getClass().getCanonicalName(),"InterruptedException");
+				Log.i(getClass().getCanonicalName(), e.getMessage());
+			}
+			
+		if(connection.isConnected() && connection.isAuthenticated()){
+			
+			// Creation of a packet filter that accepts any incoming messages
+			PacketFilter packetFilter = new PacketFilter() {
+				
+				@Override
+				public boolean accept(Packet arg0) {
+					return true;
+				}
+			};
+			
+			// Creation of a packet listener to get incoming message
+			PacketListener packetListener = new PacketListener() {
+				
+				@Override
+				public void processPacket(Packet arg0) {
+					Log.i(getClass().getCanonicalName(), "Received a packet");
+					Log.i(getClass().getCanonicalName(), arg0.toXML());
+					hTransportXMPP.hCallbackConnection(Context.MESSAGE, new Data(null, null, null , arg0.getFrom(), null, arg0.toXML()));
+				}
+			};
+			
+			connection.addPacketListener(packetListener, packetFilter);
+		}
+		else {
+			status = Status.DISCONNECTED;
+			error = Error.CONNECTION_FAILED;
+			hCallback(status, error);
+			
+		}
+		
+	}
+	
+	/**
+	 * Launch the connection process if disconnected
+	 * @return the connection state
+	 */
+	public boolean tryToReconnect() throws InterruptedException{
+		int nbTrial = 0;
+		while(nbTrial < options.getRetryInterval().length && !connection.isAuthenticated()){
+			// disconnect if connected
+//			if(connection.isConnected()){
+//				status = Status.DISCONNECTING;
+//				error = Error.NO_ERROR;
+//				hCallback(status, error);
+//				
+//				connection.disconnect();
+//				
+//				if(!connection.isConnected()){
+//					status = Status.DISCONNECTED;
+//					error = Error.NO_ERROR;
+//					hCallback(status, error);
+//				}
+//			}
+			
+			// wait
+			Thread.sleep(options.getRetryInterval()[nbTrial]);
+
+			if (!connection.isConnected()) {
+				// retry to connect
+				try {
+					status = Status.CONNECTING;
+					error = Error.NO_ERROR;
+					hCallback(status, error);
+					
+					connection.connect();
+				} catch (XMPPException e) {
+					Log.i(getClass().getCanonicalName(),"Connection failed to host : "+ options.getDomain());
+					Log.i(getClass().getCanonicalName(), e.getMessage());
+					
+					status = Status.DISCONNECTED;
+					error = Error.CONNECTION_FAILED;
+					hCallback(status, error);
+				}
+			}
+				
+			if (connection.isConnected() && !connection.isAuthenticated()) {
+				// retry login
+				try {
+					status = Status.CONNECTED;
+					error = Error.NO_ERROR;
+					hCallback(status, error);
+					
+					connection.login(options.getUsername(), options.getPassword());
+				} catch (XMPPException e) {
+					Log.i(getClass().getCanonicalName(),"Failed to log as "+ options.getUsername() +" :");
+					Log.i(getClass().getCanonicalName(), e.getMessage());
+					
+					status = Status.ERROR;
+			        error = Error.AUTH_FAILED;
+			        hCallback(status, error);
+				}
+			}
+			
+			nbTrial++;
+		}
+
+		return connection.isConnected();
 	}
 	
 	/**
 	 * Method that notify to the transport class that the connection is complete
 	 */
 	public void hCallback(Status status, Error error){
+		//connection transfered to HTransportXMPP class
 		if(!isConnectionSet){
 			hTransportXMPP.setConnection(connection);
 			isConnectionSet = true;
 		}
 	
+		// set the data to send
 		Data data = new Data();
 		data.setStatus(status);
 		if(error != Error.NO_ERROR) data.setError(error);

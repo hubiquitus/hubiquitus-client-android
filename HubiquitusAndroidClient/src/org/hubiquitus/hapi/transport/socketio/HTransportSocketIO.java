@@ -39,16 +39,34 @@ import android.util.Log;
 
 public class HTransportSocketIO implements HTransport, HCallback {
 
+	/**
+	 * the socket
+	 */
 	private SocketIO socket = null;
 	
+	/**
+	 * the callback for the socket
+	 */
 	private HIOCallback hioCallback = new HIOCallback(this);
 	
+	/**
+	 * the client from which the callback is called
+	 */
 	private HClient client;
 	
+	/**
+	 * the connection options
+	 */
 	private HOptions options;
 	
+	/**
+	 * the connection attributes (RID, SID, JID)
+	 */
 	private Attributes attributes;
 	
+	/**
+	 * to check if the user is authenticated on the XMPP Server or not
+	 */
 	private boolean isAuthenticated = false;
 	
 	/**
@@ -62,13 +80,15 @@ public class HTransportSocketIO implements HTransport, HCallback {
 	public void connect(HOptions options) {
 		this.options = options;
 		
-		// initialize socket 
+		// initialize the socket 
 		try {
         	// Opening the socket
 			socket = new SocketIO(options.getEndpoint());
 		} catch (MalformedURLException e) {
 			Log.i(getClass().getCanonicalName(),"Connection failed");
 			Log.i(getClass().getCanonicalName(), e.getMessage());
+			
+			client.hCallbackConnection(Context.LINK, new Data(Status.DISCONNECTED, Error.CONNECTION_FAILED, null, null, null, null));
 		}
 		
 		// connection
@@ -107,15 +127,15 @@ public class HTransportSocketIO implements HTransport, HCallback {
 	public void unsubscribe(String nodeToUnsubscribeFrom) {
 		JSONObject unsubscribe = new JSONObject();
 				
-				try {
-					unsubscribe.put("channel", nodeToUnsubscribeFrom);
-					unsubscribe.put("msgid", 0);
-				} catch (JSONException e) {
-					Log.i(getClass().getCanonicalName(),"JSON exception");
-					Log.i(getClass().getCanonicalName(), e.getMessage());
-				}
-				
-				socket.emit("unsubscribe", unsubscribe);
+		try {
+			unsubscribe.put("channel", nodeToUnsubscribeFrom);
+			unsubscribe.put("msgid", 0);
+		} catch (JSONException e) {
+			Log.i(getClass().getCanonicalName(),"JSON exception");
+			Log.i(getClass().getCanonicalName(), e.getMessage());
+		}
+		
+		socket.emit("unsubscribe", unsubscribe);
 	}
 
 	@Override
@@ -125,7 +145,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 		try {
 			publish.put("channel", nodeToPublishTo);
 			publish.put("message", message);
-			publish.put("msgid", "0a15f1hrd");
+			publish.put("msgid", "");
 		} catch (JSONException e) {
 			Log.i(getClass().getCanonicalName(),"JSON exception");
 			Log.i(getClass().getCanonicalName(), e.getMessage());
@@ -149,9 +169,26 @@ public class HTransportSocketIO implements HTransport, HCallback {
 		socket.emit("hMessage", getMessages);
 	}
 	
+	/**
+	 * the reconnection process
+	 * @return the connection state
+	 */
+	public boolean tryToReconnect() throws InterruptedException{
+		int nbTrial = 0;
+		while (nbTrial < options.getRetryInterval().length && !socket.isConnected()){
+			Thread.sleep(options.getRetryInterval()[nbTrial]);
+			hCallback(Context.LINK, Status.CONNECTING, null);
+			connect(options);
+			nbTrial++;
+		}
+		return socket.isConnected();
+	}
+	
 	@Override
-	public void hCallback(Context context, Status status, JSONObject json) {
+	public void hCallback(Context context, Status status, JSONObject json){
+		// json is at null when the callback is called when the state of the connection changes
 		if(json == null){
+			// when connected to hubiquitus node, connection to the XMPP server
 			if(context == null && status == Status.CONNECTED && !isAuthenticated){
 				// hConnect process
 				JSONObject connect = new JSONObject();
@@ -159,7 +196,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 					connect.put("userid", options.getUsername());
 					connect.put("password", options.getPassword());
 					connect.put("host", options.getDomain());
-					connect.put("port", options.getServerPorts()[0]);					
+					connect.put("port", options.getServerPorts()[0]);	
 				} catch (JSONException e) {
 					Log.i(getClass().getCanonicalName(),"JSON exception");
 					Log.i(getClass().getCanonicalName(), e.getMessage());
@@ -176,6 +213,10 @@ public class HTransportSocketIO implements HTransport, HCallback {
 					client.hCallbackConnection(context, 
 							new Data(status, null, null, null, null, null));
 				}
+				else if(status == Status.CONNECTING){
+					client.hCallbackConnection(context, 
+							new Data(status, null, null, null, null, null));
+				}
 				else if(status == Status.DISCONNECTED){
 					client.hCallbackConnection(context, 
 							new Data(status, Error.NO_ERROR, null, null, null, null));
@@ -184,14 +225,24 @@ public class HTransportSocketIO implements HTransport, HCallback {
 			else if(context == Context.ERROR){
 				client.hCallbackConnection(context, 
 						new Data(status, Error.UNKNOWN_ERROR, null, null, null, null));
+				
+				// server got disconnected, reconnection process
+				if(!socket.isConnected()){
+					try {
+						tryToReconnect();
+					} catch (InterruptedException e) {
+						Log.i(getClass().getCanonicalName(),"InterruptedException");
+						Log.i(getClass().getCanonicalName(), e.getMessage());
+					}
+				}
 			}
 		}
+		// the following lines are called when a message is received
 		else{
-			Log.i("test", "context : " + context);
-			Log.i("test", "json : " + json);
+//			Log.i("test", "context : " + context);
+//			Log.i("test", "json : " + json);
 			if(context == Context.LINK){
-				
-				try {
+				try {	
 					if((Status.setValue((String) json.get("status")).getValue())
 							.equals(Status.ERROR)){
 						
@@ -199,7 +250,6 @@ public class HTransportSocketIO implements HTransport, HCallback {
 								new Data(Status.setValue((String) json.get("status")), 
 										Error.setValue(json.getInt("code")), 
 										null, null, null, null));
-						
 					}
 					else client.hCallbackConnection(context, 
 							new Data(Status.setValue((String) json.get("status")), 
@@ -210,8 +260,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 				}
 			}
 			else if(context == Context.RESULT){
-				
-				try {
+				try {	
 					client.hCallbackConnection(context, 
 							new Data(null, null, 
 									Type.setValue((String)json.get("type")), 
@@ -222,10 +271,10 @@ public class HTransportSocketIO implements HTransport, HCallback {
 					Log.i(getClass().getCanonicalName(),"JSON exception");
 					Log.i(getClass().getCanonicalName(), e.getMessage());
 				}
+
 			}
 			else if(context == Context.MESSAGE){
-				
-				try {
+				try	{	
 					client.hCallbackConnection(context, 
 							new Data(null, null, null, 
 									json.getString("channel"),
@@ -235,6 +284,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 					Log.i(getClass().getCanonicalName(),"JSON exception");
 					Log.i(getClass().getCanonicalName(), e.getMessage());
 				}
+
 			}
 			else if(context == Context.ERROR){
 				
@@ -250,6 +300,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 					Log.i(getClass().getCanonicalName(),"JSON exception");
 					Log.i(getClass().getCanonicalName(), e.getMessage());
 				}
+				
 			}
 		}
 	}

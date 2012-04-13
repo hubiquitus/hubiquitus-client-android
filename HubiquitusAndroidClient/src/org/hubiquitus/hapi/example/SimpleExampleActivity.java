@@ -54,7 +54,7 @@ public class SimpleExampleActivity extends Activity implements HTransportCallbac
         hOptions.setDomain("domain.com");
         // the port for hubiquitus-node
         hOptions.setPorts(new int[]{8080});
-        // the port for the server (if different from hubiquitus-node)
+        // the port for the server (if different from hubiquitus-node port)
         hOptions.setServerPorts(new int[]{5222});
         hOptions.setTransport("socketio");
         
@@ -65,5 +65,7 @@ public class SimpleExampleActivity extends Activity implements HTransportCallbac
   	public void hCallbackConnection(Context context, Data data) {
   		Log.i(getClass().getCanonicalName(), "Context : " + context);
   		Log.i(getClass().getCanonicalName(), "Data : " + data.toString());
+  		
+  		
   	}
 }

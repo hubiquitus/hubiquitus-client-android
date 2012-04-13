@@ -64,6 +64,7 @@ public class HIOCallback implements IOCallback {
 	public void onDisconnect() {
 		Log.i(getClass().getCanonicalName(), "Connection dismissed");
 		callback.hCallback(Context.LINK, Status.DISCONNECTED, null);
+
 	}
 	
 	@Override

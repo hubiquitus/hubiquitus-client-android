@@ -85,12 +85,18 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 		this.hClient = hCallback;
 	}
 	
+	/**
+	 * start the connection process
+	 */
 	@Override
 	public void connect(HOptions options) {
 		// Connection process executed by a secondary thread
 		new Thread (new HTransportXMPPConnectionThread(options, this)).start();
 	}
 
+	/**
+	 * disconnection process
+	 */
 	@Override
 	public void disconnect() {
 		status = Status.DISCONNECTING;
@@ -109,6 +115,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 	@Override
 	public void subscribe(String channelToSubscribeTo) {
 		
+		// get the channel
 		LeafNode leaf = getLeaf(channelToSubscribeTo, Type.SUBSCRIBE); 
 		
 		if(leaf != null){
@@ -117,6 +124,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 			String user = connection.getUser();
 			List<Subscription> subs = null;
 			try {
+				// get all the subscriptions
 				subs = leaf.getSubscriptions();
 			} catch (XMPPException e) {
 				Log.i(getClass().getCanonicalName(),"Failed to get subscription list from node "+ channelToSubscribeTo + " : ");
@@ -126,6 +134,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 				hCallbackConnection(Context.ERROR, new Data(null, error, Type.SUBSCRIBE, channelToSubscribeTo, null, null));
 			}
 			boolean find = false;
+			// check if the user susbcription is in the list
 			for (int i=0; i<subs.size(); i++) {
 				Subscription sub = subs.get(i);
 				String jid = sub.getJid();
@@ -136,8 +145,10 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 					find = true;
 				}
 			}
+			
 			if (!find) {
 				try {
+					// subscription
 					leaf.subscribe(user);
 					hCallbackConnection(Context.RESULT, new Data(null, null, Type.SUBSCRIBE, channelToSubscribeTo, null, null));
 				} catch (XMPPException e) {
@@ -155,6 +166,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 	@Override
 	public void unsubscribe(String channelToUnsubscribeFrom) {
 		
+		// get the channel
 		LeafNode leaf = getLeaf(channelToUnsubscribeFrom, Type.UNSUBSCRIBE);
 		
 		if(leaf != null){
@@ -200,6 +212,8 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 
 	@Override
 	public void publish(String channelToPublishTo, String message) {
+		
+		// get the channel
 		LeafNode leaf = getLeaf(channelToPublishTo, Type.PUBLISH);
 
 		if(leaf != null){
@@ -217,7 +231,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 	@Override
 	public void getMessages(String channelToGetMessageFrom) {
 		
-		// Get the node
+		// get the channel
 		LeafNode leaf = getLeaf(channelToGetMessageFrom, null);
 		List<PayloadItem<SimplePayload>> items = null;
 	    
@@ -245,19 +259,20 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 		
 	}
 	
+	/**
+	 * Return the channel needed to execute an action
+	 * if there is an error, type allows to send through the callback which action was being executed
+	 * @param channel
+	 * @param type
+	 * @return the channel
+	 */
 	public LeafNode getLeaf(String channel, Type type){
 		
 		LeafNode leaf = null; 
 		
 		try {
-			//  Reload list of existing pubsub nodes on the server
+			//  Reload list of existing pubsub channel on the server
 			leaf =  (LeafNode) pubSubManager.getNode(channel);
-			/** 
-			 ** LeafNode : The main class for the majority of pubsub functionality. 
-			 ** In general almost all pubsub capabilities are related to the concept of a node. 
-			 ** All items are published to a node, and typically subscribed to by other users. 
-			 ** These users then retrieve events based on this subscription.
-			 **/
 		} catch (XMPPException e) {
 			Log.i(getClass().getCanonicalName(),"Failed to get node "+ channel + " : ");
 			Log.i(getClass().getCanonicalName(), e.getMessage());
@@ -270,13 +285,14 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 		return leaf;
 	}
 	
+	/**
+	 * the callback that send the Context and the Data associated
+	 */
 	@Override
 	public void hCallbackConnection(Context context, Data data) {
 		
 		Log.i(getClass().getCanonicalName(), "Context : " + context.getValue());
 		Log.i(getClass().getCanonicalName(), "Data : " + data.toString());
-//		if(status != null) this.status = status;
-//		this.error = error;
 		
 		if(data.getStatus() == Status.CONNECTED && pubSubManager == null){
 			
@@ -287,10 +303,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 			// require a specific address to send packets.
 			pubSubManager = new PubSubManager(connection, "pubsub." + connection.getServiceName());
 			Log.i(getClass().getCanonicalName(), "pubSubManager created");
-			
-			//getLeaf("testandroid2");
-			//subscribe("testandroid2");
-			//publish("testandroid2", "blabla");
+
 		}
 		
 		hClient.hCallbackConnection(context, data);

@@ -23,6 +23,10 @@ import org.hubiquitus.hapi.codes.Error;
 import org.hubiquitus.hapi.codes.Status;
 import org.hubiquitus.hapi.codes.Type;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.util.Log;
 
 public class Data {
 	
@@ -79,39 +83,30 @@ public class Data {
 		this.msgid = msgid;
 		this.message = message;
 	}
-
-	@Override
-	public String toString(){
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("{\"data\":{");
-		if(getStatus() != null) 
-			stringBuilder.append("\"status\":\"").append(getStatus().getValue()).append("\",");
-//		if(getStatus() != null && getType() != null)
-//			stringBuilder.append(",");
-		if(getType() != null) 
-			stringBuilder.append("\"type\":\"").append(getType().getValue()).append("\",");
-//		if(getType() != null && getError() != null)
-//			stringBuilder.append(",");
-		if(getError() != null) 
-			stringBuilder.append("\"code\":").append(getError()).append(","); 
-//		if(getError() != null && getChannel() != null)
-//			stringBuilder.append(",");
-		if(getChannel()!= null) 
-			stringBuilder.append("\"channel\":\"").append(getChannel()).append("\",");
-//		if(getChannel() != null && getMsgid() != null)
-//			stringBuilder.append(",");
-		if(getMsgid() != null) 
-			stringBuilder.append("\"msgid\":\"").append(getMsgid()).append("\",");
-//		if(getMsgid() != null && getMessage() != null)
-//			stringBuilder.append(",");
-		if(getMessage() != null) 
-			stringBuilder.append("\"message\":\"").append(getMessage()).append("\"");
-		stringBuilder.append("}}");	
-		return stringBuilder.toString();
-	}
 	
-	public JSONArray toJSON(){
-		return null;
+	/**
+	 * Turn Data into JSON
+	 * @return a JSON object
+	 */
+	public JSONObject toJSON(){
+		JSONObject data = new JSONObject();
+		JSONObject json = new JSONObject();
+		try {
+			if(getStatus() != null)json.put("status", getStatus().getValue());
+			if (getType() != null)json.put("type", getType().getValue());
+			if (getError() != null)json.put("code", getError());
+			if (getChannel() != null)json.put("channel", getChannel());
+			if (getMsgid() != null)json.put("msgid", getMsgid());
+			if (getMessage() != null)json.put("message", getMessage());
+			
+			
+			data.put("data", json);
+		} catch (JSONException e) {
+			Log.i(getClass().getCanonicalName(),"JSON exception");
+			Log.i(getClass().getCanonicalName(), e.getMessage());
+		}
+		
+		return data;
 	}
 
 	
