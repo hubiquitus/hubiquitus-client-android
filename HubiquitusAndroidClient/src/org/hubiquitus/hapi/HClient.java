@@ -22,14 +22,11 @@ package org.hubiquitus.hapi;
 import org.hubiquitus.hapi.callback.HTransportCallback;
 import org.hubiquitus.hapi.codes.Context;
 import org.hubiquitus.hapi.codes.Error;
-import org.hubiquitus.hapi.example.HubiquitusAndroidClientActivity;
 import org.hubiquitus.hapi.hmessage.Data;
 import org.hubiquitus.hapi.options.HOptions;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketIO;
 import org.hubiquitus.hapi.transport.xmpp.HTransportXMPP;
-
-import android.app.Activity;
 
 public class HClient implements HTransportCallback {
 
@@ -47,8 +44,8 @@ public class HClient implements HTransportCallback {
 	 * the class constructor
 	 * @param client
 	 */
-	public HClient(HTransportCallback client){
-		connect(new HOptions());
+	public HClient(HTransportCallback client, android.content.Context context){
+		connect(new HOptions(), context);
 		this.client = client;
 	}
 	
@@ -59,10 +56,10 @@ public class HClient implements HTransportCallback {
 	 * @param client
 	 * @param hOptions
 	 */
-	public HClient(String username, String password, HTransportCallback client, HOptions hOptions){
+	public HClient(String username, String password, HTransportCallback client, HOptions hOptions, android.content.Context context){
 		hOptions.setUsername(username);
 		hOptions.setPassword(password);
-		connect(hOptions);
+		connect(hOptions, context);
 		this.client = client;
 	}
 	
@@ -70,14 +67,14 @@ public class HClient implements HTransportCallback {
 	 * the connection method
 	 * @param options
 	 */
-	public void connect(HOptions options){
+	public void connect(HOptions options, android.content.Context context){
 		if(options.getTransport() == "bosh"){
 			hTransport = new HTransportXMPP(this);
-			hTransport.connect(options);
+			hTransport.connect(options, context);
 		}
 		else if(options.getTransport() == "socketio"){
 			hTransport = new HTransportSocketIO(this);
-			hTransport.connect(options);
+			hTransport.connect(options, context);
 		}
 		else hCallbackConnection(Context.ERROR, new Data(null, Error.UNKNOWN_ERROR, null, null, null, null));
 		

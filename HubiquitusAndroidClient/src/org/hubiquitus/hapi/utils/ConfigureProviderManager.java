@@ -247,7 +247,7 @@ public class ConfigureProviderManager {
 		pm.addExtensionProvider("purge",
 				"http://jabber.org/protocol/pubsub#event",
 				new SimpleNodeProvider());
-
+		
 		// Nick Exchange
 		pm.addExtensionProvider("nick", "http://jabber.org/protocol/nick",
 				new Nick.Provider());

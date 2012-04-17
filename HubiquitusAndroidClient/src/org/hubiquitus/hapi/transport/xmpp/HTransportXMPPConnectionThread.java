@@ -19,24 +19,38 @@
 
 package org.hubiquitus.hapi.transport.xmpp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hubiquitus.hapi.codes.Context;
 import org.hubiquitus.hapi.codes.Error;
 import org.hubiquitus.hapi.codes.Status;
 import org.hubiquitus.hapi.hmessage.Data;
 import org.hubiquitus.hapi.options.HOptions;
 import org.hubiquitus.hapi.utils.ConfigureProviderManager;
+import org.hubiquitus.hapi.utils.Parser;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smackx.packet.Header;
+import org.jivesoftware.smackx.packet.HeadersExtension;
+import org.jivesoftware.smackx.pubsub.EventElement;
+import org.jivesoftware.smackx.pubsub.Item;
+import org.jivesoftware.smackx.pubsub.ItemsExtension;
+import org.jivesoftware.smackx.pubsub.NodeExtension;
+import org.jivesoftware.smackx.pubsub.SimplePayload;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 public class HTransportXMPPConnectionThread implements Runnable {	
@@ -72,14 +86,20 @@ public class HTransportXMPPConnectionThread implements Runnable {
 	private HTransportXMPP hTransportXMPP;
 	
 	/**
+	 * the main activity context
+	 */
+	private android.content.Context context;
+	
+	/**
 	 * the class constructor
 	 * @param connection
 	 * @param status
 	 * @param options
 	 */
-	public HTransportXMPPConnectionThread(HOptions options, HTransportXMPP hCallback){
+	public HTransportXMPPConnectionThread(HOptions options, HTransportXMPP hCallback, android.content.Context context){
 		this.options = options;
 		this.hTransportXMPP = hCallback;
+		this.context = context;
 	}
 	
 	@Override
@@ -99,90 +119,135 @@ public class HTransportXMPPConnectionThread implements Runnable {
         // Encrypt connection
         config.setTruststorePath("/system/etc/security/cacerts.bks");
         config.setTruststoreType("bks");
-  
+        
         // Creates a connection with the options specified above
         connection = new XMPPConnection(config);
-       
-		try {
-			status = Status.CONNECTING;
-			error = Error.NO_ERROR;
-			hCallback(status, error);
-			// Establishes a connection to the XMPP server and performs an automatic login 
-	    	// only if the previous connection state was logged (authenticated).
-			connection.connect();
-//			Log.i(getClass().getCanonicalName(), "Host : " + connection.getHost());
-//			Log.i(getClass().getCanonicalName(), "Service : " + connection.getServiceName());
-//			Log.i(getClass().getCanonicalName(), "Port : " + connection.getPort());
-		} catch (XMPPException e) {
-			Log.i(getClass().getCanonicalName(),"Connection failed to host : "+ options.getDomain());
-			Log.i(getClass().getCanonicalName(), e.getMessage());
-			
+        
+        
+        // Check if the phone/pad is connected to o a network
+        ConnectivityManager cm = (ConnectivityManager) this.context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+		NetworkInfo info = cm.getActiveNetworkInfo();
+		// not connected
+		if ((info == null) || (!info.isConnected())) {
+			Log.i(getClass().getCanonicalName(),"No connection detected, can not connect");
 			status = Status.DISCONNECTED;
 			error = Error.CONNECTION_FAILED;
 			hCallback(status, error);
-		}
-		
-		
-		try {
-			// Logs in to the server using the strongest authentication mode supported by the server, 
-			// then sets presence to available.
-			connection.login(options.getUsername(), options.getPassword());
-		
-			// Set the status to available
-			Presence presence = new Presence(Presence.Type.available);
-           	connection.sendPacket(presence);
-//	       	Log.i(getClass().getCanonicalName(), "User : " + connection.getUser());
-           
-           	status = Status.CONNECTED;
-           	error = Error.NO_ERROR;
-           	hCallback(status, error);
-		} catch (XMPPException e) {
-			Log.i(getClass().getCanonicalName(),"Failed to log as "+ options.getUsername() +" :");
-			Log.i(getClass().getCanonicalName(), e.getMessage());
-			
-			status = Status.ERROR;
-	        error = Error.AUTH_FAILED;
-	        hCallback(status, error);
-
-		}
-		
-		if(!connection.isConnected() || !connection.isAuthenticated())
-			try {
-				tryToReconnect();
-			} catch (InterruptedException e) {
-				Log.i(getClass().getCanonicalName(),"InterruptedException");
-				Log.i(getClass().getCanonicalName(), e.getMessage());
-			}
-			
-		if(connection.isConnected() && connection.isAuthenticated()){
-			
-			// Creation of a packet filter that accepts any incoming messages
-			PacketFilter packetFilter = new PacketFilter() {
-				
-				@Override
-				public boolean accept(Packet arg0) {
-					return true;
-				}
-			};
-			
-			// Creation of a packet listener to get incoming message
-			PacketListener packetListener = new PacketListener() {
-				
-				@Override
-				public void processPacket(Packet arg0) {
-					Log.i(getClass().getCanonicalName(), "Received a packet");
-					Log.i(getClass().getCanonicalName(), arg0.toXML());
-					hTransportXMPP.hCallbackConnection(Context.MESSAGE, new Data(null, null, null , arg0.getFrom(), null, arg0.toXML()));
-				}
-			};
-			
-			connection.addPacketListener(packetListener, packetFilter);
 		}
 		else {
-			status = Status.DISCONNECTED;
-			error = Error.CONNECTION_FAILED;
-			hCallback(status, error);
+			try {
+				status = Status.CONNECTING;
+				error = Error.NO_ERROR;
+				hCallback(status, error);
+				// Establishes a connection to the XMPP server and performs an automatic login 
+		    	// only if the previous connection state was logged (authenticated).
+				connection.connect();
+			} catch (XMPPException e) {
+				Log.i(getClass().getCanonicalName(),"Connection failed to host : "+ options.getDomain());
+				Log.i(getClass().getCanonicalName(), e.getMessage());
+				
+				status = Status.DISCONNECTED;
+				error = Error.CONNECTION_FAILED;
+				hCallback(status, error);
+			}
 			
+			
+			try {
+				// Logs in to the server using the strongest authentication mode supported by the server, 
+				// then sets presence to available.
+				connection.login(options.getUsername(), options.getPassword());
+			
+				// Set the status to available
+				Presence presence = new Presence(Presence.Type.available);
+	           	connection.sendPacket(presence);
+	           
+	           	status = Status.CONNECTED;
+	           	error = Error.NO_ERROR;
+	           	hCallback(status, error);
+			} catch (XMPPException e) {
+				Log.i(getClass().getCanonicalName(),"Failed to log as "+ options.getUsername() +" :");
+				Log.i(getClass().getCanonicalName(), e.getMessage());
+				
+				status = Status.ERROR;
+		        error = Error.AUTH_FAILED;
+		        hCallback(status, error);
+	
+			}
+			
+			if(!connection.isConnected() || !connection.isAuthenticated())
+				try {
+					tryToReconnect();
+				} catch (InterruptedException e) {
+					Log.i(getClass().getCanonicalName(),"InterruptedException");
+					Log.i(getClass().getCanonicalName(), e.getMessage());
+				}
+				
+			if(connection.isConnected() && connection.isAuthenticated()){
+				
+				
+				// Creation of a packet listener to get incoming message
+				PacketListener packetListener = new PacketListener() {
+					
+					@Override
+					public void processPacket(Packet arg0) {
+						if(arg0 instanceof Message){
+							Message message = (Message) arg0;
+							
+							if(message.getExtension("http://jabber.org/protocol/pubsub#event") instanceof EventElement){
+								// get the event extension
+								EventElement event = (EventElement)message.getExtension("http://jabber.org/protocol/pubsub#event");
+								
+								if(event.getEventType().name().equals("items")){ // get the type of the event to check if it actually contains items
+									// get the event
+									ItemsExtension extension = (ItemsExtension)event.getEvent();
+									String channelName = extension.getNode();
+									//Log.i("packet listener (event name) : ", extension.getElementName());
+									
+									// get the items
+									for(int i=0; i<extension.getItems().size(); i++){
+										Item item = (Item)extension.getItems().get(i);
+										//Log.i("packet listener (event item)", item.getElementName());
+										hTransportXMPP.hCallbackConnection(Context.MESSAGE, new Data(null, null, null , channelName, null, Parser.parseItem(item.toXML())));
+
+									}
+								}
+							}
+
+						}
+						else{
+							Log.i("instanceof : ", "type "+arg0.getClass().getSimpleName());
+							Log.i("packet listener (packet) : ", arg0.toXML());
+						}
+					}
+				};
+				
+				PacketFilter packetFilter = new PacketFilter() {
+					
+					@Override
+					public boolean accept(Packet arg0) {
+						return true;
+					}
+				};
+				
+				PacketListener packetSender = new PacketListener() {
+					
+					@Override
+					public void processPacket(Packet arg0) {
+						Log.i(getClass().getCanonicalName(), "Send a packet : ");
+						Log.i(getClass().getCanonicalName(), arg0.toXML());
+					}
+				};
+			
+				connection.addPacketListener(packetListener, packetFilter);
+				connection.addPacketSendingListener(packetSender, packetFilter);
+				
+			}
+			else {
+				status = Status.DISCONNECTED;
+				error = Error.CONNECTION_FAILED;
+				hCallback(status, error);
+				
+			}
 		}
 		
 	}
@@ -213,20 +278,35 @@ public class HTransportXMPPConnectionThread implements Runnable {
 			Thread.sleep(options.getRetryInterval()[nbTrial]);
 
 			if (!connection.isConnected()) {
-				// retry to connect
-				try {
-					status = Status.CONNECTING;
-					error = Error.NO_ERROR;
-					hCallback(status, error);
-					
-					connection.connect();
-				} catch (XMPPException e) {
-					Log.i(getClass().getCanonicalName(),"Connection failed to host : "+ options.getDomain());
-					Log.i(getClass().getCanonicalName(), e.getMessage());
-					
+
+		        // Check if the phone/pad is connected to a network
+		        ConnectivityManager cm = (ConnectivityManager) this.context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+				NetworkInfo info = cm.getActiveNetworkInfo();
+				// not connected
+				if ((info == null) || (!info.isConnected())) {
+					Log.i(getClass().getCanonicalName(),"No connection detected, can not connect");
 					status = Status.DISCONNECTED;
 					error = Error.CONNECTION_FAILED;
 					hCallback(status, error);
+					// No need to try to reconnect
+					nbTrial = options.getRetryInterval().length;
+				}
+				else {
+					// retry to connect
+					try {
+						status = Status.CONNECTING;
+						error = Error.NO_ERROR;
+						hCallback(status, error);
+						
+						connection.connect();
+					} catch (XMPPException e) {
+						Log.i(getClass().getCanonicalName(),"Connection failed to host : "+ options.getDomain());
+						Log.i(getClass().getCanonicalName(), e.getMessage());
+						
+						status = Status.DISCONNECTED;
+						error = Error.CONNECTION_FAILED;
+						hCallback(status, error);
+					}
 				}
 			}
 				

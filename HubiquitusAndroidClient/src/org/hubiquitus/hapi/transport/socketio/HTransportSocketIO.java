@@ -70,6 +70,11 @@ public class HTransportSocketIO implements HTransport, HCallback {
 	private boolean isAuthenticated = false;
 	
 	/**
+	 * the main activity context
+	 */
+	private android.content.Context context;
+	
+	/**
 	 * default constructor
 	 */
 	public HTransportSocketIO(HClient client){
@@ -77,8 +82,9 @@ public class HTransportSocketIO implements HTransport, HCallback {
 	}
 	
 	@Override
-	public void connect(HOptions options) {
+	public void connect(HOptions options, android.content.Context context) {
 		this.options = options;
+		this.context = context;
 		
 		// initialize the socket 
 		try {
@@ -178,7 +184,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 		while (nbTrial < options.getRetryInterval().length && !socket.isConnected()){
 			Thread.sleep(options.getRetryInterval()[nbTrial]);
 			hCallback(Context.LINK, Status.CONNECTING, null);
-			connect(options);
+			connect(options, context);
 			nbTrial++;
 		}
 		return socket.isConnected();

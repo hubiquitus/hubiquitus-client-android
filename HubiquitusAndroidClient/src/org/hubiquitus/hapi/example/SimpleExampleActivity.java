@@ -58,7 +58,7 @@ public class SimpleExampleActivity extends Activity implements HTransportCallbac
         hOptions.setServerPorts(new int[]{5222});
         hOptions.setTransport("socketio");
         
-        hClient = new HClient("username", "password", this, hOptions);
+        hClient = new HClient("username", "password", this, hOptions, this);
       }
 
   	@Override

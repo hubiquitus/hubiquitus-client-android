@@ -30,13 +30,18 @@ import org.hubiquitus.hapi.codes.Type;
 import org.hubiquitus.hapi.hmessage.Data;
 import org.hubiquitus.hapi.options.HOptions;
 import org.hubiquitus.hapi.transport.HTransport;
+import org.hubiquitus.hapi.utils.Entry;
+import org.hubiquitus.hapi.utils.Parser;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.pubsub.Item;
+import org.jivesoftware.smackx.pubsub.ItemPublishEvent;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jivesoftware.smackx.pubsub.SimplePayload;
 import org.jivesoftware.smackx.pubsub.Subscription;
+import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 
 import android.util.Log;
 
@@ -89,9 +94,9 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 	 * start the connection process
 	 */
 	@Override
-	public void connect(HOptions options) {
+	public void connect(HOptions options, android.content.Context context) {
 		// Connection process executed by a secondary thread
-		new Thread (new HTransportXMPPConnectionThread(options, this)).start();
+		new Thread (new HTransportXMPPConnectionThread(options, this, context)).start();
 	}
 
 	/**
@@ -175,6 +180,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 			String user = connection.getUser();
 			List<Subscription> subs = null;
 			try {
+				// get all the subscriptions
 				subs = leaf.getSubscriptions();
 			} catch (XMPPException e) {
 				Log.i(getClass().getCanonicalName(),"Failed to get subscription list from node "+ channelToUnsubscribeFrom + " : ");
@@ -184,11 +190,13 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 				hCallbackConnection(Context.ERROR, new Data(null, error, Type.UNSUBSCRIBE, channelToUnsubscribeFrom, null, null));
 			}
 			boolean find = false;
+			// check if the user susbcription is in the list
 			for (int i=0; i<subs.size(); i++) {
 				Subscription sub = subs.get(i);
 				String jid = sub.getJid();
 				if (user.equals(jid)) {
 					try {
+						// unsubscription
 						leaf.unsubscribe(user);
 						hCallbackConnection(Context.RESULT, new Data(null, null, Type.UNSUBSCRIBE, channelToUnsubscribeFrom, null, null));
 					} catch (XMPPException e) {
@@ -217,14 +225,42 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 		LeafNode leaf = getLeaf(channelToPublishTo, Type.PUBLISH);
 
 		if(leaf != null){
-			// Prepare the message to send
-			String content = "<entry xmlns=\"org.hubiquitus.hapi.entry\">"+message+"</entry>";
-			PayloadItem<SimplePayload> payloadItem = new PayloadItem<SimplePayload>(new SimplePayload(domain, pubSubAdress, content));
-			
-			// Send the message
-			leaf.publish(payloadItem);
-			hCallbackConnection(Context.RESULT, new Data(null, null, Type.PUBLISH, channelToPublishTo, null, null));
-			Log.i(getClass().getCanonicalName(),"publish to node " + channelToPublishTo + " the following message : " + content);
+			 // Check if user subscribed to channel
+			String user = connection.getUser();
+			List<Subscription> subs = null;
+			try {
+				// get all the subscriptions
+				subs = leaf.getSubscriptions();
+			} catch (XMPPException e) {
+				Log.i(getClass().getCanonicalName(),"Failed to get subscription list from node "+ channelToPublishTo + " : ");
+				Log.i(getClass().getCanonicalName(), e.getMessage());
+				
+				error = Error.GET_SUBS_FAILED;
+				hCallbackConnection(Context.ERROR, new Data(null, error, Type.PUBLISH, channelToPublishTo, null, null));
+			}
+			boolean find = false;
+			// check if the user subscription is in the list
+			for (int i=0; i<subs.size(); i++) {
+				Subscription sub = subs.get(i);
+				String jid = sub.getJid();
+				if (user.equals(jid)) {
+					// Prepare the message to send
+					String content = "<entry xmlns=\"" + Entry.NAMESPACE + "\">" + message + "</entry>";
+					PayloadItem<SimplePayload> payloadItem = new PayloadItem<SimplePayload>("id-" + (int)(Math.random()*1000), new SimplePayload(domain, pubSubAdress, content));
+					
+					// Send the message
+					leaf.publish(payloadItem);
+					hCallbackConnection(Context.RESULT, new Data(null, null, Type.PUBLISH, channelToPublishTo, null, null));
+					Log.i(getClass().getCanonicalName(),"publish to node " + channelToPublishTo + " the following message : " + content);
+					find = true;
+				}
+			}
+			// if not find, the use is not subscribed to the channel
+			if (!find) {
+				Log.i(getClass().getCanonicalName(),"Failed to publish to node "+ channelToPublishTo + " because no existing subscription.");
+				error = Error.NOT_SUBSCRIBED;
+				hCallbackConnection(Context.ERROR, new Data(null, error, Type.PUBLISH, channelToPublishTo, null, null));
+			}
 		}
 	}
 
@@ -239,20 +275,20 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 		      
 			// Get persistent messages
 			try {
-				// attention noeud configuré avec un seul persistent item
+				// !! node can be configured with only 1 persistent item
 				items = leaf.getItems();
 			} catch (XMPPException e) {
 				Log.i(getClass().getCanonicalName(),"Failed to get persistent items on node "+ channelToGetMessageFrom + " : ");
 				Log.i(getClass().getCanonicalName(), e.getMessage());
 				
 				error = Error.UNKNOWN_ERROR;
-				//hCallbackConnection(Context.ERROR, new Data(null, error, null, channelToGetMessageFrom, null, null));
+				hCallbackConnection(Context.ERROR, new Data(null, error, null, channelToGetMessageFrom, null, null));
 			}
 		     
 			if(items != null){
 				for(int i = 0; i<items.size(); i++){
-					Log.i(getClass().getCanonicalName(), "item " + i + " : " + items.get(i).toString());
-					hCallbackConnection(Context.MESSAGE, new Data(null, null, null, channelToGetMessageFrom, null, items.get(i).toXML()));
+					//Log.i(getClass().getCanonicalName(), "item " + i + " : " + items.get(i).toString());
+					hCallbackConnection(Context.MESSAGE, new Data(null, null, null, channelToGetMessageFrom, null, Parser.parseItem(items.get(i).toXML())));
 				}
 			}
 		}
@@ -291,8 +327,8 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 	@Override
 	public void hCallbackConnection(Context context, Data data) {
 		
-		Log.i(getClass().getCanonicalName(), "Context : " + context.getValue());
-		Log.i(getClass().getCanonicalName(), "Data : " + data.toString());
+//		Log.i(getClass().getCanonicalName(), "Context : " + context.getValue());
+//		Log.i(getClass().getCanonicalName(), "Data : " + data.toString());
 		
 		if(data.getStatus() == Status.CONNECTED && pubSubManager == null){
 			
@@ -303,7 +339,6 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 			// require a specific address to send packets.
 			pubSubManager = new PubSubManager(connection, "pubsub." + connection.getServiceName());
 			Log.i(getClass().getCanonicalName(), "pubSubManager created");
-
 		}
 		
 		hClient.hCallbackConnection(context, data);

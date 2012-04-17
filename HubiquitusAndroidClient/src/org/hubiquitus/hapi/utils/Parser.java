@@ -17,24 +17,31 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hubiquitus.hapi.transport;
+package org.hubiquitus.hapi.utils;
 
-import org.hubiquitus.hapi.options.HOptions;
+import org.jivesoftware.smack.packet.Message;
 
-import android.content.Context;
+import android.util.Log;
 
-public interface HTransport {
+public class Parser {
 
-	public void connect(HOptions options, Context context);
+	// get the message from an item
+	public static String parseItem(String xml){
+		// modele item : <item id='53650CEBCB491'>
+		//<entry xmlns=\"org.hubiquitus.hapi.entry\">Bonjour<\/entry>
+		//<\/item>
+		
+		String [] split = xml.split(">");
+		String msg = null;
+		for(int i=0; i<split.length; i++){
+			//Log.i("Parser", split[i]);
+			if(split[i].endsWith("org.hubiquitus.hapi.entry\"")){
+				//Log.i("Parser chose : ", split[i+1]);
+				String [] messages = split[i+1].split("<");
+				msg = messages[0];
+			}
+		}
+		return msg;
+	}
 
-	public void disconnect();
-	
-	public void subscribe(String nodeTosubscribeTo);
-	
-	public void unsubscribe(String nodeToUnsubscribeFrom);
-	
-	public void publish(String nodeToPublishTo, String message);
-	
-	public void getMessages(String nodeToGetMessageFrom);
-	
 }

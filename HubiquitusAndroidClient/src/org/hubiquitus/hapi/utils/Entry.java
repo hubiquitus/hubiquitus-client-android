@@ -23,10 +23,12 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
 
+import android.util.Log;
+
 public class Entry implements PacketExtension {
 
-	public static final String NAMESPACE = "hub.novediagroup.com";
-	public static final String ELEMENT_NAME = "payload";
+	public static final String NAMESPACE = "org.hubiquitus.hapi.entry";
+	public static final String ELEMENT_NAME = "entry";
 	private String name = null;
 	
 	public Entry(String name){
@@ -73,7 +75,6 @@ public class Entry implements PacketExtension {
 	    		while (paramXmlPullParser.getEventType() != 3) {
 	    			paramXmlPullParser.next();
 	    		}
- 
 	    		return new Entry(str);
 	    	}
 		}
