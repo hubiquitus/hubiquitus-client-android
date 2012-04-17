@@ -22,7 +22,6 @@ package org.hubiquitus.hapi.hmessage;
 import org.hubiquitus.hapi.codes.Error;
 import org.hubiquitus.hapi.codes.Status;
 import org.hubiquitus.hapi.codes.Type;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

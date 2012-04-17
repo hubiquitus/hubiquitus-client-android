@@ -23,8 +23,6 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
 
-import android.util.Log;
-
 public class Entry implements PacketExtension {
 
 	public static final String NAMESPACE = "org.hubiquitus.hapi.entry";

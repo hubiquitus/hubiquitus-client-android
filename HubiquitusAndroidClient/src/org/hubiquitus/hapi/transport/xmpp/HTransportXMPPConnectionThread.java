@@ -19,9 +19,6 @@
 
 package org.hubiquitus.hapi.transport.xmpp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hubiquitus.hapi.codes.Context;
 import org.hubiquitus.hapi.codes.Error;
 import org.hubiquitus.hapi.codes.Status;
@@ -36,18 +33,12 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smackx.packet.Header;
-import org.jivesoftware.smackx.packet.HeadersExtension;
 import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.ItemsExtension;
-import org.jivesoftware.smackx.pubsub.NodeExtension;
-import org.jivesoftware.smackx.pubsub.SimplePayload;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -124,7 +115,7 @@ public class HTransportXMPPConnectionThread implements Runnable {
         connection = new XMPPConnection(config);
         
         
-        // Check if the phone/pad is connected to o a network
+        // Check if the phone/pad is connected to a network
         ConnectivityManager cm = (ConnectivityManager) this.context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = cm.getActiveNetworkInfo();
 		// not connected

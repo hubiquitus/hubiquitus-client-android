@@ -19,9 +19,6 @@
 
 package org.hubiquitus.hapi.utils;
 
-import org.jivesoftware.smack.packet.Message;
-
-import android.util.Log;
 
 public class Parser {
 

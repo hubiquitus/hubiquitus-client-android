@@ -35,6 +35,8 @@ import org.hubiquitus.hapi.transport.HTransport;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 public class HTransportSocketIO implements HTransport, HCallback {
@@ -86,19 +88,30 @@ public class HTransportSocketIO implements HTransport, HCallback {
 		this.options = options;
 		this.context = context;
 		
-		// initialize the socket 
-		try {
-        	// Opening the socket
-			socket = new SocketIO(options.getEndpoint());
-		} catch (MalformedURLException e) {
-			Log.i(getClass().getCanonicalName(),"Connection failed");
-			Log.i(getClass().getCanonicalName(), e.getMessage());
-			
-			client.hCallbackConnection(Context.LINK, new Data(Status.DISCONNECTED, Error.CONNECTION_FAILED, null, null, null, null));
+		 // Check if the phone/pad is connected to a network
+        ConnectivityManager cm = (ConnectivityManager) this.context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+		NetworkInfo info = cm.getActiveNetworkInfo();
+		// not connected
+		if ((info == null) || (!info.isConnected())) {
+			Log.i(getClass().getCanonicalName(),"No connection detected, can not connect");
+			hCallback(Context.ERROR, Status.DISCONNECTED, null);
 		}
+		else {
 		
-		// connection
-		socket.connect(hioCallback);
+			// initialize the socket 
+			try {
+	        	// Opening the socket
+				socket = new SocketIO(options.getEndpoint());
+			} catch (MalformedURLException e) {
+				Log.i(getClass().getCanonicalName(),"Connection failed");
+				Log.i(getClass().getCanonicalName(), e.getMessage());
+				
+				client.hCallbackConnection(Context.LINK, new Data(Status.DISCONNECTED, Error.CONNECTION_FAILED, null, null, null, null));
+			}
+			
+			// connection
+			socket.connect(hioCallback);
+		}
 			
 	}
 
@@ -229,16 +242,25 @@ public class HTransportSocketIO implements HTransport, HCallback {
 				}
 			}
 			else if(context == Context.ERROR){
-				client.hCallbackConnection(context, 
-						new Data(status, Error.UNKNOWN_ERROR, null, null, null, null));
 				
-				// server got disconnected, reconnection process
-				if(!socket.isConnected()){
-					try {
-						tryToReconnect();
-					} catch (InterruptedException e) {
-						Log.i(getClass().getCanonicalName(),"InterruptedException");
-						Log.i(getClass().getCanonicalName(), e.getMessage());
+				 // Check if the phone/pad is connected to a network
+		        ConnectivityManager cm = (ConnectivityManager) this.context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+				NetworkInfo info = cm.getActiveNetworkInfo();
+				// not connected
+				if ((info == null) || (!info.isConnected())) {
+					Log.i(getClass().getCanonicalName(),"No connection detected, can not connect");
+					client.hCallbackConnection(context, 
+							new Data(status, Error.UNKNOWN_ERROR, null, null, null, null));
+				}
+				else {
+					// server got disconnected, reconnection process
+					if(!socket.isConnected()){
+						try {
+							tryToReconnect();
+						} catch (InterruptedException e) {
+							Log.i(getClass().getCanonicalName(),"InterruptedException");
+							Log.i(getClass().getCanonicalName(), e.getMessage());
+						}
 					}
 				}
 			}
