@@ -94,14 +94,14 @@ public class HTransportSocketIO implements HTransport, HCallback {
 	public void connect(HOptions options, android.content.Context context) {
 		this.options = options;
 		this.context = context;
-		this.timer = HTimer.getHTimer(options, hClient);
+		this.timer = new HTimer(options, hClient);
 		
 		 // Check if the phone/pad is connected to a network
         ConnectivityManager cm = (ConnectivityManager) this.context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = cm.getActiveNetworkInfo();
 		// not connected
 		if ((info == null) || (!info.isConnected())) {
-			Log.i(getClass().getCanonicalName(),"No connection detected, can not connect");
+			Log.i(getClass().getCanonicalName(),"No connection detected, cannot connect");
 			hCallback(Context.ERROR, Status.DISCONNECTED, null);
 		}
 		else {
@@ -111,7 +111,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 	        	// Opening the socket
 				socket = new SocketIO(options.getEndpoint());
 			} catch (MalformedURLException e) {
-				Log.i(getClass().getCanonicalName(),"Connection failed");
+				Log.i(getClass().getCanonicalName(),"Connection failed because the URL : " + options.getEndpoint() + " is incorrect");
 				Log.i(getClass().getCanonicalName(), e.getMessage());
 				
 				hClient.hCallbackConnection(Context.LINK, new Data(Status.DISCONNECTED, Error.CONNECTION_FAILED, null, null, null, null));
@@ -143,7 +143,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 			subscribe.put("channel", nodeTosubscribeTo);
 			subscribe.put("msgid", 0);
 		} catch (JSONException e) {
-			Log.i(getClass().getCanonicalName(),"JSON exception");
+			Log.i(getClass().getCanonicalName(),"JSON exception in subscribe()");
 			Log.i(getClass().getCanonicalName(), e.getMessage());
 		}
 		
@@ -158,7 +158,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 			unsubscribe.put("channel", nodeToUnsubscribeFrom);
 			unsubscribe.put("msgid", 0);
 		} catch (JSONException e) {
-			Log.i(getClass().getCanonicalName(),"JSON exception");
+			Log.i(getClass().getCanonicalName(),"JSON exception in unsubscribe()");
 			Log.i(getClass().getCanonicalName(), e.getMessage());
 		}
 		
@@ -174,7 +174,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 			publish.put("message", message);
 			publish.put("msgid", "");
 		} catch (JSONException e) {
-			Log.i(getClass().getCanonicalName(),"JSON exception");
+			Log.i(getClass().getCanonicalName(),"JSON exception in publish()");
 			Log.i(getClass().getCanonicalName(), e.getMessage());
 		}
 		
@@ -189,11 +189,29 @@ public class HTransportSocketIO implements HTransport, HCallback {
 			getMessages.put("channel", nodeToGetMessageFrom);
 			getMessages.put("msgid", 0);
 		} catch (JSONException e) {
-			Log.i(getClass().getCanonicalName(),"JSON exception");
+			Log.i(getClass().getCanonicalName(),"JSON exception in getMessages()");
 			Log.i(getClass().getCanonicalName(), e.getMessage());
 		}
 		
 		socket.emit("hMessage", getMessages);
+	}
+	
+	/**
+	 * the method that allow to attach to an existing session
+	 */
+	public void attach(){
+		JSONObject attach = new JSONObject();
+		
+		try {
+			attach.put("userid", options.getUsername() + "@" + options.getDomain());
+			attach.put("sid", attributes.getSID());
+			attach.put("rid", attributes.getRID());
+		} catch (JSONException e) {
+			Log.i(getClass().getCanonicalName(),"JSON exception in attach()");
+			Log.i(getClass().getCanonicalName(), e.getMessage());
+		}
+		
+		socket.emit("attach", attach);
 	}
 	
 	/**
@@ -216,7 +234,7 @@ public class HTransportSocketIO implements HTransport, HCallback {
 		// stopping the timer because we got an answer from server
 		if(timer.isAlive()){
 			timer.interrupt();
-			Log.e(getClass().getCanonicalName(),"timer stopped");
+			//Log.e(getClass().getCanonicalName(),"timer is alive");
 		}
 		// json is at null when the callback is called when the state of the connection changes
 		if(json == null){

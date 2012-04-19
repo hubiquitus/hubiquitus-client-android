@@ -29,6 +29,7 @@ import org.hubiquitus.hapi.utils.Parser;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -101,6 +102,7 @@ public class HTransportXMPPConnectionThread implements Runnable {
         // Creates a new ConnectionConfiguration for a connection that will connect to the desired host and port.
         ConnectionConfiguration config = new ConnectionConfiguration(options.getDomain(), options.getPorts()[0]);
         
+        config.setSecurityMode(SecurityMode.disabled);
         // Sets whether the client will use SASL authentication when logging into the server.
         config.setSASLAuthenticationEnabled(true);
         
@@ -110,6 +112,8 @@ public class HTransportXMPPConnectionThread implements Runnable {
         // Encrypt connection
         config.setTruststorePath("/system/etc/security/cacerts.bks");
         config.setTruststoreType("bks");
+        
+        config.setReconnectionAllowed(true);
         
         // Creates a connection with the options specified above
         connection = new XMPPConnection(config);
@@ -175,6 +179,35 @@ public class HTransportXMPPConnectionThread implements Runnable {
 				
 			if(connection.isConnected() && connection.isAuthenticated()){
 				
+				connection.addConnectionListener(new ConnectionListener() {
+					
+					@Override
+					public void reconnectionSuccessful() {
+						Log.i(getClass().getCanonicalName(), "reconnection successful");
+					}
+					
+					@Override
+					public void reconnectionFailed(Exception arg0) {
+						Log.i(getClass().getCanonicalName(), "reconnection successful");	
+						Log.i(getClass().getCanonicalName(), arg0.getMessage());
+					}
+					
+					@Override
+					public void reconnectingIn(int arg0) {
+						Log.i(getClass().getCanonicalName(), "reconnection in : " + arg0 + "seconds");	
+					}
+					
+					@Override
+					public void connectionClosedOnError(Exception arg0) {
+						Log.i(getClass().getCanonicalName(), "connection closed because an error occured");	
+						Log.i(getClass().getCanonicalName(), arg0.getMessage());
+					}
+					
+					@Override
+					public void connectionClosed() {
+						Log.i(getClass().getCanonicalName(), "connection closed");	
+					}
+				});
 				
 				// Creation of a packet listener to get incoming message
 				PacketListener packetListener = new PacketListener() {
@@ -249,7 +282,8 @@ public class HTransportXMPPConnectionThread implements Runnable {
 	 */
 	public boolean tryToReconnect() throws InterruptedException{
 		int nbTrial = 0;
-		while(nbTrial < options.getRetryInterval().length && !connection.isAuthenticated()){
+		boolean stopLoop = false;
+		while(nbTrial < options.getRetryInterval().length && !connection.isAuthenticated() && !stopLoop){
 			// disconnect if connected
 //			if(connection.isConnected()){
 //				status = Status.DISCONNECTING;
@@ -304,11 +338,12 @@ public class HTransportXMPPConnectionThread implements Runnable {
 			if (connection.isConnected() && !connection.isAuthenticated()) {
 				// retry login
 				try {
+					connection.login(options.getUsername(), options.getPassword());
+					
 					status = Status.CONNECTED;
 					error = Error.NO_ERROR;
 					hCallback(status, error);
-					
-					connection.login(options.getUsername(), options.getPassword());
+					stopLoop = true;
 				} catch (XMPPException e) {
 					Log.i(getClass().getCanonicalName(),"Failed to log as "+ options.getUsername() +" :");
 					Log.i(getClass().getCanonicalName(), e.getMessage());
@@ -316,6 +351,7 @@ public class HTransportXMPPConnectionThread implements Runnable {
 					status = Status.ERROR;
 			        error = Error.AUTH_FAILED;
 			        hCallback(status, error);
+			        stopLoop = true;
 				}
 			}
 			

@@ -130,12 +130,25 @@ public class HIOCallback implements IOCallback {
 //			}
 			
 			Context context;
-			if(arg0.equals(Context.ERROR.getValue()) || arg0.equals("result_error")) context = Context.ERROR;
+			if(arg0.equals(Context.ERROR.getValue()) || arg0.equals("result_error")){
+				context = Context.ERROR;
+				if(arg0.equals("result_error")) {
+					callback.getAttributes().setRID(callback.getAttributes().getRID()+1);
+				}
+				
+			}
 			else if(arg0.equals(Context.LINK.getValue())) context = Context.LINK;
-			else if(arg0.equals("hMessage")) context = Context.MESSAGE;
-			else if(arg0.equals(Context.RESULT.getValue())) context = Context.RESULT;
+			else if(arg0.equals("hMessage")) {
+				context = Context.MESSAGE;
+				callback.getAttributes().setRID(callback.getAttributes().getRID()+1);
+			}
+			else if(arg0.equals(Context.RESULT.getValue())){
+				context = Context.RESULT;
+				callback.getAttributes().setRID(callback.getAttributes().getRID()+1);
+			}
 			else context = null;
 			callback.hCallback(context, Status.CONNECTED, response);
+			
 		}
 		
 	}

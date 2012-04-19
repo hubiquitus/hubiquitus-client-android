@@ -31,11 +31,6 @@ import android.util.Log;
 public class HTimer extends Thread {
 
 	/**
-	 * the instance
-	 */
-	private static HTimer hTimer;
-	
-	/**
 	 * delay before dropping connection
 	 */
 	private long timeOut;
@@ -43,35 +38,21 @@ public class HTimer extends Thread {
 	/**
 	 * the delay has elapsed
 	 */
-	private static boolean isTimedOut = false;
+	private boolean isTimedOut = false;
 	
 	/**
 	 * the client
 	 */
-	private static HClient hClient;
+	private HClient hClient;
 	
 	/**
 	 * default constructor
 	 * @param options
 	 */
-	private HTimer(HOptions options){
+	public HTimer(HOptions options, HClient client){
 		super();
 		this.timeOut = options.getTimeOut();
-	}
-	
-	/**
-	 * the method that returns the instance of the object
-	 */
-	public static HTimer getHTimer(HOptions options, HClient client){
-		isTimedOut = false;
-		if(hTimer == null){
-			hClient = client;
-			hTimer = new HTimer(options);
-			return hTimer;
-		}
-		else {
-			return hTimer;
-		}
+		this.hClient = client;
 	}
 	
 	@Override
@@ -91,15 +72,15 @@ public class HTimer extends Thread {
 	/**
 	 * @return the isTimedOut
 	 */
-	public static boolean isTimedOut() {
+	public boolean isTimedOut() {
 		return isTimedOut;
 	}
 
 	/**
 	 * @param isTimedOut the isTimedOut to set
 	 */
-	public static void setTimedOut(boolean isTimedOut) {
-		HTimer.isTimedOut = isTimedOut;
+	public void setTimedOut(boolean isTimedOut) {
+		this.isTimedOut = isTimedOut;
 	}
 
 

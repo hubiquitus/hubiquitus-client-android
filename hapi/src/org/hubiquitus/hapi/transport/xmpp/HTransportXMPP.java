@@ -100,7 +100,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 	public void connect(HOptions options, android.content.Context context) {
 		// Connection process executed by a secondary thread
 		new Thread (new HTransportXMPPConnectionThread(options, this, context)).start();
-		this.timer = HTimer.getHTimer(options, hClient);
+		this.timer = new HTimer(options, hClient);
 		// starting timer
 		this.timer.start();
 	}
@@ -335,7 +335,6 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 		// stopping the timer because we got an answer form server
 		if(timer.isAlive()){
 			timer.interrupt();
-			Log.e(getClass().getCanonicalName(), "timer stopped");
 		}
 		
 //		Log.i(getClass().getCanonicalName(), "Context : " + context.getValue());
@@ -351,6 +350,7 @@ public class HTransportXMPP implements HTransport, HTransportCallback {
 			pubSubManager = new PubSubManager(connection, "pubsub." + connection.getServiceName());
 			Log.i(getClass().getCanonicalName(), "pubSubManager created");
 		}
+	
 		
 		hClient.hCallbackConnection(context, data);
 	}
