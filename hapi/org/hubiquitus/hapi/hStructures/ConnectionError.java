@@ -52,4 +52,14 @@ public enum ConnectionError {
 		return value;
 	}
 	
+	/**
+	 * Get constant for value
+	 * @param value
+	 * @return
+	 */
+	public static ConnectionError constant(int value) {
+		ConnectionError [] _values = ConnectionError.values();
+		return _values[value];
+	}
+	
 }

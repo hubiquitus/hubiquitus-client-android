@@ -73,6 +73,7 @@ public class SimpleClientActivity extends Activity  implements HCallback{
     	loginEditText.setText("nadim@localhost");
     	passwordEditText.setText("12031989");
     	serverhostEditText.setText("192.168.0.14");
+    	gatewaysEditText.setText("http://192.168.0.14:8080/");
     	
     }
    

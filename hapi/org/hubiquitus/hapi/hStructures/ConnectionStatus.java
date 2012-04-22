@@ -44,4 +44,14 @@ public enum ConnectionStatus {
 	public int value() {
 		return value;
 	}
+	
+	/**
+	 * Get constant for value
+	 * @param value
+	 * @return
+	 */
+	public static ConnectionStatus constant(int value) {
+		ConnectionStatus [] _values = ConnectionStatus.values();
+		return _values[value];
+	}
 }

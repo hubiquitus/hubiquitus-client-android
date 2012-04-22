@@ -20,6 +20,8 @@
 
 package org.hubiquitus.hapi.hStructures;
 
+import org.json.JSONObject;
+
 
 
 
@@ -39,6 +41,22 @@ public class HStatus {
 	 * Constructor 
 	 */
 	public HStatus() {};
+	
+	public HStatus(JSONObject jsonObj) throws Exception {
+		try {
+			if (jsonObj.has("status") && jsonObj.has("errorCode")) {
+				int jsonStatus = jsonObj.getInt("status");
+				int jsonErrorCode = jsonObj.getInt("errorCode");
+				
+				this.status = ConnectionStatus.constant(jsonStatus);
+				this.errorCode = ConnectionError.constant(jsonErrorCode);
+			} else {
+				throw new Exception(this.getClass().toString() + " JSon object mal formated");
+			}
+		} catch (Exception e) {
+			throw new Exception(this.getClass().toString() + " JSon object mal formated : " + e.getMessage());
+		}	
+	}
 	
 	/**
 	 * @param status

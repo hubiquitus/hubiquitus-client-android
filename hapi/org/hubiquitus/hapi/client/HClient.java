@@ -26,8 +26,11 @@ import org.hubiquitus.hapi.structures.JabberID;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportCallback;
 import org.hubiquitus.hapi.transport.HTransportOptions;
+import org.hubiquitus.hapi.transport.socketio.HTransportSocketio;
 import org.hubiquitus.hapi.transport.xmpp.HTransportXMPP;
 import org.hubiquitus.hapi.util.HUtil;
+
+import android.util.Log;
 
 /**
  * @author j.desousag
@@ -79,7 +82,7 @@ public class HClient implements HTransportCallback {
 			this.callback = callback;
 			
 			//notify connection
-			this.updateStatus(ConnectionStatus.CONNECTING, null, null);
+			this.updateStatus(ConnectionStatus.CONNECTING, ConnectionError.NO_ERROR, null);
 			
 			//fill HTransportOptions
 			try {
@@ -91,13 +94,21 @@ public class HClient implements HTransportCallback {
 			}
 			
 			//choose transport layer
-			//if(options.getTransport().equals("xmpp")) {
+			if(options.getTransport().equals("socketio")) {
+				Log.i("DEBUG", "socketio transport mode");
+				if (this.transport == null || (this.transport.getClass() != HTransportSocketio.class)) {
+					this.transport = new HTransportSocketio();
+				}
+				
+				this.transport.connect(this, this.transportOptions);
+			} else {
+				Log.i("DEBUG", "socketio transport mode");
 				if (this.transport == null || (this.transport.getClass() != HTransportXMPP.class)) {
 					this.transport = new HTransportXMPP();
 				}
 				
 				this.transport.connect(this, this.transportOptions);
-			//}
+			}
 		} else {
 			if (connInProgress) {
 				updateStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, null);
@@ -185,7 +196,7 @@ public class HClient implements HTransportCallback {
 		}
 		
 		if(shouldDisconnect) {
-			updateStatus(ConnectionStatus.DISCONNECTING, null, null);
+			updateStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
 			transport.disconnect();
 		} else {
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
