@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/loginLabel"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Login" />
+
+            <EditText
+                android:id="@+id/loginText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10" >
+
+                <requestFocus />
+            </EditText>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/passwordLabel"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="password" />
+
+            <EditText
+                android:id="@+id/passwordText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPassword" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/gatewaysLabel"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="gateways" />
+
+                <EditText
+                    android:id="@+id/gatewaysText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    
+    
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/serverhostLabel"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="serverHost" />
+
+            <EditText
+                android:id="@+id/serverhostText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/serverportLabel"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="serverPort" />
+
+            <EditText
+                android:id="@+id/serverportText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RadioGroup
+            android:id="@+id/transportGroupbutton"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+	            <RadioButton
+	                android:id="@+id/xmppButton"
+	                android:layout_width="150dp"
+	                android:layout_height="wrap_content"
+	                android:checked="true"
+	                android:text="xmpp" />
+	
+	            <RadioButton
+	                android:id="@+id/socketButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="center"
+	                android:text="socketio" />
+	
+	        
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/ConnectionButton"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:text="Connection" />
+
+            <Button
+                android:id="@+id/DeconnectionButton"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:text="Deconnection" />
+
+            <Button
+                android:id="@+id/ClearButton"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:text="Clear" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ScrollView 
+        android:id="@+id/Scrollview"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent">
+    <TextView
+        android:id="@+id/outputView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="" />
+	</ScrollView>
+</LinearLayout>
