@@ -9,6 +9,10 @@ This project currently relies on
 
 ## How to use it
 
+### As an Android project
+
+### As a PhoneGap Plugin
+
 ## How to test it
 
 ## Licensing
