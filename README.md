@@ -15,6 +15,7 @@ This project currently relies on
 
 ## How to test it
 clone git project :
+
     git clone git://github.com/hubiquitus/hubiquitus-android.git
 
 ## Licensing
