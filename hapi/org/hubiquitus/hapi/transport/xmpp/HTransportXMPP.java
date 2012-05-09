@@ -216,7 +216,6 @@ public class HTransportXMPP implements HTransport, ConnectionListener {
 				}).start();
 		    } catch(Exception e) {
 		    	Log.e("stacktrace", e.toString());
-		    	//e.printStackTrace();
 		    	this.connection = null;
 		    	this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 		    }

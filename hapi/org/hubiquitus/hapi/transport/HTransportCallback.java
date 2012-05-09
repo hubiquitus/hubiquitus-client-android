@@ -21,7 +21,6 @@ package org.hubiquitus.hapi.transport;
 
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
-import org.hubiquitus.hapi.hStructures.HStatus;
 
 /**
  * 

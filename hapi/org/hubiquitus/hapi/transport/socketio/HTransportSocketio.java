@@ -33,8 +33,6 @@ import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportCallback;
 import org.hubiquitus.hapi.transport.HTransportOptions;
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.json.JSONObject;
 
 import android.util.Log;
@@ -173,7 +171,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			JSONObject data = (JSONObject)arg2[0];
 			try {
 				HStatus status = new HStatus(data);
-				Log.i("socket io status", status.toString());
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
@@ -189,11 +186,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 			}
 		}
-		
-		/*Log.i("socketio on", arg0);
-		if (arg2 != null) {
-			Log.i("socketio on", arg2.toString());
-		}*/
 	}
 
 	public void onConnect() {
@@ -234,10 +226,8 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 		
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
-			Log.i("SOCKETIO CON ", " " + socketio.isConnected());
 			while(socketio.isConnected()) {
-				Log.i("SOCKETIO CON ", " " + socketio.isConnected());
-				//socketio.disconnect();
+				socketio.disconnect();
 			}
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NO_ERROR, null);
 		}
