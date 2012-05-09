@@ -48,7 +48,7 @@ public enum ConnectionError {
 	 * Method to get the value of ErrorCode
 	 * @return ErrorCode's value
 	 */
-	public int Value() {
+	public int value() {
 		return value;
 	}
 	

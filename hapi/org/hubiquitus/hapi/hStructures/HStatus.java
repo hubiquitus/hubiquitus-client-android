@@ -20,6 +20,8 @@
 
 package org.hubiquitus.hapi.hStructures;
 
+import org.hubiquitus.hapi.structures.HJSONSerializable;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -30,11 +32,11 @@ import org.json.JSONObject;
  * This structure describe the connection status
  */
 
-public class HStatus {
+public class HStatus implements HJSONSerializable{
 
 	
 	private ConnectionStatus status;
-	private ConnectionError errorCode;
+	private ConnectionError errorCode = ConnectionError.NO_ERROR;
 	private String errorMsg;
 	
 	/**
@@ -43,6 +45,39 @@ public class HStatus {
 	public HStatus() {};
 	
 	public HStatus(JSONObject jsonObj) throws Exception {
+		fromJSON(jsonObj);
+	}
+	
+	/**
+	 * @param status
+	 * @param errorCode
+	 * @param errorMsg
+	 */
+	public HStatus(ConnectionStatus status ,ConnectionError errorCode ,String errorMsg) {
+		this.status = status;
+		this.errorCode = errorCode;
+		this.errorMsg = errorMsg;		
+	};
+
+	/**
+	 * convert object to json object
+	 * @return
+	 */
+	public JSONObject toJSON() {
+		JSONObject jsonObj = new JSONObject();
+		try {
+			jsonObj.put("status", this.status.value());
+			jsonObj.put("errorCode", this.errorCode.value());
+			jsonObj.put("errorMsg", this.errorMsg);
+		} catch (JSONException e) {
+			jsonObj = null;
+			e.printStackTrace();
+		}
+		
+		return jsonObj;
+	}
+	
+	public void fromJSON(JSONObject jsonObj) throws Exception {
 		try {
 			if (jsonObj.has("status") && jsonObj.has("errorCode")) {
 				int jsonStatus = jsonObj.getInt("status");
@@ -57,18 +92,6 @@ public class HStatus {
 			throw new Exception(this.getClass().toString() + " JSon object mal formated : " + e.getMessage());
 		}	
 	}
-	
-	/**
-	 * @param status
-	 * @param errorCode
-	 * @param errorMsg
-	 */
-	public HStatus(ConnectionStatus status ,ConnectionError errorCode ,String errorMsg) {
-		this.status = status;
-		this.errorCode = errorCode;
-		this.errorMsg = errorMsg;		
-	};
-
 	
 	/* Getters & Setters */
 
@@ -93,7 +116,12 @@ public class HStatus {
 
 	
 	public void setErrorCode(ConnectionError errorCode) {
-		this.errorCode = errorCode;	
+		if(errorCode != null) {
+			this.errorCode = errorCode;	
+		} else {
+			this.errorCode = ConnectionError.NO_ERROR;
+		}
+		
 	}
 	
 	/**

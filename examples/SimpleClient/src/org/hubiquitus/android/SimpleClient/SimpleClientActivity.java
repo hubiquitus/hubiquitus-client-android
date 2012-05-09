@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.hubiquitus.hapi.client.HCallback;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.client.HOptions;
+import org.hubiquitus.hapi.structures.HJSONSerializable;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -70,10 +71,10 @@ public class SimpleClientActivity extends Activity  implements HCallback{
     	transportRadioGroup = (RadioGroup) findViewById(R.id.transportGroupbutton);
     	outputTextArea = (TextView) findViewById(R.id.outputView);
     	
-    	loginEditText.setText("nadim@localhost");
-    	passwordEditText.setText("12031989");
-    	serverhostEditText.setText("192.168.0.14");
-    	gatewaysEditText.setText("http://192.168.0.14:8080/");
+    	loginEditText.setText("");
+    	passwordEditText.setText("");
+    	serverhostEditText.setText("");
+    	gatewaysEditText.setText("");
     	
     }
    
@@ -108,6 +109,7 @@ public class SimpleClientActivity extends Activity  implements HCallback{
 				options.setTransport(transport);
 				options.setEndpoints(endpoints);
 				
+				//client.connect("admin@localhost", "", parentClass, new HOptions());
 				client.connect(login, password, parentClass, options);
    	       	}
         };
@@ -144,7 +146,7 @@ public class SimpleClientActivity extends Activity  implements HCallback{
 	
 	}
 
-	public void hCallback(final String type, final Object data) {
+	public void hCallback(final String type, final HJSONSerializable data) {
 		Log.i("DEBUG", "callback for type " + type + " with data " + data.toString());
 		runOnUiThread(new Runnable() {
 			

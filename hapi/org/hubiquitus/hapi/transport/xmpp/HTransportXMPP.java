@@ -115,6 +115,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener {
 							connection.login(localOptions.getUsername(), localOptions.getPassword(), localOptions.getResource());
 							updateStatus(ConnectionStatus.CONNECTED, null, null);
 						} catch(Exception e) { //login failed
+							Log.e("stackTrace", e.toString());
 							e.printStackTrace();
 							boolean wasConnected = false;
 							if (connection.isConnected()) {
@@ -142,7 +143,8 @@ public class HTransportXMPP implements HTransport, ConnectionListener {
 	    	if (connection.isConnected()) {
 				connection.disconnect();
 			}
-	    	e.printStackTrace();
+	    	Log.e("stackTrace", e.toString());
+	    	//e.printStackTrace();
 	    	this.connection = null;
 	    	this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 	    }
@@ -175,8 +177,9 @@ public class HTransportXMPP implements HTransport, ConnectionListener {
 		this.connectionStatus = status;
 		if (callback != null) {
 			callback.connectionCallback(status, error, errorMsg);
-		} else {
-			throw new NullPointerException("Error : " + this.getClass().getName() + " requires a callback");
+			if(this.connectionStatus == ConnectionStatus.DISCONNECTED) {
+				callback = null;
+			}
 		}
 	}
 
@@ -195,6 +198,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener {
 			if(connection != null && connection.isConnected()) {
 				connection.disconnect();
 			}
+			updateStatus(ConnectionStatus.DISCONNECTED, null, null);
 		} else {
 			try {
 			    //create a thread to disconnect async
@@ -211,7 +215,8 @@ public class HTransportXMPP implements HTransport, ConnectionListener {
 					}
 				}).start();
 		    } catch(Exception e) {
-		    	e.printStackTrace();
+		    	Log.e("stacktrace", e.toString());
+		    	//e.printStackTrace();
 		    	this.connection = null;
 		    	this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 		    }

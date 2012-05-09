@@ -63,10 +63,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 * @param options - transport options
 	 */
 	public void connect(HTransportCallback callback, HTransportOptions options){	
-		if (socketio != null && socketio.isConnected()) {
-			socketio.disconnect();
-		}
-		
 		this.connectionStatus = ConnectionStatus.CONNECTING;
 		
 		this.callback = callback;
@@ -86,7 +82,11 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			@Override
 			public void run() {
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.CONN_TIMEOUT, null);
-				socketio.disconnect();
+				if(socketio.isConnected()) {
+					socketio.disconnect();
+				}
+				
+				socketio = null;
 			}
 		}, 10000);
 		
@@ -136,8 +136,9 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 */
 	public void disconnect() {
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
-		
-		socketio.disconnect();
+		//synchronized (this) {
+			socketio.disconnect();
+		//}
 	}
 	
 	/* helper functions */
@@ -233,6 +234,11 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 		
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
+			Log.i("SOCKETIO CON ", " " + socketio.isConnected());
+			while(socketio.isConnected()) {
+				Log.i("SOCKETIO CON ", " " + socketio.isConnected());
+				//socketio.disconnect();
+			}
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NO_ERROR, null);
 		}
 	}

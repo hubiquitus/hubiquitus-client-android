@@ -22,6 +22,12 @@ package org.hubiquitus.hapi.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.util.Log;
+
 
 /**
  * @author j.desousag
@@ -42,6 +48,41 @@ public class HOptions implements Cloneable {
 	 * Constructor 
 	 */
 	public HOptions() {
+		setServerHost(null);
+		setEndpoints(null);
+	}
+	
+	public HOptions(JSONObject jsonObj) {
+		setEndpoints(null);
+		try {
+			if (jsonObj.has("serverHost")) {
+				setServerHost(jsonObj.getString("serverHost"));
+			}
+			
+			if (jsonObj.has("serverPort") && !jsonObj.getString("serverPort").equals("")) {
+				setServerPort(jsonObj.getInt("serverPort"));
+			}
+			
+			if (jsonObj.has("transport")) {
+				setTransport(jsonObj.getString("transport"));
+			}
+			
+			if (jsonObj.has("endpoints")) {
+				JSONArray jsonEndpoints = jsonObj.getJSONArray("endpoints");
+				ArrayList<String> arrayEndpoints = new ArrayList<String>();
+				for (int i = 0; i < jsonEndpoints.length(); i++) {
+					arrayEndpoints.add(jsonEndpoints.getString(i));
+				}
+				setEndpoints(arrayEndpoints);
+			}
+			
+			if (jsonObj.has("nbLastMessage")) {
+				setNbLastMessage(jsonObj.getInt("nbLastMessage"));
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public HOptions(HOptions options) {
@@ -50,19 +91,6 @@ public class HOptions implements Cloneable {
 		this.setEndpoints(options.getEndpoints());
 		this.setTransport(options.getTransport());
 		this.setNbLastMessage(options.getNbLastMessage());
-	}
-	
-	
-	/**
-	 * Constructor
-	 * @param serverHost
-	 * @param serverPort
-	 * @param transport
-	 */
-	public HOptions(String serverHost ,int serverPort ,String transport){
-		this.setServerHost(serverHost);
-		this.setServerPort(serverPort);
-		this.setTransport(transport);
 	}
 	
 	/* Getters & Setters */
@@ -124,7 +152,7 @@ public class HOptions implements Cloneable {
 	 * hNode gateway endpoints formated as domain:port/path (by default : localhost:8080)
 	 */
 	public List<String> getEndpoints() {
-		return new ArrayList<String>(endpoints);
+		return new ArrayList<String>(this.endpoints);
 	}
 
 	public void setEndpoints(List<String> endpoints) {

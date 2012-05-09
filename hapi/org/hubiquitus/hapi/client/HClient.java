@@ -62,7 +62,7 @@ public class HClient implements HTransportCallback {
 		boolean shouldConnect = false;
 		boolean connInProgress = false;
 		boolean disconInProgress = false;
-		
+
 		//synchronize connection status updates to make sure, we have one connect at a time
 		synchronized (this) {
 			if (this.connectionStatus == ConnectionStatus.DISCONNECTED) {
@@ -89,23 +89,27 @@ public class HClient implements HTransportCallback {
 				this.fillHTransportOptions(publisher, password, options);
 			} catch (Exception e) { 
 				//stop connecting if filling error
+				e.printStackTrace();
+				Log.d("HClient", e.toString());
 				this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.JID_MALFORMAT, e.getMessage());
 				return;
 			}
 			
 			//choose transport layer
 			if(options.getTransport().equals("socketio")) {
-				Log.i("DEBUG", "socketio transport mode");
+				/*if (this.transport != null) { //check if other transport mode connect
+					this.transport.disconnect();
+				}*/
 				if (this.transport == null || (this.transport.getClass() != HTransportSocketio.class)) {
 					this.transport = new HTransportSocketio();
 				}
 				
 				this.transport.connect(this, this.transportOptions);
 			} else {
-				Log.i("DEBUG", "socketio transport mode");
-				if (this.transport == null || (this.transport.getClass() != HTransportXMPP.class)) {
-					this.transport = new HTransportXMPP();
-				}
+				/*if (this.transport != null) { //check if other transport mode connect
+					this.transport.disconnect();
+				}*/
+				this.transport = new HTransportXMPP();
 				
 				this.transport.connect(this, this.transportOptions);
 			}
@@ -113,7 +117,7 @@ public class HClient implements HTransportCallback {
 			if (connInProgress) {
 				updateStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, null);
 			} else if (disconInProgress) {
-				updateStatus(ConnectionStatus.DISCONNECTING, ConnectionError.ALREADY_CONNECTED, null);
+				//updateStatus(ConnectionStatus.DISCONNECTING, ConnectionError.ALREADY_CONNECTED, null);
 			} else {
 				updateStatus(ConnectionStatus.CONNECTED, ConnectionError.ALREADY_CONNECTED, null);
 			}	
@@ -167,16 +171,22 @@ public class HClient implements HTransportCallback {
 	public void updateStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
 		if (callback != null) {
 			connectionStatus = status;
-			
 			//create structure 
 			HStatus hstatus = new HStatus();
 			hstatus.setStatus(status);
 			hstatus.setErrorCode(error);
 			hstatus.setErrorMsg(errorMsg);
 			
-			callback.hCallback("hstatus", hstatus);
+			try {
+				callback.hCallback("hStatus", hstatus);
+			} catch(Exception e) {
+			}
+			
+			if(status == ConnectionStatus.DISCONNECTED) {
+				callback = null;
+			}
 		} else {
-			throw new NullPointerException("Error : " + this.getClass().getName() + " requires a callback");
+			Log.d("Error", (new NullPointerException("Error : " + this.getClass().getName() + " requires a callback")).toString());
 		}
 	}
 	
@@ -185,22 +195,30 @@ public class HClient implements HTransportCallback {
 	 */
 	public void disconnect() {
 		boolean shouldDisconnect = false;
+		boolean connectInProgress = false;
 		synchronized (this) {
-			if (this.connectionStatus == ConnectionStatus.CONNECTED 
-					|| this.connectionStatus == ConnectionStatus.CONNECTING) {
+			if (this.connectionStatus == ConnectionStatus.CONNECTED) {
 				shouldDisconnect = true;
 				
 				//update connection status
 				connectionStatus = ConnectionStatus.DISCONNECTING;
+			} else if(this.connectionStatus == ConnectionStatus.CONNECTING) {
+				connectInProgress = true;
 			}
 		}
 		
 		if(shouldDisconnect) {
 			updateStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
 			transport.disconnect();
+		} else if (connectInProgress) {
+			updateStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, "Can't disconnect while a connection is in progress");
 		} else {
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
+			//remove callback
+			this.callback = null;
 		}
+		
+		
 	}
 
 	/* HTransportCallback functions */
