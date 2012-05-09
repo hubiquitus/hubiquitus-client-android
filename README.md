@@ -14,6 +14,8 @@ This project currently relies on
 ### As a PhoneGap Plugin
 
 ## How to test it
+clone git project :
+    git clone git://github.com/hubiquitus/hubiquitus-android.git
 
 ## Licensing
 Copyright (c) Novedia Group 2012.
