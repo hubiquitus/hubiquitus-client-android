@@ -15,6 +15,10 @@ This project currently relies on
 
 ## How to test it
 
+#### 1) clone git project
+
+    git clone git://github.com/hubiquitus/hubiquitus-android.git
+
 ## Licensing
 Copyright (c) Novedia Group 2012.
 
