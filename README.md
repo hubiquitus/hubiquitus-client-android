@@ -15,7 +15,7 @@ This project currently relies on
 
 ## How to test it
 
-    #### 1) clone git project
+#### 1) clone git project
 
     git clone git://github.com/hubiquitus/hubiquitus-android.git
 
