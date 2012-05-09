@@ -1,25 +1,5 @@
+
 # Hubiquitus Android
-Hubiquitus client API for Android. Should be used with a hNode.
-Currently allows to do pubsub with an xmpp server. More information on hubiquitus[www.hubiquitus.com]
-
-## Third party libraries
-This project currently relies on
-* ASmack : Smack xmpp library adapted for Android. Using this fork[https://github.com/Flowdalic/asmack] 
-* Socket.io-java-client : Socket io. Using this fork[https://github.com/Gottox/socket.io-java-client]
-
-## How to use it
-
-### As an Android project
-
-### As a PhoneGap Plugin
-
-## How to test it
-
-#### 1) clone git project
-
-    git clone git://github.com/hubiquitus/hubiquitus-android.git
-    
-    # Hubiquitus Android
 Hubiquitus client API for Android. Should be used with a hNode.
 Currently allows to do pubsub with an xmpp server. More information on hubiquitus[www.hubiquitus.com]
 
