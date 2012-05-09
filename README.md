@@ -6,6 +6,7 @@ Currently allows to do pubsub with an xmpp server. More information on [hubiquit
 This project currently relies on
 * ASmack : Smack xmpp library adapted for Android. Using this [fork](https://github.com/Flowdalic/asmack) 
 * Socket.io-java-client : Socket io. Using this [fork](https://github.com/Gottox/socket.io-java-client)
+* PhoneGap : PhoneGap for android. See [here](http://phonegap.com/) for more informations
 
 ## How to use it
 
