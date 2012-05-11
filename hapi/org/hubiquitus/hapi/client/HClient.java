@@ -21,6 +21,7 @@ package org.hubiquitus.hapi.client;
 
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
+import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.structures.JabberID;
 import org.hubiquitus.hapi.transport.HTransport;
@@ -38,13 +39,15 @@ import android.util.Log;
  * Hubiquitus client, public api
  */
 
-public class HClient implements HTransportCallback {
+public class HClient {
 	
 	private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED; /* only connecting, connected, diconnecting, disconnected */
+	@SuppressWarnings("unused")
 	private HOptions options = null;
 	private HTransportOptions transportOptions = null;
 	private HCallback callback = null;
 	private HTransport transport;
+	private TransportCallback transportCallback = new TransportCallback();
 	
 	public HClient() {
 		transportOptions = new HTransportOptions();
@@ -104,14 +107,14 @@ public class HClient implements HTransportCallback {
 					this.transport = new HTransportSocketio();
 				}
 				
-				this.transport.connect(this, this.transportOptions);
+				this.transport.connect(this.transportCallback, this.transportOptions);
 			} else {
 				/*if (this.transport != null) { //check if other transport mode connect
 					this.transport.disconnect();
 				}*/
 				this.transport = new HTransportXMPP();
 				
-				this.transport.connect(this, this.transportOptions);
+				this.transport.connect(transportCallback, this.transportOptions);
 			}
 		} else {
 			if (connInProgress) {
@@ -132,7 +135,7 @@ public class HClient implements HTransportCallback {
 	 * @param options 
 	 * @throws Exception - in case jid is malformatted, it throws an exception
 	 */
-	public void fillHTransportOptions(String publisher, String password, HOptions options) throws Exception {
+	private void fillHTransportOptions(String publisher, String password, HOptions options) throws Exception {
 		JabberID jid = new JabberID(publisher);
 		
 		this.transportOptions.setJid(jid);
@@ -168,7 +171,7 @@ public class HClient implements HTransportCallback {
 	 * @param error - error code
 	 * @param errorMsg - a low level description of the error
 	 */
-	public void updateStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
+	private void updateStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
 		if (callback != null) {
 			connectionStatus = status;
 			//create structure 
@@ -225,10 +228,19 @@ public class HClient implements HTransportCallback {
 	
 	/**
 	 * @internal
-	 * see HTransportCallback for more informations
+	 * Class used to get callbacks from transport layer.
 	 */
-	public void connectionCallback(ConnectionStatus status,
-			ConnectionError error, String errorMsg) {
-		this.updateStatus(status, error, errorMsg);
+	private class TransportCallback implements HTransportCallback {
+
+		/**
+		 * @internal
+		 * see HTransportCallback for more informations
+		 */
+		public void connectionCallback(ConnectionStatus status,
+				ConnectionError error, String errorMsg) {
+			updateStatus(status, error, errorMsg);
+		}
+		
 	}
+	
 }

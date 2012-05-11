@@ -105,7 +105,7 @@ function hCallback(msg){
                 break;
         }
         //console.log("status is : ", status);
-        document.getElementById("status").innerHTML = JSON.stringify(status + '<br />' + error);
+        document.getElementById("status").innerHTML = JSON.stringify(status + ' : ' + error);
     }
     else if (msg.type == 'hResult')
         document.getElementById("fetched").innerHTML = JSON.stringify(msg.data);

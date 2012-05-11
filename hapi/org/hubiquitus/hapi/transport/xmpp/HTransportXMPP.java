@@ -45,6 +45,7 @@ import android.util.Log;
 public class HTransportXMPP implements HTransport, ConnectionListener {
 
 	private HTransportCallback callback = null;
+	@SuppressWarnings("unused")
 	private HTransportOptions options = null;
 	private Connection connection = null;
 	private ConnectionConfiguration config = null;
@@ -155,7 +156,6 @@ public class HTransportXMPP implements HTransport, ConnectionListener {
 			
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				if (connectionThread != null && connectionThread.isAlive()) {
 					connectionThread.interrupt();
 					if(connection.isConnected()) {

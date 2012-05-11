@@ -1,10 +1,13 @@
 package org.hubiquitus.android.SimpleClient;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.hubiquitus.hapi.client.HCallback;
 import org.hubiquitus.hapi.client.HClient;
-import org.hubiquitus.hapi.client.HOptions;
+import org.hubiquitus.hapi.hStructures.HOptions;
+import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.structures.HJSONSerializable;
 
 import android.app.Activity;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class SimpleClientActivity extends Activity  implements HCallback{
@@ -40,6 +44,9 @@ public class SimpleClientActivity extends Activity  implements HCallback{
 	
 	private TextView outputTextArea;
 	private RadioGroup transportRadioGroup;
+	
+	private ScrollView outputScroller;
+	private TextView connectionStatusLabel;
 	
 	private HClient client;
 	
@@ -70,6 +77,8 @@ public class SimpleClientActivity extends Activity  implements HCallback{
     	
     	transportRadioGroup = (RadioGroup) findViewById(R.id.transportGroupbutton);
     	outputTextArea = (TextView) findViewById(R.id.outputView);
+    	outputScroller = (ScrollView)findViewById(R.id.scrollview);
+    	connectionStatusLabel = (TextView)findViewById(R.id.connectionStatusLabel);
     	
     	loginEditText.setText("");
     	passwordEditText.setText("");
@@ -151,9 +160,31 @@ public class SimpleClientActivity extends Activity  implements HCallback{
 		runOnUiThread(new Runnable() {
 			
 			public void run() {
-				outputTextArea.append("Type : " + type + "  data : " + data.toString() + "\n\n");	
+				if (type.equals("hStatus")) {
+					HStatus status = (HStatus)data;
+					connectionStatusLabel.setText(status.getStatus().toString());
+				}
+				outputTextArea.append("Type : " + type + "  data : " + data.toString() + "\n\n");
+				Timer scrollTimer = new Timer();
+				TimerTask scrollTask = new TimerTask() {
+					
+					@Override
+					public void run() {
+						runOnUiThread(new Runnable() {
+							
+							public void run() {
+								outputScroller.smoothScrollTo(0, outputTextArea.getBottom());
+								
+							}
+						});
+						
+					}
+				};
+				
+				scrollTimer.schedule(scrollTask, 10);
 			}
 		});	
+		
 	}
 	
 	

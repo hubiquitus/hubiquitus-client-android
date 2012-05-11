@@ -35,8 +35,6 @@ import org.hubiquitus.hapi.transport.HTransportCallback;
 import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 
 /**
  * 
@@ -134,9 +132,11 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 */
 	public void disconnect() {
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
-		//synchronized (this) {
+		try {
 			socketio.disconnect();
-		//}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/* helper functions */
@@ -194,7 +194,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		String password = options.getPassword();
 		String serverHost = options.getServerHost();
 		int serverPort = options.getServerPort();
-		String serviceName = options.getJid().getDomain();
 		
 		//prepare data to be sent
 		JSONObject data = new JSONObject();
@@ -226,9 +225,9 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 		
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
-			while(socketio.isConnected()) {
-				socketio.disconnect();
-			}
+			//while(socketio.isConnected()) {
+			//	socketio.disconnect();
+			//}
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NO_ERROR, null);
 		}
 	}

@@ -78,7 +78,7 @@
                     android:id="@+id/gatewaysLabel"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:text="gateways" />
+                    android:text="endpoints" />
 
                 <EditText
                     android:id="@+id/gatewaysText"
@@ -160,21 +160,27 @@
 
 	            <RadioButton
 	                android:id="@+id/xmppButton"
-	                android:layout_width="150dp"
+	                android:layout_width="100dp"
 	                android:layout_height="wrap_content"
 	                android:checked="true"
 	                android:text="xmpp" />
 	
 	            <RadioButton
 	                android:id="@+id/socketButton"
-	                android:layout_width="wrap_content"
+	                android:layout_width="100dp"
 	                android:layout_height="wrap_content"
 	                android:gravity="center"
 	                android:text="socketio" />
-	
-	        
+	        	
+	        	<TextView
+	        	    android:layout_marginLeft="10dp"
+                	android:id="@+id/connectionStatusLabel"
+                	android:layout_width="150dp"
+                	android:layout_height="wrap_content"
+                	android:text="DISCONNECTED" />
         </RadioGroup>
-
+        
+		 
     </LinearLayout>
 
     <LinearLayout
@@ -209,7 +215,7 @@
     </LinearLayout>
 
     <ScrollView 
-        android:id="@+id/Scrollview"
+        android:id="@+id/scrollview"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
     <TextView

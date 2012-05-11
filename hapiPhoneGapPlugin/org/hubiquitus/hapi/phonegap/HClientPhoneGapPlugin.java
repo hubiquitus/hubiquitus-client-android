@@ -22,12 +22,10 @@ import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
 import org.hubiquitus.hapi.client.HCallback;
 import org.hubiquitus.hapi.client.HClient;
-import org.hubiquitus.hapi.client.HOptions;
+import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.structures.HJSONSerializable;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import android.util.Log;
 
 public class HClientPhoneGapPlugin extends Plugin implements HCallback {
 
