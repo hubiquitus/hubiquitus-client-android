@@ -22,9 +22,11 @@ import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
 import org.hubiquitus.hapi.client.HCallback;
 import org.hubiquitus.hapi.client.HClient;
+import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.structures.HJSONSerializable;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class HClientPhoneGapPlugin extends Plugin implements HCallback {
@@ -63,6 +65,20 @@ public class HClientPhoneGapPlugin extends Plugin implements HCallback {
 			//hclient.connect(publisher, password, this, new HOptions());
 		} else if(action.equals("disconnect")) {
 			hclient.disconnect();
+		} else if(action.equals("hcommand")) {
+			JSONObject jsonObj = null;
+			JSONObject jsonCmd = null;
+			HCommand cmd = null;
+			try {
+				jsonObj = data.getJSONObject(0);
+				jsonCmd = (JSONObject)jsonObj.get("hcommand");
+				cmd = new HCommand(jsonCmd);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			
+			hclient.command(cmd);
 		}
 		
 		return null;

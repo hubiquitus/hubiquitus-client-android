@@ -21,8 +21,8 @@
 if (typeof define !== 'function') { var define = require('amdefine')(module) }
 
 define(
-    ['./ConnectionError', './ConnectionStatus'],
-    function(ConnectionError, ConnectionStatus){
+    ['./codes'],
+    function(codes){
 
         /**
          * Creates a new client that manages a connection and connects to the
@@ -39,8 +39,14 @@ define(
             disconnect : function(){
             	return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'disconnect', []);
             },
-            ConnectionError: ConnectionError,
-            ConnectionStatus: ConnectionStatus
+            
+            command: function(hCommand){
+            	return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'hcommand', [{hcommand: hCommand}]);
+            },
+            
+                errors: codes.errors,
+                status: codes.statuses,
+                hResultStatus: codes.hResultStatus
         };
             
             

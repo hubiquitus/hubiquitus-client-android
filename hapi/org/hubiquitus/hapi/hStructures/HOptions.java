@@ -79,6 +79,10 @@ public class HOptions implements Cloneable {
 				setNbLastMessage(jsonObj.getInt("nbLastMessage"));
 			}
 			
+			if (jsonObj.has("hserver")) {
+				setHserver(jsonObj.getString("hserver"));
+			}
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

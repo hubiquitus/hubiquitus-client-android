@@ -47,6 +47,18 @@ function clear_divs(){
     document.getElementById("fetched").innerHTML = '';
 }
 
+function send_hEcho(){
+	console.log("echo");
+    var value = prompt('Your Name:');
+    var echoCmd = {
+        entity : 'hnode.' + 'hub.novediagroup.com',
+        cmd : 'hecho',
+        params : {hello : value}
+    };
+    hClient.command(echoCmd);
+
+}
+
 function hCallback(msg){
     //console.log(JSON.stringify(msg));
     //console.log("callback message is : " + msg);
@@ -54,61 +66,61 @@ function hCallback(msg){
     var error = '';
     if(msg.type == 'hStatus'){
         switch(msg.data.status){
-            case hClient.ConnectionStatus.CONNECTED:
+            case hClient.status.CONNECTED:
                 status = 'Connected';
                 break;
-            case hClient.ConnectionStatus.CONNECTING:
+            case hClient.status.CONNECTING:
                 status = 'Connecting';
                 break;
-            case hClient.ConnectionStatus.REATTACHING:
+            case hClient.status.REATTACHING:
                 status = 'Reattaching';
                 break;
-            case hClient.ConnectionStatus.REATTACHED:
+            case hClient.status.REATTACHED:
                 status = 'Reattached';
                 break;
-            case hClient.ConnectionStatus.DISCONNECTING:
+            case hClient.status.DISCONNECTING:
                 status = 'Disconnecting';
                 break;
-            case hClient.ConnectionStatus.DISCONNECTED:
+            case hClient.status.DISCONNECTED:
                 status = 'Disconnected';
                 break;
         }
 
         switch(msg.data.errorCode){
-            case hClient.ConnectionError.NO_ERROR:
+            case hClient.errors.NO_ERROR:
                 error = 'No Error Detected';
                 break;
-            case hClient.ConnectionError.JID_MALFORMAT:
+            case hClient.errors.JID_MALFORMAT:
                 error = 'JID Malformat';
                 break;
-            case hClient.ConnectionError.CONN_TIMEOUT:
+            case hClient.errors.CONN_TIMEOUT:
                 error = 'Connection timed out';
                 break;
-            case hClient.ConnectionError.AUTH_FAILED:
+            case hClient.errors.AUTH_FAILED:
                 error = 'Authentication failed';
                 break;
-            case hClient.ConnectionError.ATTACH_FAILED:
+            case hClient.errors.ATTACH_FAILED:
                 error = 'Attach failed';
                 break;
-            case hClient.ConnectionError.ALREADY_CONNECTED:
+            case hClient.errors.ALREADY_CONNECTED:
                 error = 'A connection is already opened';
                 break;
-            case hClient.ConnectionError.TECH_ERROR:
+            case hClient.errors.TECH_ERROR:
                 error = 'Technical Error: ';
                 error += msg.data.errorMsg;
                 break;
-            case hClient.ConnectionError.NOT_CONNECTED:
+            case hClient.errors.NOT_CONNECTED:
                 error = 'Not connected';
                 break;
-            case hClient.ConnectionError.CONN_PROGRESS:
+            case hClient.errors.CONN_PROGRESS:
                 error = 'A connection is already in progress';
                 break;
         }
         //console.log("status is : ", status);
         document.getElementById("status").innerHTML = JSON.stringify(status + ' : ' + error);
     }
-    else if (msg.type == 'hResult')
+    else if (msg.type.toLowerCase() == 'hresult')
         document.getElementById("fetched").innerHTML = JSON.stringify(msg.data);
-    else if (msg.context == 'message')
+    else if (msg.context.toLowerCase() == 'message')
         document.getElementById("fetched").innerHTML = msg.data.message;
 }

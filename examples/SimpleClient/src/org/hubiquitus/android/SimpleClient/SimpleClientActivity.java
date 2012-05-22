@@ -170,7 +170,7 @@ public class SimpleClientActivity extends Activity  implements HCallback{
 		       		JSONObject params = new JSONObject();
 		       		try {
 						params.put("text",hechoEditText.getText().toString());
-						HCommand cmd = new HCommand("hNode.hub.novediagroup.com", "hecho", params);
+						HCommand cmd = new HCommand("hNode.localhost", "hecho", params);
 						client.command(cmd);
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block

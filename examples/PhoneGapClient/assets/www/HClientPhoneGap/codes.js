@@ -24,8 +24,27 @@ define(
     [],
     function(){
 
-        var ConnectionStatus = {
-        	UNKNOWN : 0,
+        var types = {
+            hStatus: 'hStatus',
+            hResult: 'hResult',
+            hMessage: 'hMessage'
+        };
+
+        var errors = {
+            NO_ERROR: 0,
+            JID_MALFORMAT: 1,
+            CONN_TIMEOUT: 2,
+            AUTH_FAILED: 3,
+            ATTACH_FAILED: 4,
+            ALREADY_CONNECTED: 5,
+            TECH_ERROR : 6,
+            NOT_CONNECTED : 7,
+            CONN_PROGRESS : 8,
+            ALREADY_SUBSCRIBED: 1,
+            GET_SUBS_FAILED: 2
+        };
+
+        var statuses = {
             CONNECTING : 1,
             CONNECTED : 2,
             REATTACHING: 3,
@@ -33,8 +52,27 @@ define(
             DISCONNECTING: 5,
             DISCONNECTED: 6
         };
-        
+
+        var hResultStatus = {
+            OK : 0,
+            TECH_ERROR : 1,
+            CHAN_INACTIVE : 2,
+            NOT_CONNECTED : 3,
+            CHAN_INVALID : 4,
+            NOT_AUTHORIZED : 5,
+            MISSING_ATTR : 6,
+            INVALID_ATTR : 7,
+            ADMIN_REQUIRED : 8,
+            NOT_AVAILABLE : 9,
+            EXEC_TIMEOUT : 10
+        };
+
         //requireJS way to export
-        return ConnectionStatus;
+        return{
+            errors : errors,
+            statuses: statuses,
+            hResultStatus : hResultStatus,
+            types: types
+        }
     }
 );
