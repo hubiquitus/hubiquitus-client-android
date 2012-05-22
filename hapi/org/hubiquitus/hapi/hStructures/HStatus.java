@@ -17,15 +17,11 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package org.hubiquitus.hapi.hStructures;
 
 import org.hubiquitus.hapi.structures.HJSONSerializable;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
-
 
 /**
  * @version 0.3
@@ -34,7 +30,6 @@ import org.json.JSONObject;
 
 public class HStatus implements HJSONSerializable{
 
-	
 	private ConnectionStatus status;
 	private ConnectionError errorCode = ConnectionError.NO_ERROR;
 	private String errorMsg;

@@ -17,33 +17,50 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hubiquitus.hapi.transport;
-
-import org.hubiquitus.hapi.hStructures.ConnectionError;
-import org.hubiquitus.hapi.hStructures.ConnectionStatus;
-import org.json.JSONObject;
+package org.hubiquitus.hapi.hStructures;
 
 /**
- * 
  * @author j.desousag
  * @version 0.3
- * Interface of HTransportCallback
+ * hResult status codes. Returned on all action
+ * For more information see Hubiquitus reference
  */
 
-public interface HTransportCallback {
+public enum ResultStatus {
+	
+	NO_ERROR (0),
+	TECH_ERROR (1),
+	CHAN_INACTIVE (2),
+	NOT_CONNECTED (3),
+	CHAN_INVALID (4),
+	NOT_AUTHORIZED (5),
+	MISSING_ATTR (6),
+	INVALID_ATTR (7),
+	ADMIN_REQUIRED (8),
+	NOT_AVAILABLE (9),
+	EXEC_TIMEOUT (10);
+	
+	private int value;
+	
+	private ResultStatus(int value) {
+		this.value = value;
+	}
 	
 	/**
-	 * transport layer callback to return an update of connection status
-	 * should only return status updates on connected and disconnected
-	 * @param status connection status
-	 * @param error hapi error code
-	 * @param errorMsg low level error message
+	 * Method to get the value of ErrorCode
+	 * @return ErrorCode's value
 	 */
-	public void connectionCallback(ConnectionStatus status, ConnectionError error, String errorMsg);
+	public int value() {
+		return value;
+	}
 	
 	/**
-	 * transport layer callback to get received serialized hapi objects
-	 * @param jsonData serialized hapi object
+	 * Get constant for value
+	 * @param value
+	 * @return
 	 */
-	public void dataCallback(JSONObject jsonData); 
+	public static ResultStatus constant(int value) {
+		ResultStatus [] _values = ResultStatus.values();
+		return _values[value];
+	}
 }

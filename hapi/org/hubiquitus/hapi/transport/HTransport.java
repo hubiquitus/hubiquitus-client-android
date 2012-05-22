@@ -19,6 +19,8 @@
 
 package org.hubiquitus.hapi.transport;
 
+import org.json.JSONObject;
+
 
 /**
  * 
@@ -41,4 +43,10 @@ public interface HTransport {
 	 * transport layer disconnect
 	 */
 	public void disconnect();
+	
+	/**
+	 * Send object adding transport layer wrapping
+	 * @param object
+	 */
+	public void sendObject(JSONObject object);
 }

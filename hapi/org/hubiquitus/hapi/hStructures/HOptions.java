@@ -41,6 +41,7 @@ public class HOptions implements Cloneable {
 	private String transport = "xmpp";
 	private List<String> endpoints = null;
 	private int nbLastMessage = 10;
+	private String hserver = "hnode";
 	
 	/**
 	 * Constructor 
@@ -176,22 +177,23 @@ public class HOptions implements Cloneable {
 			this.nbLastMessage = 10;
 	}
 
-	
-	/* overrides */
-	
-	@Override
-	public String toString() {
-		return "HOption [serverHost=" + serverHost + ", serverPort="
-				+ serverPort + ", transport=" + transport + ", endpoints="
-				+ endpoints + ", nbLastMessage=" + nbLastMessage + "]";
+	public String getHserver() {
+		return hserver;
 	}
 
+	public void setHserver(String hserver) {
+		this.hserver = hserver;
+	}
+
+	/* overrides */
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
 				+ ((endpoints == null) ? 0 : endpoints.hashCode());
+		result = prime * result + ((hserver == null) ? 0 : hserver.hashCode());
 		result = prime * result + nbLastMessage;
 		result = prime * result
 				+ ((serverHost == null) ? 0 : serverHost.hashCode());
@@ -199,6 +201,14 @@ public class HOptions implements Cloneable {
 		result = prime * result
 				+ ((transport == null) ? 0 : transport.hashCode());
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "HOptions [serverHost=" + serverHost + ", serverPort="
+				+ serverPort + ", transport=" + transport + ", endpoints="
+				+ endpoints + ", nbLastMessage=" + nbLastMessage + ", hserver="
+				+ hserver + "]";
 	}
 
 	@Override
@@ -215,6 +225,11 @@ public class HOptions implements Cloneable {
 				return false;
 		} else if (!endpoints.equals(other.endpoints))
 			return false;
+		if (hserver == null) {
+			if (other.hserver != null)
+				return false;
+		} else if (!hserver.equals(other.hserver))
+			return false;
 		if (nbLastMessage != other.nbLastMessage)
 			return false;
 		if (serverHost == null) {
@@ -230,6 +245,12 @@ public class HOptions implements Cloneable {
 		} else if (!transport.equals(other.transport))
 			return false;
 		return true;
-	}	
+	}
+	
+	
+	
+	
+
+	
 
 }

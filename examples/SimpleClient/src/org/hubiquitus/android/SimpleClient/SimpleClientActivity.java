@@ -6,9 +6,12 @@ import java.util.TimerTask;
 
 import org.hubiquitus.hapi.client.HCallback;
 import org.hubiquitus.hapi.client.HClient;
+import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.structures.HJSONSerializable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -35,12 +38,14 @@ public class SimpleClientActivity extends Activity  implements HCallback{
 	private Button connectionButton;
 	private Button deconnectionButton;
 	private Button clearButton;
+	private Button hechoButton;
 	
 	private EditText loginEditText;
 	private EditText passwordEditText;
 	private EditText gatewaysEditText;
 	private EditText serverportEditText;
 	private EditText serverhostEditText;
+	private EditText hechoEditText;
 	
 	private TextView outputTextArea;
 	private RadioGroup transportRadioGroup;
@@ -59,6 +64,7 @@ public class SimpleClientActivity extends Activity  implements HCallback{
         initListenerBoutonConnection();
         initListenerBoutonDeconnection();
         initListenerBoutonClear();
+        initListenerhechoButton();
         
         client = new HClient();
     }
@@ -68,12 +74,14 @@ public class SimpleClientActivity extends Activity  implements HCallback{
     	connectionButton = (Button) findViewById(R.id.ConnectionButton);
     	deconnectionButton = (Button) findViewById(R.id.DeconnectionButton);
     	clearButton = (Button) findViewById(R.id.ClearButton);
+    	hechoButton = (Button) findViewById(R.id.hechoButton);
     	
     	loginEditText = (EditText) findViewById(R.id.loginText);
     	passwordEditText = (EditText) findViewById(R.id.passwordText);
     	gatewaysEditText = (EditText) findViewById(R.id.gatewaysText); 
     	serverportEditText = (EditText) findViewById(R.id.serverportText);
     	serverhostEditText = (EditText) findViewById(R.id.serverhostText);
+    	hechoEditText = (EditText) findViewById(R.id.hechoText);
     	
     	transportRadioGroup = (RadioGroup) findViewById(R.id.transportGroupbutton);
     	outputTextArea = (TextView) findViewById(R.id.outputView);
@@ -153,6 +161,25 @@ public class SimpleClientActivity extends Activity  implements HCallback{
 	    };
 	    clearButton.setOnClickListener(listener);
 	
+	}
+	
+	public void initListenerhechoButton() {
+		OnClickListener listener = new OnClickListener()
+	    {
+		       	public void onClick(View v) {
+		       		JSONObject params = new JSONObject();
+		       		try {
+						params.put("text",hechoEditText.getText().toString());
+						HCommand cmd = new HCommand("hNode.hub.novediagroup.com", "hecho", params);
+						client.command(cmd);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	
+	    };
+	    hechoButton.setOnClickListener(listener);
 	}
 
 	public void hCallback(final String type, final HJSONSerializable data) {

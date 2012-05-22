@@ -32,9 +32,9 @@ import java.util.regex.Pattern;
 public class JabberID {
 	
 	
-	private String username;
-	private String domain;
-	private String resource;
+	private String username = "";
+	private String domain = "";
+	private String resource = "";
 	
 	/**
 	 * constructor
@@ -56,7 +56,10 @@ public class JabberID {
 	 * @return full jid (ie : my_user@domain/resource)
 	 */
 	public String getFullJID() {
-		return this.username + "@" + this.domain + "/" + this.resource;
+		if(resource != "")
+			return this.username + "@" + this.domain + "/" + this.resource;
+		else
+			return getBareJID();
 	}
 
 	/**
@@ -65,18 +68,14 @@ public class JabberID {
 	 * @throws Exception - throw exception if invalid jid format
 	 */
 	public void setJID(String jid) throws Exception {
-		this.username = null;
-		this.domain = null;
-		this.resource = null;
-	
 		if (jid != null) {
 			Pattern pattern = Pattern.compile("^(?:([^@/<>'\"]+)@)?([^@/<>'\"]+)(?:/([^<>'\"]*))?$");
 			Matcher matcher = pattern.matcher(jid);
 			if (matcher.find() && matcher.groupCount() >= 2 && matcher.groupCount() <= 3 && matcher.group(1) != null) {
-				this.username = matcher.group(1);
-				this.domain = matcher.group(2);
+				setUsername(matcher.group(1));
+				setDomain(matcher.group(2));
 				if (matcher.groupCount() >= 3) {
-					this.resource = matcher.group(3);
+					setResource(matcher.group(3));
 				}
 			} else {
 				throw new Exception();
@@ -96,7 +95,10 @@ public class JabberID {
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		if(username != null)
+			this.username = username;
+		else 
+			this.username = "";
 	}
 
 	/**
@@ -108,7 +110,10 @@ public class JabberID {
 
 	
 	public void setDomain(String domain) {
-		this.domain = domain;
+		if(domain != null)
+			this.domain = domain;
+		else 
+			this.domain = "";
 	}
 
 	/**
@@ -119,7 +124,10 @@ public class JabberID {
 	}
 
 	public void setResource(String resource) {
-		this.resource = resource;
+		if(resource != null)
+			this.resource = resource;
+		else 
+			this.resource = "";
 	}
 
 	@Override

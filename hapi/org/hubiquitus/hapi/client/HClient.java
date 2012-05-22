@@ -19,9 +19,14 @@
 
 package org.hubiquitus.hapi.client;
 
+import java.util.GregorianCalendar;
+import java.util.Random;
+
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
+import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HOptions;
+import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.structures.JabberID;
 import org.hubiquitus.hapi.transport.HTransport;
@@ -30,6 +35,8 @@ import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketio;
 import org.hubiquitus.hapi.transport.xmpp.HTransportXMPP;
 import org.hubiquitus.hapi.util.HUtil;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.util.Log;
 
@@ -140,6 +147,7 @@ public class HClient {
 		
 		this.transportOptions.setJid(jid);
 		this.transportOptions.setPassword(password);
+		this.transportOptions.setHserver(options.getHserver());
 		
 		//by default we user server host rather than publish host if defined
 		if (options.getServerHost() != null) {
@@ -223,6 +231,32 @@ public class HClient {
 		
 		
 	}
+	
+	public String command(HCommand cmd) {
+		String reqid = null;
+		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
+			if(cmd == null) {
+				cmd = new HCommand();
+			}
+			reqid = cmd.getReqid();
+			if(reqid == null) {
+				Random rand = new Random();
+				reqid = "javaCmd:" + rand.nextInt();
+				cmd.setReqid(reqid);
+			}
+			if(cmd.getSender() == null) {
+				cmd.setSender(transportOptions.getJid().getFullJID());
+			}
+			if(cmd.getSent() == null) {
+				cmd.setSent(new GregorianCalendar());
+			}
+			transport.sendObject(cmd.toJSON());
+		} else if(callback != null){
+			HStatus hstatus = new HStatus(this.connectionStatus, ConnectionError.NOT_CONNECTED, "Can not send hCommand. Not connected");
+			callback.hCallback("hstatus", hstatus);
+		}
+		return reqid;
+	}
 
 	/* HTransportCallback functions */
 	
@@ -236,11 +270,33 @@ public class HClient {
 		 * @internal
 		 * see HTransportCallback for more informations
 		 */
+		@Override
 		public void connectionCallback(ConnectionStatus status,
 				ConnectionError error, String errorMsg) {
 			updateStatus(status, error, errorMsg);
 		}
 		
+		/**
+		 * @internal
+		 * see HTransportCallback for more information
+		 */
+		@Override
+		public void dataCallback(JSONObject jsonData) {
+			try {
+				String type = jsonData.getString("type");
+				if(type.equalsIgnoreCase("hresult")) {
+					HResult data = new HResult();
+					try {
+						data.fromJSON(jsonData.getJSONObject("data"));
+						callback.hCallback(type, data);
+					} catch (Exception e) {
+						System.out.println("erreur datacallBack : data");
+					}
+				}
+			} catch (JSONException e) {
+				System.out.println("erreur datacallBack");
+			}
+		}
 	}
 	
 }

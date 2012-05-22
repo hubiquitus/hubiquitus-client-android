@@ -235,5 +235,8 @@ public class SmackConfigureProviderManager {
 		// Attention
 		pm.addExtensionProvider("attention", "urn:xmpp:attention:0",
 				new AttentionExtension.Provider());
+		
+		// Custom provider
+		pm.addExtensionProvider("hbody", "jabber:client", new HMessageXMPP.Provider());
 	}
 }

@@ -32,9 +32,8 @@ import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportCallback;
-import org.hubiquitus.hapi.transport.HTransportOptions;
+import org.hubiquitus.hapi.transport.HTransportOptions; 
 import org.json.JSONObject;
-
 
 /**
  * 
@@ -69,7 +68,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		String endpointPath = options.getEndpointPath();
 		
 		String endpointAdress = toEndpointAdress(endpointHost, endpointPort, endpointPath);
-		
 		//add a timer to make sure it doesn't go over timeout
 		timeoutTimer = new Timer();
 		//set timer task to add a connection timeout
@@ -110,6 +108,13 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "HTransportSocketio [callback=" + callback + ", options="
+				+ options + ", socketio=" + socketio + ", connectionStatus="
+				+ connectionStatus + ", timeoutTimer=" + timeoutTimer + "]";
+	}
+
 	/**
 	 * change current status and notify delegate through callback
 	 * @param status - connection status
@@ -132,11 +137,13 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 */
 	public void disconnect() {
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
+		//synchronized (this) {
 		try {
 			socketio.disconnect();
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
+		//}
 	}
 	
 	/* helper functions */
@@ -177,7 +184,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				}
 				updateStatus(status.getStatus(), status.getErrorCode(), status.getErrorMsg());
 			} catch (Exception e) {
-				e.printStackTrace();
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
@@ -185,9 +191,27 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				socketio.disconnect();
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 			}
+		} else if (type.equals("hResult") ){
+			JSONObject data = (JSONObject)arg2[0];
+			try {
+				if (timeoutTimer != null) {
+					timeoutTimer.cancel();
+					timeoutTimer = null;
+				}
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("type", type);
+				jsonObj.put("data", data);
+				callback.dataCallback(jsonObj);
+			} catch (Exception e) {
+				if (timeoutTimer != null) {
+					timeoutTimer.cancel();
+					timeoutTimer = null;
+				}
+			}
 		}
 	}
-
+	
+	@Override
 	public void onConnect() {
 		//try to log in once connected
 		String publisher = options.getJid().getFullJID();
@@ -206,7 +230,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			//send the event
 			socketio.emit("hConnect", data);
 		} catch (Exception e) {
-			e.printStackTrace();
 			if(socketio != null) {
 				socketio.disconnect();
 			}
@@ -218,6 +241,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 	}
 
+	@Override
 	public void onDisconnect() {
 		if (timeoutTimer != null) {
 			timeoutTimer.cancel();
@@ -225,13 +249,14 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 		
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
-			//while(socketio.isConnected()) {
-			//	socketio.disconnect();
-			//}
+			/*while(socketio.isConnected()) {
+				socketio.disconnect();
+			}*/
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NO_ERROR, null);
 		}
 	}
 
+	@Override
 	public void onError(SocketIOException arg0) {
 		if (socketio != null && socketio.isConnected()) {
 			socketio.disconnect();
@@ -248,13 +273,24 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, errorMsg);
 	}
 
+	@Override
 	public void onMessage(String arg0, IOAcknowledge arg1) {
-		//Log.i("socketio", arg0);
-		
+		System.out.println("socketio" + arg0);
 	}
 
+	@Override
 	public void onMessage(JSONObject arg0, IOAcknowledge arg1) {
-		//Log.i("socketio", arg0.toString());
+		System.out.println("socketio" + arg0.toString());
+	}
+
+	@Override
+	public void sendObject(JSONObject object) {
+		if( connectionStatus == ConnectionStatus.CONNECTED) {
+			socketio.emit("hCommand",object);
+		} else {
+			System.out.println("Not connected");
+		}		
 	}
 	
 }
+
