@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.hubiquitus.hapi.client.HCallback;
+import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
-import org.hubiquitus.hapi.structures.HJSONSerializable;
+import org.hubiquitus.hapi.structures.HJsonObj;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +25,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class SimpleClientActivity extends Activity  implements HCallback{
+public class SimpleClientActivity extends Activity  implements HDelegate{
     /** Called when the activity is first created. */
 	
 	private String login;
@@ -182,7 +182,7 @@ public class SimpleClientActivity extends Activity  implements HCallback{
 	    hechoButton.setOnClickListener(listener);
 	}
 
-	public void hCallback(final String type, final HJSONSerializable data) {
+	public void hCallback(final String type, final HJsonObj data) {
 		Log.i("DEBUG", "callback for type " + type + " with data " + data.toString());
 		runOnUiThread(new Runnable() {
 			

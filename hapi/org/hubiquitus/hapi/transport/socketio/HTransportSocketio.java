@@ -108,13 +108,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 	}
 	
-	@Override
-	public String toString() {
-		return "HTransportSocketio [callback=" + callback + ", options="
-				+ options + ", socketio=" + socketio + ", connectionStatus="
-				+ connectionStatus + ", timeoutTimer=" + timeoutTimer + "]";
-	}
-
 	/**
 	 * change current status and notify delegate through callback
 	 * @param status - connection status
@@ -137,13 +130,11 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 */
 	public void disconnect() {
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
-		//synchronized (this) {
 		try {
 			socketio.disconnect();
 		} catch (Exception e) {
-			
 		}
-		//}
+		
 	}
 	
 	/* helper functions */
@@ -171,6 +162,15 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		return endpointAdress;
 	}
 
+	@Override
+	public void sendObject(JSONObject object) {
+		if( connectionStatus == ConnectionStatus.CONNECTED) {
+			socketio.emit("hCommand",object);
+		} else {
+			System.out.println("Not connected");
+		}		
+	}
+	
 	/* Socket io  delegate callback*/
 	public void on(String type, IOAcknowledge arg1, Object... arg2) {
 		//switch for type
@@ -184,6 +184,8 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				}
 				updateStatus(status.getStatus(), status.getErrorCode(), status.getErrorMsg());
 			} catch (Exception e) {
+				e.printStackTrace();
+				
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
@@ -191,17 +193,14 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				socketio.disconnect();
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 			}
-		} else if (type.equals("hResult") ){
+		} else {
 			JSONObject data = (JSONObject)arg2[0];
 			try {
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
 				}
-				JSONObject jsonObj = new JSONObject();
-				jsonObj.put("type", type);
-				jsonObj.put("data", data);
-				callback.dataCallback(jsonObj);
+				callback.dataCallback(type, data);
 			} catch (Exception e) {
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
@@ -249,9 +248,9 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 		
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
-			/*while(socketio.isConnected()) {
-				socketio.disconnect();
-			}*/
+//			while(socketio.isConnected()) {
+//				socketio.disconnect();
+//			}
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NO_ERROR, null);
 		}
 	}
@@ -284,13 +283,11 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	}
 
 	@Override
-	public void sendObject(JSONObject object) {
-		if( connectionStatus == ConnectionStatus.CONNECTED) {
-			socketio.emit("hCommand",object);
-		} else {
-			System.out.println("Not connected");
-		}		
+	public String toString() {
+		return "HTransportSocketio [callback=" + callback + ", options="
+				+ options + ", socketio=" + socketio + ", connectionStatus="
+				+ connectionStatus + ", timeoutTimer=" + timeoutTimer + "]";
 	}
-	
+
 }
 

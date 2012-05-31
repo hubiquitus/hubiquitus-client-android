@@ -15,7 +15,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
- */
+ */ 
 
 package org.hubiquitus.hapi.transport.xmpp;
 
@@ -40,16 +40,13 @@ import org.jivesoftware.smack.packet.Packet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 
 /**
- * 
  * @version 0.3
  * HTransportXMPP is the xmpp transport layer of the hubiquitus hAPI client
  */
 
-public class HTransportXMPP implements HTransport, ConnectionListener, PacketListener {
+public class HTransportXMPP implements HTransport, ConnectionListener,PacketListener {
 
 	private HTransportCallback callback = null;
 	private HTransportOptions options = null;
@@ -60,8 +57,8 @@ public class HTransportXMPP implements HTransport, ConnectionListener, PacketLis
 	
 	public HTransportXMPP() {
 		//patch for android to add xmpp providers
-		SmackConfigureProviderManager.configureProviderManager();
 		SmackConfiguration.setPacketReplyTimeout(10000);
+		SmackConfigureProviderManager.configureProviderManager();
 	};	
 	
 	/**
@@ -124,8 +121,6 @@ public class HTransportXMPP implements HTransport, ConnectionListener, PacketLis
 							PacketFilter packetFilter = new FromContainsFilter(localOptions.getHserverService());
 							connection.addPacketListener(outerClass,packetFilter);
 						} catch(Exception e) { //login failed
-							Log.e("stackTrace", e.toString());
-							e.printStackTrace();
 							boolean wasConnected = false;
 							if (connection.isConnected()) {
 								wasConnected = true;
@@ -140,7 +135,6 @@ public class HTransportXMPP implements HTransport, ConnectionListener, PacketLis
 						}
 						
 					} catch(Exception e) { //in case connection failed
-						e.printStackTrace();
 						connection = null;
 						updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR , e.getMessage());
 					}	
@@ -152,7 +146,6 @@ public class HTransportXMPP implements HTransport, ConnectionListener, PacketLis
 	    	if (connection.isConnected()) {
 				connection.disconnect();
 			}
-	    	Log.e("stackTrace", e.toString());
 	    	//e.printStackTrace();
 	    	this.connection = null;
 	    	this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
@@ -223,7 +216,6 @@ public class HTransportXMPP implements HTransport, ConnectionListener, PacketLis
 					}
 				}).start();
 		    } catch(Exception e) {
-		    	Log.e("stacktrace", e.toString());
 		    	this.connection = null;
 		    	this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 		    }
@@ -244,15 +236,12 @@ public class HTransportXMPP implements HTransport, ConnectionListener, PacketLis
 
 	@Override
 	public void processPacket(Packet receivePacket) {
-		JSONObject result = new JSONObject();
 		if(receivePacket.getClass().equals(Message.class)) {
 			HMessageXMPP packetExtention = (HMessageXMPP)receivePacket.getExtension("hbody","");
 			if(packetExtention != null) {
 				try {
 					JSONObject jsonObj = new JSONObject(packetExtention.getContent());
-					result.put("type",packetExtention.getType());
-					result.put("data", jsonObj);
-					callback.dataCallback(result);
+					callback.dataCallback(packetExtention.getType(), jsonObj);
 				} catch (JSONException e) {
 					System.out.println("erreur lors de la reception : JSONObjectMalformat");
 				}
@@ -263,10 +252,12 @@ public class HTransportXMPP implements HTransport, ConnectionListener, PacketLis
 	}
 	
 	/* Connection listener interface */
+	@Override
 	public void connectionClosed() {
-		//this.updateStatus(ConnectionStatus.DISCONNECTED, null, null);
+		
 	}
 
+	@Override
 	public void connectionClosedOnError(Exception e) {
 		this.connectionThread.interrupt();
 		this.connectionThread = null;
@@ -274,19 +265,21 @@ public class HTransportXMPP implements HTransport, ConnectionListener, PacketLis
 		this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 		
 	}
-
+	
 	//as we use our reconnection system, this shouldn't be called
+	@Override
 	public void reconnectingIn(int arg0) {
-		Log.i("DEBUG", "reconnection in progress");
 	}
 
 	//as we use our reconnection system, this shouldn't be called
+	@Override
 	public void reconnectionFailed(Exception arg0) {
-		Log.i("DEBUG", "reconnection failed");
 	}
 
 	//as we use our reconnection system, this shouldn't be called
+	@Override
 	public void reconnectionSuccessful() {
-		Log.i("DEBUG", "reconnection successful");
 	}
+
+	
 }

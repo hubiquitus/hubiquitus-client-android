@@ -20,7 +20,7 @@
 
 package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.structures.HJSONSerializable;
+import org.hubiquitus.hapi.structures.HJsonObj;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,98 +30,134 @@ import org.json.JSONObject;
  * hAPI result. For more info, see Hubiquitus reference
  */
 
-public class HResult implements HJSONSerializable {
+public class HResult implements HJsonObj {
 	
-	private String cmd = null;
-	private String reqid = null;
-	private ResultStatus status = null;
-	private Object result = null;
+	private JSONObject hresult;
 	
 	public HResult() {	}
 	
-	public HResult(String reqid, String cmd, Object result) {
-		this.reqid = reqid;
-		this.cmd = cmd;
-		this.result = result;
+	public HResult(String reqid, String cmd, HJsonObj result) {
+		setReqid(reqid);
+		setCmd(cmd);
+		setResult(result);
 	}
 	
 	public HResult(JSONObject jsonObj) {
-		try {
-			this.fromJSON(jsonObj);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("erreur HCommand fromJSON");
-		}
+		this.fromJSON(jsonObj);
 	}
 	
-	@Override
-	public String toString() {
-		return "HResult [cmd=" + cmd + ", reqid=" + reqid + ", status="
-				+ status + ", result=" + result + "]";
-	}
-
 	public JSONObject toJSON() {
-		JSONObject jsonObj = new JSONObject();
-		
-		try {
-			jsonObj.put("cmd", this.cmd);
-			jsonObj.put("requid",this.reqid);
-			jsonObj.put("status",this.status.value());
-			jsonObj.put("result",this.result);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			jsonObj = null;
-		}
-		
-		return jsonObj;
+		return this.hresult;
 	}
 	
-	public void fromJSON(JSONObject jsonObj) throws Exception {
-		try {
-			if (jsonObj.has("cmd") && jsonObj.has("reqid") && jsonObj.has("status")) {
-				this.cmd = jsonObj.getString("cmd");
-				this.reqid = jsonObj.getString("reqid");
-				this.result = jsonObj.get("result");
-				if(jsonObj.has("status")) {
-					this.status = ResultStatus.constant(jsonObj.getInt("status"));
-				}
-			} else {
-				throw new Exception(this.getClass().toString() + " JSon object mal formated");
-			}
-		} catch (Exception e) {
-			throw new Exception(this.getClass().toString() + " JSon object mal formated : " + e.getMessage());
-		}	
+	public String getHType() {
+		return "hresult";
+	}
+	
+	public void fromJSON(JSONObject jsonObj) {
+		if( jsonObj != null) {
+			this.hresult = jsonObj;
+		} else {
+			System.out.println("erreur hresult");
+		}
 	}
 	
 	public String getCmd() {
+		String cmd;
+		try {
+			cmd = hresult.getString("cmd");
+		} catch (JSONException e) {
+			cmd = null;
+		}
 		return cmd;
 	}
 
 	public void setCmd(String cmd) {
-		this.cmd = cmd;
+		try {
+			if(cmd == null) {
+				hresult.remove("cmd");
+			} else {
+				hresult.put("cmd", cmd);
+			}
+		} catch (JSONException e) {
+		}
 	}
 
 	public String getReqid() {
+		String reqid;
+		try {
+			reqid = hresult.getString("reqid");
+		} catch (JSONException e) {
+			reqid = null;
+		}
 		return reqid;
 	}
 
 	public void setReqid(String reqid) {
-		this.reqid = reqid;
+		try {
+			if(reqid == null) {
+				hresult.remove("reqid");
+			} else {
+				hresult.put("reqid", reqid);
+			}
+		} catch (JSONException e) {
+		}
 	}
 
 	public ResultStatus getStatus() {
-		return status;
+		ResultStatus reqid;
+		try {
+			reqid = ResultStatus.constant(hresult.getInt("status"));
+		} catch (Exception e1) {
+			reqid = null;
+		}
+		return reqid;
 	}
 
 	public void setStatus(ResultStatus status) {
-		this.status = status;
+		try {
+			if(status == null) {
+				hresult.remove("status");
+			} else {
+				hresult.put("status", status.value());
+			}
+		} catch (JSONException e) {
+		}
 	}
 
 	public Object getResult() {
+		HJsonObj result;
+		try {
+			result = (HJsonObj) hresult.get("result");
+		} catch (JSONException e) {
+			result = null;
+		}
 		return result;
 	}
 
-	public void setResult(Object result) {
-		this.result = result;
+	public void setResult(HJsonObj result) {
+		try {
+			if(result == null) {
+				hresult.remove("result");
+			} else {
+				hresult.put("result", result);
+			}
+		} catch (JSONException e) {
+		}
+	}
+
+	@Override
+	public String toString() {
+		return hresult.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return hresult.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return hresult.hashCode();
 	}
 }

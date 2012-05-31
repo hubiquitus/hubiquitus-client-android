@@ -34,7 +34,6 @@ import org.json.JSONObject;
  */
 
 public class HOptions implements Cloneable {
-
 	
 	private String serverHost = null;
 	private int serverPort = 5222;
@@ -77,10 +76,6 @@ public class HOptions implements Cloneable {
 			
 			if (jsonObj.has("nbLastMessage")) {
 				setNbLastMessage(jsonObj.getInt("nbLastMessage"));
-			}
-			
-			if (jsonObj.has("hserver")) {
-				setHserver(jsonObj.getString("hserver"));
 			}
 			
 		} catch (JSONException e) {
@@ -250,11 +245,4 @@ public class HOptions implements Cloneable {
 			return false;
 		return true;
 	}
-	
-	
-	
-	
-
-	
-
 }

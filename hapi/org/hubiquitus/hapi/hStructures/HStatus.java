@@ -19,7 +19,7 @@
 
 package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.structures.HJSONSerializable;
+import org.hubiquitus.hapi.structures.HJsonObj;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,12 +28,10 @@ import org.json.JSONObject;
  * This structure describe the connection status
  */
 
-public class HStatus implements HJSONSerializable{
+public class HStatus implements HJsonObj{
 
-	private ConnectionStatus status;
-	private ConnectionError errorCode = ConnectionError.NO_ERROR;
-	private String errorMsg;
-	
+	private JSONObject hstatus = new JSONObject();
+		
 	/**
 	 * Constructor 
 	 */
@@ -49,9 +47,9 @@ public class HStatus implements HJSONSerializable{
 	 * @param errorMsg
 	 */
 	public HStatus(ConnectionStatus status ,ConnectionError errorCode ,String errorMsg) {
-		this.status = status;
-		this.errorCode = errorCode;
-		this.errorMsg = errorMsg;		
+		setStatus(status);
+		setErrorCode(errorCode);
+		setErrorMsg(errorMsg);
 	};
 
 	/**
@@ -59,46 +57,45 @@ public class HStatus implements HJSONSerializable{
 	 * @return
 	 */
 	public JSONObject toJSON() {
-		JSONObject jsonObj = new JSONObject();
-		try {
-			jsonObj.put("status", this.status.value());
-			jsonObj.put("errorCode", this.errorCode.value());
-			jsonObj.put("errorMsg", this.errorMsg);
-		} catch (JSONException e) {
-			jsonObj = null;
-			e.printStackTrace();
-		}
-		
-		return jsonObj;
+		return hstatus;
 	}
 	
-	public void fromJSON(JSONObject jsonObj) throws Exception {
-		try {
-			if (jsonObj.has("status") && jsonObj.has("errorCode")) {
-				int jsonStatus = jsonObj.getInt("status");
-				int jsonErrorCode = jsonObj.getInt("errorCode");
-				
-				this.status = ConnectionStatus.constant(jsonStatus);
-				this.errorCode = ConnectionError.constant(jsonErrorCode);
-			} else {
-				throw new Exception(this.getClass().toString() + " JSon object mal formated");
-			}
-		} catch (Exception e) {
-			throw new Exception(this.getClass().toString() + " JSon object mal formated : " + e.getMessage());
-		}	
+	public void fromJSON(JSONObject jsonObj) {
+		if(jsonObj != null) {
+			this.hstatus = jsonObj; 
+		} else {
+			System.out.println("erreur fromJSON");
+		}
 	}
 	
 	/* Getters & Setters */
 
+	public String getHType() {
+		return "hstatus";
+	}
+	
 	/**
 	 * Connection status
 	 */
 	public ConnectionStatus getStatus() {
+		ConnectionStatus status;
+		try {
+			status = ConnectionStatus.constant(hstatus.getInt("status"));
+		} catch (Exception e) {
+			status = null;			
+		}
 		return status;
 	}
 
 	public void setStatus(ConnectionStatus status) {
-		this.status = status;
+		try {
+			if(status == null) {
+				hstatus.remove("status");
+			} else {
+				hstatus.put("status", status.value());
+			}
+		} catch (JSONException e) {
+		}
 	}
 
 	/**
@@ -106,17 +103,25 @@ public class HStatus implements HJSONSerializable{
 	 * Valid only if status = error
 	 */
 	public ConnectionError getErrorCode() {
+		ConnectionError errorCode;
+		try {
+			errorCode = ConnectionError.constant(hstatus.getInt("errorCode"));
+		} catch (Exception e) {
+			errorCode = null;
+		}
 		return errorCode;
 	}
 
 	
 	public void setErrorCode(ConnectionError errorCode) {
-		if(errorCode != null) {
-			this.errorCode = errorCode;	
-		} else {
-			this.errorCode = ConnectionError.NO_ERROR;
+		try {
+			if(errorCode == null) {
+				hstatus.remove("errorCode");
+			} else {
+				hstatus.put("errorCode", errorCode.value());
+			}
+		} catch (JSONException e) {
 		}
-		
 	}
 	
 	/**
@@ -125,51 +130,38 @@ public class HStatus implements HJSONSerializable{
 	 * Should only be used for debug
 	 */
 	public String getErrorMsg() {
+		String errorMsg;
+		try {
+			errorMsg = hstatus.getString("errorMsg");
+		} catch (JSONException e) {
+			errorMsg = null;
+		}
 		return errorMsg;
 	}
 
 	public void setErrorMsg(String errorMsg) {
-		this.errorMsg = errorMsg;
+		try {
+			if(errorMsg == null) {
+				hstatus.remove("errorMsg");
+			} else {
+				hstatus.put("errorMsg", errorMsg);
+			}
+		} catch (JSONException e) {
+		}
 	}
 	
-	/* override section */
 	@Override
 	public String toString() {
-		return "HStatus [status=" + status + ", errorCode=" + errorCode
-				+ ", errorMsg=" + errorMsg + "]";
+		return hstatus.toString();
 	}
 	
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((errorCode == null) ? 0 : errorCode.hashCode());
-		result = prime * result
-				+ ((errorMsg == null) ? 0 : errorMsg.hashCode());
-		result = prime * result + ((status == null) ? 0 : status.hashCode());
-		return result;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		HStatus other = (HStatus) obj;
-		if (errorCode != other.errorCode)
-			return false;
-		if (errorMsg == null) {
-			if (other.errorMsg != null)
-				return false;
-		} else if (!errorMsg.equals(other.errorMsg))
-			return false;
-		if (status != other.status)
-			return false;
-		return true;
+		return hstatus.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return hstatus.hashCode();
 	}
 }

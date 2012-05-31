@@ -19,7 +19,7 @@
 
 package org.hubiquitus.hapi.client;
 
-import org.hubiquitus.hapi.structures.HJSONSerializable;
+import org.hubiquitus.hapi.structures.HJsonObj;
 
 /**
  * 
@@ -28,7 +28,7 @@ import org.hubiquitus.hapi.structures.HJSONSerializable;
  * Interface HCallback
  */
 
-public interface HCallback {
+public interface HDelegate {
 	
 	/**
 	 * hAPI callback.
@@ -36,6 +36,6 @@ public interface HCallback {
 	 * @param type - hubiquitus structure (hresult, hstatus, hmessage...)
 	 * @param data - the structure defined by the type
 	 */
-	public void hCallback(String type, HJSONSerializable data);
+	public void hDelegate(String type, HJsonObj data);
 
 }

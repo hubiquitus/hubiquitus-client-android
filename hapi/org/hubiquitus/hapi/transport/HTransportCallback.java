@@ -45,5 +45,5 @@ public interface HTransportCallback {
 	 * transport layer callback to get received serialized hapi objects
 	 * @param jsonData serialized hapi object
 	 */
-	public void dataCallback(JSONObject jsonData); 
+	public void dataCallback(String type, JSONObject jsonData); 
 }

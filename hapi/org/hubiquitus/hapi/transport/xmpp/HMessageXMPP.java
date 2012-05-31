@@ -76,9 +76,9 @@ public class HMessageXMPP implements PacketExtension{
 		StringBuilder localStringBuilder = new StringBuilder();
 		
 		if( type != null) {
-		    localStringBuilder.append("<").append("hbody").append(" type=\"").append(getType()).append("\">");
+		    localStringBuilder.append("<hbody type=\"").append(getType()).append("\">");
 		    localStringBuilder.append(getContent());
-			localStringBuilder.append("</").append("hbody").append('>');
+			localStringBuilder.append("</hbody>");
 		} else {
 			System.out.println("Should define a type for Message's body");
 		}

@@ -26,7 +26,6 @@ package org.hubiquitus.hapi.hStructures;
  * For more information see Hubiquitus reference
  */
 
-
 public enum ConnectionError {
 	NO_ERROR(0),
 	JID_MALFORMAT(1),

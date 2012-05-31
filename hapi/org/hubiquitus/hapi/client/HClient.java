@@ -19,7 +19,6 @@
 
 package org.hubiquitus.hapi.client;
 
-import java.util.GregorianCalendar;
 import java.util.Random;
 
 import org.hubiquitus.hapi.hStructures.ConnectionError;
@@ -28,17 +27,17 @@ import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
+import org.hubiquitus.hapi.hStructures.ResultStatus;
 import org.hubiquitus.hapi.structures.JabberID;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportCallback;
 import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketio;
 import org.hubiquitus.hapi.transport.xmpp.HTransportXMPP;
+import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.hubiquitus.hapi.util.HUtil;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
 
 /**
  * @author j.desousag
@@ -52,8 +51,9 @@ public class HClient {
 	@SuppressWarnings("unused")
 	private HOptions options = null;
 	private HTransportOptions transportOptions = null;
-	private HCallback callback = null;
+	private HDelegate callback = null;
 	private HTransport transport;
+	
 	private TransportCallback transportCallback = new TransportCallback();
 	
 	public HClient() {
@@ -68,7 +68,7 @@ public class HClient {
 	 * @param callback - client callback to get api notifications
 	 * @param options
 	 */
-	public void connect(String publisher, String password, HCallback callback, HOptions options) {
+	public void connect(String publisher, String password, HDelegate callback, HOptions options) {
 		boolean shouldConnect = false;
 		boolean connInProgress = false;
 		boolean disconInProgress = false;
@@ -99,8 +99,6 @@ public class HClient {
 				this.fillHTransportOptions(publisher, password, options);
 			} catch (Exception e) { 
 				//stop connecting if filling error
-				e.printStackTrace();
-				Log.d("HClient", e.toString());
 				this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.JID_MALFORMAT, e.getMessage());
 				return;
 			}
@@ -113,14 +111,12 @@ public class HClient {
 				if (this.transport == null || (this.transport.getClass() != HTransportSocketio.class)) {
 					this.transport = new HTransportSocketio();
 				}
-				
-				this.transport.connect(this.transportCallback, this.transportOptions);
+				this.transport.connect(transportCallback, this.transportOptions);
 			} else {
 				/*if (this.transport != null) { //check if other transport mode connect
 					this.transport.disconnect();
 				}*/
 				this.transport = new HTransportXMPP();
-				
 				this.transport.connect(transportCallback, this.transportOptions);
 			}
 		} else {
@@ -157,7 +153,6 @@ public class HClient {
 		}
 		
 		this.transportOptions.setServerPort(options.getServerPort());
-		
 		//for endpoints, pick one randomly and fill htransport options
 		if (options.getEndpoints().size() > 0) {
 			int endpointIndex = HUtil.pickIndex(options.getEndpoints()); 
@@ -174,6 +169,7 @@ public class HClient {
 	}
 	
 	/**
+	 * @internal
 	 * change current status and notify delegate through callback
 	 * @param status - connection status
 	 * @param error - error code
@@ -189,7 +185,7 @@ public class HClient {
 			hstatus.setErrorMsg(errorMsg);
 			
 			try {
-				callback.hCallback("hStatus", hstatus);
+				callback.hDelegate("hstatus", hstatus);
 			} catch(Exception e) {
 			}
 			
@@ -197,7 +193,7 @@ public class HClient {
 				callback = null;
 			}
 		} else {
-			Log.d("Error", (new NullPointerException("Error : " + this.getClass().getName() + " requires a callback")).toString());
+			System.out.println("Error : " + this.getClass().getName() + " requires a callback");
 		}
 	}
 	
@@ -210,7 +206,6 @@ public class HClient {
 		synchronized (this) {
 			if (this.connectionStatus == ConnectionStatus.CONNECTED) {
 				shouldDisconnect = true;
-				
 				//update connection status
 				connectionStatus = ConnectionStatus.DISCONNECTING;
 			} else if(this.connectionStatus == ConnectionStatus.CONNECTING) {
@@ -231,7 +226,7 @@ public class HClient {
 		
 		
 	}
-	
+
 	public String command(HCommand cmd) {
 		String reqid = null;
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
@@ -247,19 +242,36 @@ public class HClient {
 			if(cmd.getSender() == null) {
 				cmd.setSender(transportOptions.getJid().getFullJID());
 			}
-			if(cmd.getSent() == null) {
-				cmd.setSent(new GregorianCalendar());
+			
+			if(cmd.getEntity() != null) {
+				transport.sendObject(cmd.toJSON());
+			} else {
+				final HCommand command = cmd;
+				(new Thread(new Runnable() {
+					public void run() {
+						HJsonDictionnary obj = new HJsonDictionnary(); 
+						obj.put("errorMsg", "Entity not found");
+						HResult hresult = new HResult(command.getReqid(),command.getCmd(),obj);
+						hresult.setStatus(ResultStatus.MISSING_ATTR);
+						callback.hDelegate("hresult", hresult);
+					}
+				})).start();
 			}
-			transport.sendObject(cmd.toJSON());
 		} else if(callback != null){
-			HStatus hstatus = new HStatus(this.connectionStatus, ConnectionError.NOT_CONNECTED, "Can not send hCommand. Not connected");
-			callback.hCallback("hstatus", hstatus);
+			(new Thread(new Runnable() {
+				public void run() {
+					HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not send hCommand. Not connected");
+					callback.hDelegate("hstatus", hstatus);
+				}
+			})).start();
+			
+			
 		}
 		return reqid;
 	}
-
-	/* HTransportCallback functions */
 	
+	/* HTransportCallback functions */
+
 	/**
 	 * @internal
 	 * Class used to get callbacks from transport layer.
@@ -270,33 +282,28 @@ public class HClient {
 		 * @internal
 		 * see HTransportCallback for more informations
 		 */
-		@Override
 		public void connectionCallback(ConnectionStatus status,
 				ConnectionError error, String errorMsg) {
 			updateStatus(status, error, errorMsg);
 		}
-		
+
 		/**
 		 * @internal
 		 * see HTransportCallback for more information
 		 */
 		@Override
-		public void dataCallback(JSONObject jsonData) {
+		public void dataCallback(String type, JSONObject jsonData) {
 			try {
-				String type = jsonData.getString("type");
 				if(type.equalsIgnoreCase("hresult")) {
-					HResult data = new HResult();
-					try {
-						data.fromJSON(jsonData.getJSONObject("data"));
-						callback.hCallback(type, data);
-					} catch (Exception e) {
-						System.out.println("erreur datacallBack : data");
-					}
+					callback.hDelegate(type, new HResult(jsonData));
+				} else {
+					callback.hDelegate(type, new HJsonDictionnary(jsonData));
 				}
-			} catch (JSONException e) {
+			} catch (Exception e) {
 				System.out.println("erreur datacallBack");
 			}
 		}
+
 	}
-	
+
 }
