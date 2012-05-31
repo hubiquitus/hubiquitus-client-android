@@ -220,6 +220,19 @@ public class HClient {
 		return this.command(cmd);
 	}
 	
+	/**
+	 * Demands the server an unsubscription to the channel id.
+	 * The hAPI checks the current publisher’s subscriptions and if he is subscribed performs a hCommand of type hunsubscribe.
+	 * @param chid - channel id
+	 * @return request id
+	 */
+	public String Unsubscribe(String chid) {
+		HJsonDictionnary params = new HJsonDictionnary();
+		params.put("chid", chid);
+		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hunsubscribe", params);
+		return this.command(cmd);
+	}
+	
 	/* HTransportCallback functions */
 
 	/**
