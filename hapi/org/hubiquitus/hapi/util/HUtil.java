@@ -96,4 +96,13 @@ public class HUtil {
 		
 		return path;
 	}
+	
+	/**
+	 * @params hserver
+	 * @params domain
+	 * @return HServer Jid
+	 */
+	public static String getHserverJid(String hserver, String domain) {
+		return hserver + "." + domain; 
+	}
 }

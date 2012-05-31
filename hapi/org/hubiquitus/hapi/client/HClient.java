@@ -175,6 +175,9 @@ public class HClient {
 			if(cmd.getSender() == null) {
 				cmd.setSender(transportOptions.getJid().getFullJID());
 			}
+			if(cmd.getTransient() == null) {
+				cmd.setTransient(true);
+			}
 			
 			if(cmd.getEntity() != null) {
 				transport.sendObject(cmd.toJSON());
@@ -201,6 +204,20 @@ public class HClient {
 			
 		}
 		return reqid;
+	}
+	
+	/**
+	 * Demands the server a subscription to the channel id.
+	 * The hAPI performs a hCommand of type hsubscribe.
+	 * The server will check if not already subscribed and if authorized and subscribe him.
+	 * @param chid - channel id
+	 * @return request id
+	 */
+	public String Subscribe(String chid) {
+		HJsonDictionnary params = new HJsonDictionnary();
+		params.put("chid", chid);
+		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hsubscribe", params);
+		return this.command(cmd);
 	}
 	
 	/* HTransportCallback functions */
@@ -305,7 +322,7 @@ public class HClient {
 				System.out.println("erreur datacallBack");
 			}
 		}
-
 	}
 
+	
 }

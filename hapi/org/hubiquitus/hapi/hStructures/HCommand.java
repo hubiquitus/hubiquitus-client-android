@@ -41,7 +41,7 @@ public class HCommand implements HJsonObj {
 		setTransient(true);
 	}
 	
-	public HCommand(String entity, String cmd, JSONObject params) {
+	public HCommand(String entity, String cmd, HJsonObj params) {
 		this();
 		setEntity(entity);
 		setCmd(cmd);
@@ -239,17 +239,17 @@ public class HCommand implements HJsonObj {
 	/**
 	 * @return params throws to the hserver. NULL if undefined
 	 */
-	public JSONObject getParams() {
-		JSONObject params;
+	public HJsonObj getParams() {
+		HJsonObj params;
 		try {
-			params = (JSONObject) hcommand.get("params");
+			params = (HJsonObj) hcommand.get("params");
 		} catch (JSONException e) {
 			params = null;
 		}
 		return params;
 	}
 
-	public void setParams(JSONObject params) {
+	public void setParams(HJsonObj params) {
 		try {
 			if(params == null) {
 				hcommand.remove("params");
