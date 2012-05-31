@@ -19,11 +19,13 @@
 
 package org.hubiquitus.hapi.client;
 
+import java.util.List;
 import java.util.Random;
 
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HCommand;
+import org.hubiquitus.hapi.hStructures.HConv;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HMessageOption;
@@ -325,6 +327,23 @@ public class HClient {
 		hmessage.setPublisher(transportOptions.getJid().getBareJID());
 		hmessage.setHeaders(options.getHeaders());
 		hmessage.setPayload(payload);
+		return hmessage;
+	}
+	
+	/**
+	 * Helper to create hconv
+	 * @param chid - channel id
+	 * @param topic
+	 * @param participants
+	 * @param options
+	 * @return hmessage
+	 */
+	public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOption options) {
+		HMessage hmessage = new HMessage();
+		HConv hconv = new HConv();
+		hconv.setTopic(topic);
+		hconv.setParticipants(participants);
+		hmessage = buildMessage(chid, "hconv", hconv, options);
 		return hmessage;
 	}
 	/* HTransportCallback functions */

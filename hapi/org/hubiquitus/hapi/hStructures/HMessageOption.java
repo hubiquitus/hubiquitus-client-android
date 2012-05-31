@@ -22,6 +22,11 @@ package org.hubiquitus.hapi.hStructures;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * @version 0.3
+ * hAPI MessageOption. For more info, see Hubiquitus reference
+ */
+
 public class HMessageOption {
 	
 	private String convid = null;

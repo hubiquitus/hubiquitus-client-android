@@ -120,14 +120,14 @@ public class HConv implements HJsonObj{
 		return participants;
 	}
 
-	public void setParticipants(List<HJsonObj> participants) {
+	public void setParticipants(List<String> participants) {
 		try {
 			if(participants == null) {
 				hconv.remove("participants");
 			} else {
 				JSONArray participantsArray = new JSONArray();
-				for(HJsonObj participant : participants) {
-					participantsArray.put(participant.toJSON());
+				for(String participant : participants) {
+					participantsArray.put(participant);
 				}
 				hconv.put("participants", participantsArray);		
 			}
@@ -137,3 +137,4 @@ public class HConv implements HJsonObj{
 	}
 	
 }
+
