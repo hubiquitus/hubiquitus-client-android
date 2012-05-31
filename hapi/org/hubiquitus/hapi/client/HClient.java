@@ -288,7 +288,13 @@ public class HClient {
 		return this.getLastMessages(chid,-1);
 	}
 	
-	public String getSubscription() {
+	/**
+	 * Demands the server a list of the publisher’s subscriptions.	
+	 * 
+	 * Nominal response : a hCallback with a hResult will be performed when the result is available with an array of channel id.
+	 * @return request id
+	 */
+	public String getSubscriptions() {
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hgetsubscriptions", null);
 		return this.command(cmd);
 	}
