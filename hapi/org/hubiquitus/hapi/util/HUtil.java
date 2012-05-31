@@ -24,10 +24,8 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * 
- * @author j.desousag
  * @version 0.3
- * Contain some util function
+ * Contain some utils function
  */
 
 public class HUtil {
@@ -47,7 +45,7 @@ public class HUtil {
 	
 	/**
 	 * get host fragment from an endpoint
-	 * @param String
+	 * @param endpoint
 	 * @return host in the 
 	 */
 	public static String getHost(String endPoint) {
@@ -65,7 +63,7 @@ public class HUtil {
 	
 	/**
 	 * get port fragment from an endpoint
-	 * @param option
+	 * @param endpoint
 	 * @return
 	 */
 	public static int getPort(String endpoint) {
@@ -81,6 +79,11 @@ public class HUtil {
 		return port;
 	}
 	
+	/**
+	 * get path from an endpoint
+	 * @param endpoint
+	 * @return
+	 */
 	public static String getPath(String endpoint) {
 		String path = null;
 		

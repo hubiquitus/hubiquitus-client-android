@@ -20,7 +20,6 @@
 package org.hubiquitus.hapi.hStructures;
 
 /**
- * @author j.desousag
  * @version 0.3
  * hResult status codes. Returned on all action
  * For more information see Hubiquitus reference
@@ -44,8 +43,7 @@ public enum ResultStatus {
 	}
 	
 	/**
-	 * Method to get the value of ErrorCode
-	 * @return ErrorCode's value
+	 * @return int equivalent.
 	 */
 	public int value() {
 		return value;

@@ -32,30 +32,20 @@ public class HStatus implements HJsonObj{
 
 	private JSONObject hstatus = new JSONObject();
 		
-	/**
-	 * Constructor 
-	 */
 	public HStatus() {};
 	
 	public HStatus(JSONObject jsonObj) throws Exception {
 		fromJSON(jsonObj);
 	}
 	
-	/**
-	 * @param status
-	 * @param errorCode
-	 * @param errorMsg
-	 */
 	public HStatus(ConnectionStatus status ,ConnectionError errorCode ,String errorMsg) {
 		setStatus(status);
 		setErrorCode(errorCode);
 		setErrorMsg(errorMsg);
 	};
 
-	/**
-	 * convert object to json object
-	 * @return
-	 */
+	/* HJsonObj interface */
+	
 	public JSONObject toJSON() {
 		return hstatus;
 	}
@@ -68,14 +58,30 @@ public class HStatus implements HJsonObj{
 		}
 	}
 	
-	/* Getters & Setters */
-
 	public String getHType() {
 		return "hstatus";
 	}
 	
+	@Override
+	public String toString() {
+		return hstatus.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return hstatus.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return hstatus.hashCode();
+	}
+	
+	/* Getters & Setters */
+	
 	/**
-	 * Connection status
+	 * Mandatory. Connection status.
+	 * @return status. NULL if undefined
 	 */
 	public ConnectionStatus getStatus() {
 		ConnectionStatus status;
@@ -99,8 +105,8 @@ public class HStatus implements HJsonObj{
 	}
 
 	/**
-	 * Error code. For more info, see Hubiquitus Ref
-	 * Valid only if status = error
+	 * Mandatory. Valid only if status = error
+	 * @return error code. NULL if undefined
 	 */
 	public ConnectionError getErrorCode() {
 		ConnectionError errorCode;
@@ -125,9 +131,9 @@ public class HStatus implements HJsonObj{
 	}
 	
 	/**
-	 * Error message
-	 * Platform dependent (low level layer messages)
+	 * Error message. Platform dependent (low level layer messages)
 	 * Should only be used for debug
+	 * @return error message. NULL if undefined
 	 */
 	public String getErrorMsg() {
 		String errorMsg;
@@ -148,20 +154,5 @@ public class HStatus implements HJsonObj{
 			}
 		} catch (JSONException e) {
 		}
-	}
-	
-	@Override
-	public String toString() {
-		return hstatus.toString();
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		return hstatus.equals(obj);
-	}
-	
-	@Override
-	public int hashCode() {
-		return hstatus.hashCode();
 	}
 }

@@ -22,16 +22,15 @@ package org.hubiquitus.hapi.client;
 import org.hubiquitus.hapi.structures.HJsonObj;
 
 /**
- * 
- * @author j.desousag
  * @version 0.3
- * Interface HCallback
+ * Interface used to receive data from hapi.
+ * Async model is used
  */
 
 public interface HDelegate {
 	
 	/**
-	 * hAPI callback.
+	 * hAPI "callback".
 	 * called asynchronyously to notify an update
 	 * @param type - hubiquitus structure (hresult, hstatus, hmessage...)
 	 * @param data - the structure defined by the type

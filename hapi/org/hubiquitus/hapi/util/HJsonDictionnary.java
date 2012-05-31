@@ -22,6 +22,10 @@ package org.hubiquitus.hapi.util;
 import org.hubiquitus.hapi.structures.HJsonObj;
 import org.json.JSONObject;
 
+/**
+ * @version 0.3
+ * Basic implementation of HJonObj. Can be use as a dictionnary.
+ */
 public class HJsonDictionnary implements HJsonObj{
 	
 	private JSONObject jsonObj;
@@ -64,8 +68,16 @@ public class HJsonDictionnary implements HJsonObj{
 
 	@Override
 	public String getHType() {
-		return "objsimple";
+		return "hjsondictionnary";
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return jsonObj.equals(obj);
+	}
 	
+	@Override
+	public int hashCode() {
+		return jsonObj.hashCode();
+	}
 }

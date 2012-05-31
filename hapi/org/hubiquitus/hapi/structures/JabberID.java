@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author j.desousag
+ * @internal
  * @version 0.3
  *  JabberID contain the different part of the jid and some method to use it 
  *  A JabberID should look like : my_user@domain/resource
@@ -87,9 +87,6 @@ public class JabberID {
 	
 	/* Getter & setter */
 	
-	/**
-	 * username
-	 */
 	public String getUsername() {
 		return username;
 	}
@@ -101,9 +98,6 @@ public class JabberID {
 			this.username = "";
 	}
 
-	/**
-	 * domain
-	 */
 	public String getDomain() {
 		return domain;
 	}
@@ -116,9 +110,6 @@ public class JabberID {
 			this.domain = "";
 	}
 
-	/**
-	 * resource
-	 */
 	public String getResource() {
 		return this.resource;
 	}

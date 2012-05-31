@@ -28,7 +28,6 @@ import org.json.JSONObject;
 
 
 /**
- * @author j.desousag
  * @version 0.3
  * hAPI options. For more info, see Hubiquitus reference
  */
@@ -42,9 +41,6 @@ public class HOptions implements Cloneable {
 	private int nbLastMessage = 10;
 	private String hserver = "hnode";
 	
-	/**
-	 * Constructor 
-	 */
 	public HOptions() {
 		setServerHost(null);
 		setEndpoints(null);

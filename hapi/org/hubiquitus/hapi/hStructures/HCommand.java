@@ -28,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * @author j.desousag
  * @version 0.3
  * hAPI Command. For more info, see Hubiquitus reference
  */
@@ -53,12 +52,10 @@ public class HCommand implements HJsonObj {
 		this.hcommand = jsonObj;
 	}
 	
+	/* HJsonObj interface */
+	
 	public JSONObject toJSON() {
 		return this.hcommand;
-	}
-	
-	public String getHType() {
-		return "hcommand";
 	}
 	
 	public void fromJSON(JSONObject jsonObj) {
@@ -67,6 +64,31 @@ public class HCommand implements HJsonObj {
 		}
 	}
 	
+	public String getHType() {
+		return "hcommand";
+	}
+	
+	@Override
+	public String toString() {
+		return hcommand.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return hcommand.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return hcommand.hashCode();
+	}
+	
+	/* Getters & Setters */
+	
+	/**
+	 * Mandatory. Filled by the hApi.
+	 * @return reqid. NULL if undefined
+	 */
 	public String getReqid() {
 		String reqid;
 		try {
@@ -88,6 +110,10 @@ public class HCommand implements HJsonObj {
 		}
 	}
 
+	/**
+	 * Filled by the hApi if empty
+	 * @return requester jid. NULL if undefined 
+	 */
 	public String getRequester() {
 		String requester;
 		try {
@@ -109,6 +135,10 @@ public class HCommand implements HJsonObj {
 		}
 	}
 
+	/**
+	 * Mandatory. Filled by the hApi.
+	 * @return sender jid. NULL if undefined 
+	 */
 	public String getSender() {
 		String sender;
 		try {
@@ -130,6 +160,10 @@ public class HCommand implements HJsonObj {
 		}
 	}
 
+	/**
+	 * Mandatory.
+	 * @return entity jid. NULL if undefined 
+	 */
 	public String getEntity() {
 		String entity;
 		try {
@@ -151,6 +185,10 @@ public class HCommand implements HJsonObj {
 		}
 	}
 
+	/**
+	 * Mandatory. Filled by the hApi if empty
+	 * @return date of submission. NULL if undefined
+	 */
 	public Calendar getSent() {
 		Calendar sent;
 		try {
@@ -171,7 +209,11 @@ public class HCommand implements HJsonObj {
 		} catch (JSONException e) {
 		}
 	}
-
+	
+	/**
+	 * Mandatory.
+	 * @return command. NULL if undefined
+	 */
 	public String getCmd() {
 		String cmd;
 		try {
@@ -194,6 +236,9 @@ public class HCommand implements HJsonObj {
 		}
 	}
 
+	/**
+	 * @return params throws to the hserver. NULL if undefined
+	 */
 	public JSONObject getParams() {
 		JSONObject params;
 		try {
@@ -215,6 +260,9 @@ public class HCommand implements HJsonObj {
 		}
 	}
 
+	/**
+	 * @return persist message or not. NULL if undefined
+	 */
 	public Boolean getTransient() {
 		Boolean _transient;
 		try {
@@ -236,18 +284,5 @@ public class HCommand implements HJsonObj {
 		}
 	}	
 	
-	@Override
-	public String toString() {
-		return hcommand.toString();
-	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hcommand.equals(obj);
-	}
-	
-	@Override
-	public int hashCode() {
-		return hcommand.hashCode();
-	}
 }

@@ -20,9 +20,8 @@
 package org.hubiquitus.hapi.hStructures;
 
 /**
- * @author j.desousag
  * @version 0.3
- * hStatus error codes. Returned on connection failure
+ * Enumeration of different connection errors take by the client.
  * For more information see Hubiquitus reference
  */
 
@@ -44,8 +43,7 @@ public enum ConnectionError {
 	}
 	
 	/**
-	 * Method to get the value of ErrorCode
-	 * @return ErrorCode's value
+	 * @return int equivalent.
 	 */
 	public int value() {
 		return value;

@@ -33,7 +33,7 @@ import org.json.JSONObject;
 public class HResult implements HJsonObj {
 	
 	private JSONObject hresult;
-	
+		
 	public HResult() {	}
 	
 	public HResult(String reqid, String cmd, HJsonObj result) {
@@ -45,6 +45,8 @@ public class HResult implements HJsonObj {
 	public HResult(JSONObject jsonObj) {
 		this.fromJSON(jsonObj);
 	}
+	
+	/* HJsonObj interface */
 	
 	public JSONObject toJSON() {
 		return this.hresult;
@@ -62,6 +64,27 @@ public class HResult implements HJsonObj {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return hresult.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return hresult.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return hresult.hashCode();
+	}
+	
+	/* Getters & Setters */
+	
+	/**
+	 * Mandatory.
+	 * @return command. NULL if undefined
+	 */
 	public String getCmd() {
 		String cmd;
 		try {
@@ -83,6 +106,10 @@ public class HResult implements HJsonObj {
 		}
 	}
 
+	/**
+	 * Mandatory. Filled by the hApi
+	 * @return reqid. NULL if undefined
+	 */
 	public String getReqid() {
 		String reqid;
 		try {
@@ -104,6 +131,10 @@ public class HResult implements HJsonObj {
 		}
 	}
 
+	/**
+	 * Mandatory. Execution status.
+	 * @return status. NULL if undefined
+	 */
 	public ResultStatus getStatus() {
 		ResultStatus reqid;
 		try {
@@ -125,6 +156,9 @@ public class HResult implements HJsonObj {
 		}
 	}
 
+	/**
+	 * @return result of a command operation or a subscriptions operation. 
+	 */
 	public Object getResult() {
 		HJsonObj result;
 		try {
@@ -146,18 +180,5 @@ public class HResult implements HJsonObj {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return hresult.toString();
-	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hresult.equals(obj);
-	}
-	
-	@Override
-	public int hashCode() {
-		return hresult.hashCode();
-	}
 }

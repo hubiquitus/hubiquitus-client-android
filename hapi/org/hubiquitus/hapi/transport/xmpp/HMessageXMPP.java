@@ -24,11 +24,11 @@ import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- *
- * @author j.desousag
  * @version 0.3
  * Class HMessageXMPP for send/get the hCommand
+ * Smack packet extension to be able to receive messages from the hserver
  */
+
 public class HMessageXMPP implements PacketExtension{
 
 	public static final String NAMESPACE = "";
@@ -43,6 +43,8 @@ public class HMessageXMPP implements PacketExtension{
 		this.type = type;
 		this.body = body;
 	}
+	
+	/* Getters & Setters */
 	
 	public String getType() {
 		return this.type;
@@ -86,18 +88,16 @@ public class HMessageXMPP implements PacketExtension{
 	    return localStringBuilder.toString();
 	}
 	
-	public static class Provider implements PacketExtensionProvider
-		{
-	    	public PacketExtension parseExtension(XmlPullParser paramXmlPullParser) throws Exception
-	    	{
-	    		String type = paramXmlPullParser.getAttributeValue("", "type");
-	    		paramXmlPullParser.next();
-	    		String content = paramXmlPullParser.getText();
-	    		while (paramXmlPullParser.getEventType() != XmlPullParser.END_TAG) {
-	    			paramXmlPullParser.next();
-	    		}
-	    		return new HMessageXMPP(type, content);
-	    	}
-		}
-
+	public static class Provider implements PacketExtensionProvider {
+    	public PacketExtension parseExtension(XmlPullParser paramXmlPullParser) throws Exception
+    	{
+    		String type = paramXmlPullParser.getAttributeValue("", "type");
+    		paramXmlPullParser.next();
+    		String content = paramXmlPullParser.getText();
+    		while (paramXmlPullParser.getEventType() != XmlPullParser.END_TAG) {
+    			paramXmlPullParser.next();
+    		}
+    		return new HMessageXMPP(type, content);
+    	}
+	}
 }

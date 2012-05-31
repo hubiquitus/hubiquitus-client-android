@@ -21,9 +21,9 @@
 package org.hubiquitus.hapi.hStructures;
 
 /**
- * @author j.desousag
  * @version 0.3
- * Enumeration of different status of connection take by the client
+ * Enumeration of different status of connection take by the client.
+ * For more information see Hubiquitus reference
  */
 
 public enum ConnectionStatus {
@@ -41,6 +41,9 @@ public enum ConnectionStatus {
 		this.value = value;
 	}
 	
+	/**
+	 * @return int equivalent.
+	 */
 	public int value() {
 		return value;
 	}

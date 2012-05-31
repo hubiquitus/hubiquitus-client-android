@@ -40,7 +40,6 @@ import org.json.JSONObject;
 
 
 /**
- * @author j.desousag
  * @version 0.3
  * Hubiquitus client, public api
  */
@@ -62,7 +61,6 @@ public class HClient {
 
 	/**
 	 * Connect to server
-	 * 
 	 * @param publisher - user jid (ie : my_user@domain/resource)
 	 * @param password
 	 * @param callback - client callback to get api notifications
@@ -130,7 +128,85 @@ public class HClient {
 		}
 	}
 
+	public void disconnect() {
+		boolean shouldDisconnect = false;
+		boolean connectInProgress = false;
+		synchronized (this) {
+			if (this.connectionStatus == ConnectionStatus.CONNECTED) {
+				shouldDisconnect = true;
+				//update connection status
+				connectionStatus = ConnectionStatus.DISCONNECTING;
+			} else if(this.connectionStatus == ConnectionStatus.CONNECTING) {
+				connectInProgress = true;
+			}
+		}
+		
+		if(shouldDisconnect) {
+			updateStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
+			transport.disconnect();
+		} else if (connectInProgress) {
+			updateStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, "Can't disconnect while a connection is in progress");
+		} else {
+			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
+			//remove callback
+			this.callback = null;
+		}
+		
+		
+	}
+
 	/**
+	 * Used to perform a command on an hubiquitus component : a hserver or a hubot.
+	 * @param cmd - name of the command
+	 * @return reqid
+	 */
+	public String command(HCommand cmd) {
+		String reqid = null;
+		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
+			if(cmd == null) {
+				cmd = new HCommand();
+			}
+			reqid = cmd.getReqid();
+			if(reqid == null) {
+				Random rand = new Random();
+				reqid = "javaCmd:" + rand.nextInt();
+				cmd.setReqid(reqid);
+			}
+			if(cmd.getSender() == null) {
+				cmd.setSender(transportOptions.getJid().getFullJID());
+			}
+			
+			if(cmd.getEntity() != null) {
+				transport.sendObject(cmd.toJSON());
+			} else {
+				final HCommand command = cmd;
+				(new Thread(new Runnable() {
+					public void run() {
+						HJsonDictionnary obj = new HJsonDictionnary(); 
+						obj.put("errorMsg", "Entity not found");
+						HResult hresult = new HResult(command.getReqid(),command.getCmd(),obj);
+						hresult.setStatus(ResultStatus.MISSING_ATTR);
+						callback.hDelegate("hresult", hresult);
+					}
+				})).start();
+			}
+		} else if(callback != null){
+			(new Thread(new Runnable() {
+				public void run() {
+					HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not send hCommand. Not connected");
+					callback.hDelegate("hstatus", hstatus);
+				}
+			})).start();
+			
+			
+		}
+		return reqid;
+	}
+	
+	/* HTransportCallback functions */
+
+	/**
+	 * @internal
 	 * fill htransport, randomly pick an endpoint from availables endpoints.
 	 * By default it uses options server host to fill serverhost field and as fallback jid domain
 	 * @param publisher - publisher as jid format (my_user@serverhost.com/my_resource)
@@ -197,80 +273,6 @@ public class HClient {
 		}
 	}
 	
-	/**
-	 * Disconnect
-	 */
-	public void disconnect() {
-		boolean shouldDisconnect = false;
-		boolean connectInProgress = false;
-		synchronized (this) {
-			if (this.connectionStatus == ConnectionStatus.CONNECTED) {
-				shouldDisconnect = true;
-				//update connection status
-				connectionStatus = ConnectionStatus.DISCONNECTING;
-			} else if(this.connectionStatus == ConnectionStatus.CONNECTING) {
-				connectInProgress = true;
-			}
-		}
-		
-		if(shouldDisconnect) {
-			updateStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
-			transport.disconnect();
-		} else if (connectInProgress) {
-			updateStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, "Can't disconnect while a connection is in progress");
-		} else {
-			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
-			//remove callback
-			this.callback = null;
-		}
-		
-		
-	}
-
-	public String command(HCommand cmd) {
-		String reqid = null;
-		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(cmd == null) {
-				cmd = new HCommand();
-			}
-			reqid = cmd.getReqid();
-			if(reqid == null) {
-				Random rand = new Random();
-				reqid = "javaCmd:" + rand.nextInt();
-				cmd.setReqid(reqid);
-			}
-			if(cmd.getSender() == null) {
-				cmd.setSender(transportOptions.getJid().getFullJID());
-			}
-			
-			if(cmd.getEntity() != null) {
-				transport.sendObject(cmd.toJSON());
-			} else {
-				final HCommand command = cmd;
-				(new Thread(new Runnable() {
-					public void run() {
-						HJsonDictionnary obj = new HJsonDictionnary(); 
-						obj.put("errorMsg", "Entity not found");
-						HResult hresult = new HResult(command.getReqid(),command.getCmd(),obj);
-						hresult.setStatus(ResultStatus.MISSING_ATTR);
-						callback.hDelegate("hresult", hresult);
-					}
-				})).start();
-			}
-		} else if(callback != null){
-			(new Thread(new Runnable() {
-				public void run() {
-					HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not send hCommand. Not connected");
-					callback.hDelegate("hstatus", hstatus);
-				}
-			})).start();
-			
-			
-		}
-		return reqid;
-	}
-	
-	/* HTransportCallback functions */
 
 	/**
 	 * @internal

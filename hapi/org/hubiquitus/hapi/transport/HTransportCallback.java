@@ -24,8 +24,7 @@ import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.json.JSONObject;
 
 /**
- * 
- * @author j.desousag
+ * @internal
  * @version 0.3
  * Interface of HTransportCallback
  */

@@ -22,14 +22,27 @@ package org.hubiquitus.hapi.structures;
 import org.json.JSONObject;
 
 /**
+ * @version 0.3
  * JSON serializable interface for hstructures
  * Should be implemented by all hstructures
- *
  */
+
 public interface HJsonObj {
+	
+	/**	
+	 * @return Object serialize to JSon
+	 */
 	public JSONObject toJSON();
+	
+	/**
+	 * Deserialize object from Json
+	 * @param jsonObj
+	 */
 	public void fromJSON(JSONObject jsonObj);
 	
+	/**
+	 * @return Type of the HJsonObj
+	 */
 	public String getHType();
 	
 	public boolean equals(Object obj);

@@ -22,8 +22,9 @@ package org.hubiquitus.hapi.transport;
 import org.hubiquitus.hapi.structures.JabberID;
 
 /** 
+ * @internal
  * @version 0.3
- *
+ * options used for transport layers
  */
 
 public class HTransportOptions {
@@ -35,7 +36,6 @@ public class HTransportOptions {
 	private int endpointPort = 0;
 	private String endpointPath = null;
 	private String hserver = "hnode";
-	
 	
 	public HTransportOptions() {
 		super();
@@ -70,7 +70,7 @@ public class HTransportOptions {
 	}
 	
 	/**
-	 * 
+	 * @return hserver service name (by default it should be "hnode")
 	 */
 	public String getHserverService() {
 		String nodeService = null;
@@ -82,8 +82,7 @@ public class HTransportOptions {
 		return nodeService;
 	}
 	/**
-	 * user jid (ie : my_user@domain.com/resource)
-	 * @return
+	 * @return user jid (ie : my_user@domain.com/resource)
 	 */
 	public JabberID getJid() {
 		return jid;
@@ -106,8 +105,7 @@ public class HTransportOptions {
 
 
 	/**
-	 * server host (ie : localhost)
-	 * @return
+	 * @return server host (ie : localhost)
 	 */
 	public String getServerHost() {
 		return serverHost;
@@ -122,9 +120,8 @@ public class HTransportOptions {
 		}
 	}
 
-	/**
-	 * server port (ie : 5222 for xmpp)
-	 * @return
+	/** 
+	 * @return server port (ie : 5222 for xmpp)
 	 */
 	public int getServerPort() {
 		return serverPort;
@@ -137,8 +134,7 @@ public class HTransportOptions {
 
 
 	/**
-	 * endpoint host (ie : localhost)
-	 * @return
+	 * @return endpoint host (ie : localhost)
 	 */
 	public String getEndpointHost() {
 		return endpointHost;
@@ -150,8 +146,7 @@ public class HTransportOptions {
 	}
 	
 	/** 
-	 * endpoint port (ie : 8080)
-	 * @return
+	 * @return endpoint port (ie : 8080)
 	 */
 	public int getEndpointPort() {
 		return endpointPort;
@@ -163,8 +158,7 @@ public class HTransportOptions {
 	}
 
 	/**
-	 * endpoint path (ie my_path) without begin /
-	 * @return
+	 * @return endpoint path (ie my_path) without begin /
 	 */
 	public String getEndpointPath() {
 		return endpointPath;
@@ -257,7 +251,4 @@ public class HTransportOptions {
 			return false;
 		return true;
 	}
-
-	
-	
 }
