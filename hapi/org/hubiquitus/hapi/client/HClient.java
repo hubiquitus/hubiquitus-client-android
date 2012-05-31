@@ -24,6 +24,8 @@ import java.util.Random;
 
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
+import org.hubiquitus.hapi.hStructures.HAck;
+import org.hubiquitus.hapi.hStructures.HAckValue;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HConv;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
@@ -344,6 +346,23 @@ public class HClient {
 		hconv.setTopic(topic);
 		hconv.setParticipants(participants);
 		hmessage = buildMessage(chid, "hconv", hconv, options);
+		return hmessage;
+	}
+	
+	/**
+	 * Helper to create hack
+	 * @param chid - channel id
+	 * @param ackid
+	 * @param ack
+	 * @param options
+	 * @return hmessage
+	 */
+	public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOption options) {
+		HMessage hmessage = new HMessage();
+		HAck hack = new HAck();
+		hack.setAckid(ackid);
+		hack.setAck(ack);
+		hmessage = buildMessage(chid, "hack", hack, options);
 		return hmessage;
 	}
 	/* HTransportCallback functions */
