@@ -30,6 +30,7 @@ import org.hubiquitus.hapi.hStructures.HAlert;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HConv;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
+import org.hubiquitus.hapi.hStructures.HMeasure;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HMessageOption;
 import org.hubiquitus.hapi.hStructures.HOptions;
@@ -379,6 +380,23 @@ public class HClient {
 		HAlert halert = new HAlert();
 		halert.setAlert(alert);
 		hmessage = buildMessage(chid, "halert", halert, options);
+		return hmessage;
+	}
+	
+	/**
+	 * Helper to create hmeasure
+	 * @param chid - channel id
+	 * @param value
+	 * @param unit
+	 * @param options
+	 * @return hmessage
+	 */
+	public HMessage buildMeasure(String chid, String value, String unit, HMessageOption options) {
+		HMessage hmessage = new HMessage();
+		HMeasure hmeasure = new HMeasure();
+		hmeasure.setValue(value);
+		hmeasure.setUnit(unit);
+		hmessage = buildMessage(chid, "hmeasure", hmeasure, options);
 		return hmessage;
 	}
 	/* HTransportCallback functions */
