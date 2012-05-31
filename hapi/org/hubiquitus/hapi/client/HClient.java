@@ -24,6 +24,7 @@ import java.util.Random;
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HCommand;
+import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
@@ -213,7 +214,7 @@ public class HClient {
 	 * @param chid - channel id
 	 * @return request id
 	 */
-	public String Subscribe(String chid) {
+	public String subscribe(String chid) {
 		HJsonDictionnary params = new HJsonDictionnary();
 		params.put("chid", chid);
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hsubscribe", params);
@@ -226,13 +227,36 @@ public class HClient {
 	 * @param chid - channel id
 	 * @return request id
 	 */
-	public String Unsubscribe(String chid) {
+	public String unsubscribe(String chid) {
 		HJsonDictionnary params = new HJsonDictionnary();
 		params.put("chid", chid);
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hunsubscribe", params);
 		return this.command(cmd);
 	}
 	
+	/**
+	 * Perform a publish operation of the provided hMessage to a channel.
+	 * @param message
+	 * @return reqid
+	 */
+	public String publish(HMessage message) {
+		//fill mandatory fields
+		String msgid = message.getMsgid();
+		if(msgid == null) {
+			Random rand = new Random();
+			msgid = "javaCmd:" + rand.nextInt();
+			message.setMsgid(msgid);
+		}
+		
+		String convid = message.getConvid();
+		if(convid == null) {
+			message.setConvid(msgid);
+		}
+				
+		message.setConvid(convid);
+		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hpublish", message);
+		return this.command(cmd);				
+	}
 	/* HTransportCallback functions */
 
 	/**
@@ -328,6 +352,8 @@ public class HClient {
 			try {
 				if(type.equalsIgnoreCase("hresult")) {
 					callback.hDelegate(type, new HResult(jsonData));
+				} else if (type.equalsIgnoreCase("hmessage")) {
+					callback.hDelegate(type, new HMessage(jsonData));
 				} else {
 					callback.hDelegate(type, new HJsonDictionnary(jsonData));
 				}

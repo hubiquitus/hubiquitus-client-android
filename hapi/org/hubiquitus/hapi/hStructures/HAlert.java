@@ -17,72 +17,83 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hubiquitus.hapi.util;
+package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.hStructures.HJsonObj;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * @version 0.3
- * Basic implementation of HJonObj. Can be use as a dictionnary.
+ * Alert message payload
  */
-public class HJsonDictionnary implements HJsonObj{
-	
-	private JSONObject jsonObj;
 
-	public HJsonDictionnary() {
-		jsonObj = new JSONObject();
+public class HAlert implements HJsonObj{
+
+	private JSONObject halert = new JSONObject();
+		
+	public HAlert() {};
+	
+	public HAlert(JSONObject jsonObj){
+		fromJSON(jsonObj);
 	}
 	
-	public HJsonDictionnary(JSONObject jsonObj) {
-		this.fromJSON(jsonObj);
-	}
+	/* HJsonObj interface */
 	
-	public Object get(String key) {
-		Object value; 
-		try {
-			value = jsonObj.get(key);
-		} catch (Exception e) {
-			value = null;
-		}
-		return value;
-	}
-	
-	public void put(String key, Object value) {
-		try {
-			jsonObj.put(key, value);
-		} catch (Exception e) {
-			System.out.println("erreur :" + this.getClass());
-		}		
-	}
-	
-	@Override
 	public JSONObject toJSON() {
-		return jsonObj;
+		return halert;
 	}
-
-	@Override
+	
 	public void fromJSON(JSONObject jsonObj) {
-		this.jsonObj = jsonObj;		
+		if(jsonObj != null) {
+			this.halert = jsonObj; 
+		} else {
+			this.halert = new JSONObject();
+		}
 	}
-
-	@Override
+	
 	public String getHType() {
-		return "hjsondictionnary";
+		return "halert";
 	}
 	
 	@Override
 	public String toString() {
-		return "HJsonDictionnary [jsonObj=" + jsonObj.toString() + "]";
+		return halert.toString();
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
-		return jsonObj.equals(obj);
+		return halert.equals(obj);
 	}
 	
 	@Override
 	public int hashCode() {
-		return jsonObj.hashCode();
+		return halert.hashCode();
+	}
+	
+	/* Getters & Setters */
+	
+	/**
+	 * The message provided by the author to describe the alert. 
+	 * @return alert message. NULL if undefined
+	 */
+	public String getAlert() {
+		String alert;
+		try {
+			alert = halert.getString("alert");
+		} catch (Exception e) {
+			alert = null;			
+		}
+		return alert;
+	}
+
+	public void setAlert(String alert) {
+		try {
+			if(alert == null) {
+				halert.remove("alert");
+			} else {
+				halert.put("alert", alert);
+			}
+		} catch (JSONException e) {
+		}
 	}
 }

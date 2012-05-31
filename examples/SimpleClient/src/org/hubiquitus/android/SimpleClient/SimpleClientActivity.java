@@ -7,9 +7,9 @@ import java.util.TimerTask;
 import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.hStructures.HCommand;
+import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
-import org.hubiquitus.hapi.structures.HJsonObj;
 import org.hubiquitus.hapi.util.HJsonDictionnary;
 
 import android.app.Activity;

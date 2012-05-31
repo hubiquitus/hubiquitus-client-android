@@ -19,7 +19,6 @@
 
 package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.structures.HJsonObj;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +33,7 @@ public class HStatus implements HJsonObj{
 		
 	public HStatus() {};
 	
-	public HStatus(JSONObject jsonObj) throws Exception {
+	public HStatus(JSONObject jsonObj) {
 		fromJSON(jsonObj);
 	}
 	
@@ -54,7 +53,7 @@ public class HStatus implements HJsonObj{
 		if(jsonObj != null) {
 			this.hstatus = jsonObj; 
 		} else {
-			System.out.println("erreur fromJSON");
+			this.hstatus = new JSONObject();
 		}
 	}
 	

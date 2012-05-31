@@ -23,7 +23,8 @@ package org.hubiquitus.hapi.hStructures;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.hubiquitus.hapi.structures.HJsonObj;
+import org.hubiquitus.hapi.util.DateISO8601;
+import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,6 +62,8 @@ public class HCommand implements HJsonObj {
 	public void fromJSON(JSONObject jsonObj) {
 		if(jsonObj != null){
 			this.hcommand = jsonObj;
+		} else {
+			this.hcommand = new JSONObject();
 		}
 	}
 	
@@ -192,7 +195,7 @@ public class HCommand implements HJsonObj {
 	public Calendar getSent() {
 		Calendar sent;
 		try {
-			sent = (GregorianCalendar) hcommand.get("sent");
+			sent = (DateISO8601.toCalendar(hcommand.getString("sent")));
 		} catch (JSONException e) {
 			sent = null;
 		}
@@ -204,7 +207,7 @@ public class HCommand implements HJsonObj {
 			if(sent == null) {
 				hcommand.remove("sent");
 			} else {
-				hcommand.put("sent", sent);
+				hcommand.put("sent", DateISO8601.fromCalendar(sent));
 			}
 		} catch (JSONException e) {
 		}
@@ -242,7 +245,7 @@ public class HCommand implements HJsonObj {
 	public HJsonObj getParams() {
 		HJsonObj params;
 		try {
-			params = (HJsonObj) hcommand.get("params");
+			params = new HJsonDictionnary(hcommand.getJSONObject("params"));
 		} catch (JSONException e) {
 			params = null;
 		}
@@ -254,7 +257,7 @@ public class HCommand implements HJsonObj {
 			if(params == null) {
 				hcommand.remove("params");
 			} else {
-				hcommand.put("params", params);
+				hcommand.put("params", params.toJSON());
 			}
 		} catch (JSONException e) {
 		}
@@ -283,6 +286,5 @@ public class HCommand implements HJsonObj {
 		} catch (JSONException e) {
 		}
 	}	
-	
 	
 }

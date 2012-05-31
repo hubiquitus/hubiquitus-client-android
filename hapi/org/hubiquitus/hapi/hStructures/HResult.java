@@ -20,7 +20,7 @@
 
 package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.structures.HJsonObj;
+import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,7 +60,7 @@ public class HResult implements HJsonObj {
 		if( jsonObj != null) {
 			this.hresult = jsonObj;
 		} else {
-			System.out.println("erreur hresult");
+			this.hresult = new JSONObject();
 		}
 	}
 	
@@ -159,10 +159,10 @@ public class HResult implements HJsonObj {
 	/**
 	 * @return result of a command operation or a subscriptions operation. 
 	 */
-	public Object getResult() {
+	public HJsonObj getResult() {
 		HJsonObj result;
 		try {
-			result = (HJsonObj) hresult.get("result");
+			result = new HJsonDictionnary(hresult.getJSONObject("result"));
 		} catch (JSONException e) {
 			result = null;
 		}
@@ -174,7 +174,7 @@ public class HResult implements HJsonObj {
 			if(result == null) {
 				hresult.remove("result");
 			} else {
-				hresult.put("result", result);
+				hresult.put("result", result.toJSON());
 			}
 		} catch (JSONException e) {
 		}

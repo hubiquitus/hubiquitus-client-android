@@ -17,7 +17,7 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hubiquitus.hapi.structures;
+package org.hubiquitus.hapi.hStructures;
 
 import org.json.JSONObject;
 

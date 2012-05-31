@@ -17,24 +17,47 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hubiquitus.hapi.client;
 
-import org.hubiquitus.hapi.hStructures.HJsonObj;
+package org.hubiquitus.hapi.hStructures;
 
 /**
  * @version 0.3
- * Interface used to receive data from hapi.
- * Async model is used
+ * Enumeration of different message acknoledgements state.
+ * For more information see Hubiquitus reference
  */
 
-public interface HDelegate {
+public enum HAckValue {
+	UNKNOWN(""),
+	RECV("recv"),
+	READ("read");
+	
+	private String value;
+	
+	private HAckValue(String value) {
+		this.value = value;
+	}
 	
 	/**
-	 * hAPI "callback".
-	 * called asynchronyously to notify an update
-	 * @param type - hubiquitus structure (hresult, hstatus, hmessage...)
-	 * @param data - the structure defined by the type
+	 * @return string equivalent.
 	 */
-	public void hDelegate(String type, HJsonObj data);
-
+	public String value() {
+		return value;
+	}
+	
+	/**
+	 * Get constant for value
+	 * @param value
+	 * @return
+	 */
+	public static HAckValue constant(String value) {
+		HAckValue [] _values = HAckValue.values();
+		HAckValue _value = HAckValue.UNKNOWN;
+		for (int i = 0; i < _values.length; i++) {
+			if (_values[i].equals(value)) {
+				_value = _values[i];
+			}
+		}
+		
+		return _value;
+	}
 }

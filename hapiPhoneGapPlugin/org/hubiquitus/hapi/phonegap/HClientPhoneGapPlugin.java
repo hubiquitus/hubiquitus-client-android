@@ -24,7 +24,7 @@ import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HOptions;
-import org.hubiquitus.hapi.structures.HJsonObj;
+import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
