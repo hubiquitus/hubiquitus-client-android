@@ -21,6 +21,7 @@
 package org.hubiquitus.hapi.hStructures;
 
 import org.hubiquitus.hapi.util.HJsonDictionnary;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -157,12 +158,43 @@ public class HResult implements HJsonObj {
 	}
 
 	/**
+	 * Only if result type is a JsonObject
+	 * @see getResultString()
+	 * @see getResultArray()
 	 * @return result of a command operation or a subscriptions operation. 
 	 */
 	public HJsonObj getResult() {
 		HJsonObj result;
 		try {
 			result = new HJsonDictionnary(hresult.getJSONObject("result"));
+		} catch (JSONException e) {
+			result = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * Only if result type is a String
+	 * @return result of a command operation or a subscriptions operation. 
+	 */
+	public String getResultString() {
+		String result;
+		try {
+			result = hresult.getString("result");
+		} catch (JSONException e) {
+			result = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * Only if result type is a JsonArray
+	 * @return result of a command operation or a subscriptions operation. 
+	 */
+	public JSONArray getResultArray() {
+		JSONArray result;
+		try {
+			result = hresult.getJSONArray("result");
 		} catch (JSONException e) {
 			result = null;
 		}

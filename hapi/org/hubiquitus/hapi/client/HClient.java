@@ -257,6 +257,41 @@ public class HClient {
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hpublish", message);
 		return this.command(cmd);				
 	}
+	/**
+	 * Demands the hserver a list of the last messages saved for a dedicated channel.
+	 * The publisher must be in the channel’s participants list.
+	 * 
+	 * Nominal response : an hCallback with an hResult will be performed when the result is available. 
+	 * If the hResult had status 0, the user should expect to receive n calls to hCallback of type
+	 * hMessage where n is equal to the number of messages retrieved with nbLastMsg as an upper limit.
+	 * @warning HResult result type will be a JSonArray if successful
+	 * @param chid - channel id
+	 * @param nbLastMsg
+	 * @return request id
+	 */
+	public String getLastMessages(String chid, int nbLastMsg) {
+		HJsonDictionnary params = new HJsonDictionnary();
+		params.put("chid", chid);
+		if(nbLastMsg > 0) {
+			params.put("nbLastMsg", nbLastMsg);
+		}
+		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hgetlastmessages", params);
+		return this.command(cmd);
+	}
+	
+	/**
+	 * @see getLastMessages(String chid, int nbLastMsg) 
+	 * @param chid - channel id
+	 * @return request id 
+	 */
+	public String getLastMessages(String chid) {
+		return this.getLastMessages(chid,-1);
+	}
+	
+	public String getSubscription() {
+		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hgetsubscriptions", null);
+		return this.command(cmd);
+	}
 	/* HTransportCallback functions */
 
 	/**
