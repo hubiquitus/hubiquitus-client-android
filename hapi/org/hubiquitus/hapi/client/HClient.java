@@ -26,6 +26,7 @@ import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HAck;
 import org.hubiquitus.hapi.hStructures.HAckValue;
+import org.hubiquitus.hapi.hStructures.HAlert;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HConv;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
@@ -363,6 +364,21 @@ public class HClient {
 		hack.setAckid(ackid);
 		hack.setAck(ack);
 		hmessage = buildMessage(chid, "hack", hack, options);
+		return hmessage;
+	}
+	
+	/**
+	 * Helper to create halert
+	 * @param chid - channel id
+	 * @param alert
+	 * @param options
+	 * @return hmessage
+	 */
+	public HMessage buildAlert(String chid, String alert, HMessageOption options) {
+		HMessage hmessage = new HMessage();
+		HAlert halert = new HAlert();
+		halert.setAlert(alert);
+		hmessage = buildMessage(chid, "halert", halert, options);
 		return hmessage;
 	}
 	/* HTransportCallback functions */
