@@ -181,29 +181,35 @@ public class HMessage implements HJsonObj {
 	}
 
 	/**
-	 * If undefined, priority lower to 0. 
+	 * If UNDEFINED, priority lower to 0. 
 	 * @return priority.
 	 */
-	public int getPriority() {
-		int priority;
+	public HMessagePriority getPriority() {
+		HMessagePriority priority;
 		try {
-			priority = hmessage.getInt("priority");
-		} catch (JSONException e) {
-			priority = -1;
+			int priorityInt = hmessage.getInt("priority");
+			if(priorityInt < 0 || priorityInt > 5) {
+				priority = null;
+			} else {
+				priority = HMessagePriority.constant(priorityInt);
+			}
+		} catch (Exception e1) {
+			priority = null;
 		}
 		return priority;
 	}
 
-	public void setPriority(int priority) {
+	public void setPriority(HMessagePriority priority) {
 		try {
-			if(priority < 0) {
+			if(priority == null) {
 				hmessage.remove("priority");
 			} else {
-				hmessage.put("priority", priority);
+				hmessage.put("priority", priority.value());
 			}
 		} catch (JSONException e) {
 		}
 	}
+
 	
 	/**
 	 * Date-time until which the message is considered as relevant.
@@ -232,6 +238,7 @@ public class HMessage implements HJsonObj {
 	}
 
 	/**
+	 * If true, the message is not persistent.
 	 * @return persist message or not. NULL if undefined
 	 */
 	public Boolean getTransient() {

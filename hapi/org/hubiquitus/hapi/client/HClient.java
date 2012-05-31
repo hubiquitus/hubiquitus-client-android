@@ -24,7 +24,9 @@ import java.util.Random;
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HCommand;
+import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HMessage;
+import org.hubiquitus.hapi.hStructures.HMessageOption;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
@@ -297,6 +299,33 @@ public class HClient {
 	public String getSubscriptions() {
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hgetsubscriptions", null);
 		return this.command(cmd);
+	}
+	
+	/* Builder */
+	
+	/**
+	 * Helper to create hmessage
+	 * @see HMessage
+	 * @param chid - channel id
+	 * @param type
+	 * @param payload
+	 * @param options
+	 * @return hMessage
+	 */
+	public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOption options) {
+		HMessage hmessage = new HMessage();
+		hmessage.setChid(chid);
+		hmessage.setConvid(options.getConvid());
+		hmessage.setType(type);
+		hmessage.setPriority(options.getPriority());
+		hmessage.setRelevance(options.getRelevance());
+		hmessage.setTransient(options.getTransient());
+		hmessage.setLocation(options.getLocation());
+		hmessage.setAuthor(options.getAuthor());
+		hmessage.setPublisher(transportOptions.getJid().getBareJID());
+		hmessage.setHeaders(options.getHeaders());
+		hmessage.setPayload(payload);
+		return hmessage;
 	}
 	/* HTransportCallback functions */
 
