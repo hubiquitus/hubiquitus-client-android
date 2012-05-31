@@ -20,16 +20,16 @@ package org.hubiquitus.hapi.phonegap;
 
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
-import org.hubiquitus.hapi.client.HCallback;
+import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HOptions;
-import org.hubiquitus.hapi.structures.HJSONSerializable;
+import org.hubiquitus.hapi.structures.HJsonObj;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class HClientPhoneGapPlugin extends Plugin implements HCallback {
+public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 
 	private HClient hclient = null;
 	private String jsHClientCallback = null;
@@ -85,7 +85,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HCallback {
 	}
 
 	@Override
-	public void hCallback(final String type, final HJSONSerializable data) {
+	public void hDelegate(final String type, final HJsonObj data) {
 		//do callback on main thread
 		this.webView.post(new Runnable() {
 			

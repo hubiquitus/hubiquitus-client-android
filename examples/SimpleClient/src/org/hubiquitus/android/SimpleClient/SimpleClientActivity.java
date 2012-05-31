@@ -182,7 +182,7 @@ public class SimpleClientActivity extends Activity  implements HDelegate{
 	    hechoButton.setOnClickListener(listener);
 	}
 
-	public void hCallback(final String type, final HJsonObj data) {
+	public void hDelegate(final String type, final HJsonObj data) {
 		Log.i("DEBUG", "callback for type " + type + " with data " + data.toString());
 		runOnUiThread(new Runnable() {
 			
