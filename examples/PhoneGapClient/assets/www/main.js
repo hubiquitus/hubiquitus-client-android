@@ -42,13 +42,40 @@ function disconnect(){
     hClient.disconnect();
 }
 
+function publish(){
+    var chid = document.getElementById('chid').value;
+    var msg = document.getElementById('hMessage').value;
+    hClient.publish(hClient.buildMessage(chid, 'string', msg, {
+        transient: !!document.getElementById("hMessageTransient").checked
+    }));
+}
+
+function subscribe(){
+    var chid = document.getElementById('chid').value;
+    hClient.subscribe(chid)
+}
+
+function unsubscribe(){
+    var chid = document.getElementById('chid').value;
+    hClient.unsubscribe(chid)
+}
+
+function get_messages(){
+    var chid = document.getElementById('chid').value;
+    var quantity = prompt('Max Messages (can be empty):');
+    hClient.getLastMessages(chid, quantity);
+}
+
+function get_subscriptions(){
+    hClient.getSubscriptions();
+}
+
 function clear_divs(){
     document.getElementById("status").innerHTML = '';
     document.getElementById("fetched").innerHTML = '';
 }
 
 function send_hEcho(){
-	console.log("echo");
     var value = prompt('Your Name:');
     var echoCmd = {
         entity : 'hnode.' + 'hub.novediagroup.com',
@@ -59,12 +86,48 @@ function send_hEcho(){
 
 }
 
+function build_measure(){
+    var value = prompt('Value:');
+    var unit = prompt('Unit:');
+    var chid = prompt('Channel:');
+    var hMessage = hClient.buildMeasure(chid, value, unit);
+    if(hMessage)
+        document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+}
+
+function build_alert(){
+    var alert = prompt('Alert:');
+    var chid = prompt('Channel:');
+    var hMessage = hClient.buildAlert(chid, alert);
+    if(hMessage)
+        document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+}
+
+function build_ack(){
+    var ackID = prompt('AckID:');
+    var ack= prompt('Ack (recv|read):');
+    var chid = prompt('Channel:');
+    var hMessage = hClient.buildAck(chid, ackID, ack);
+    if(hMessage)
+        document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+}
+
+function build_conv(){
+    var topic = prompt('Topic:');
+    var participants = prompt('Participants (comma separated):');
+    participants = participants.replace(/ /g, '').split(',');
+    var chid = prompt('Channel:');
+    var hMessage = hClient.buildConv(chid, topic, participants);
+    if(hMessage)
+        document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+}
+
 function hCallback(msg){
-    //console.log(JSON.stringify(msg));
-    //console.log("callback message is : " + msg);
-	var status = '';
+    console.log(JSON.stringify(msg));
+    var status = '';
     var error = '';
-    if(msg.type == 'hStatus'){
+    console.log("A Call back has arrived : " + msg);
+    if(msg.type.toLowerCase() == 'hstatus'){
         switch(msg.data.status){
             case hClient.status.CONNECTED:
                 status = 'Connected';
@@ -116,11 +179,11 @@ function hCallback(msg){
                 error = 'A connection is already in progress';
                 break;
         }
-        //console.log("status is : ", status);
-        document.getElementById("status").innerHTML = JSON.stringify(status + ' : ' + error);
+
+        document.getElementById("status").innerHTML = JSON.stringify(status + '<br />' + error);
     }
     else if (msg.type.toLowerCase() == 'hresult')
         document.getElementById("fetched").innerHTML = JSON.stringify(msg.data);
-    else if (msg.context.toLowerCase() == 'message')
-        document.getElementById("fetched").innerHTML = msg.data.message;
+    else if (msg.type.toLowerCase() == 'hmessage')
+        document.getElementById("fetched").innerHTML = JSON.stringify(msg.data);
 }
