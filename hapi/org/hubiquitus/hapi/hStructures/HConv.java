@@ -64,9 +64,16 @@ public class HConv implements HJsonObj{
 		return hconv.toString();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hconv.equals(obj);
+	/**
+	 * Check are made on : topic. 
+	 * @param HConv 
+	 * @return Boolean
+	 */
+	public boolean equals(HConv obj) {
+		if(obj.getTopic() != this.getTopic()) {
+			return false;
+		}
+		return true;
 	}
 	
 	@Override

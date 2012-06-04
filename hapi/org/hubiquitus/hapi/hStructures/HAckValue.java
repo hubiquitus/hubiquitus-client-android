@@ -53,11 +53,10 @@ public enum HAckValue {
 		HAckValue [] _values = HAckValue.values();
 		HAckValue _value = HAckValue.UNKNOWN;
 		for (int i = 0; i < _values.length; i++) {
-			if (_values[i].equals(value)) {
+			if (_values[i].value.equals(value)) {
 				_value = _values[i];
 			}
 		}
-		
 		return _value;
 	}
 }

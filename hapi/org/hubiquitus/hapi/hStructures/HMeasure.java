@@ -60,9 +60,17 @@ public class HMeasure implements HJsonObj{
 		return hmeasure.toString();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hmeasure.equals(obj);
+	/**
+	 * Check are made on : value, unit. 
+	 * @param HMeasure 
+	 * @return Boolean
+	 */
+	public boolean equals(HMeasure obj) {
+		if(obj.getUnit() != this.getUnit())
+			return false;
+		if(obj.getValue() != this.getValue())
+			return false;
+		return true;
 	}
 	
 	@Override

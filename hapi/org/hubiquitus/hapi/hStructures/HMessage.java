@@ -69,9 +69,36 @@ public class HMessage implements HJsonObj {
 		return hmessage.toString();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hmessage.equals(obj);
+	/**
+	 * Check are made on : msgid, chid, convid, type, priority, relevance,
+	 * transient, author, publisher, published and location. 
+	 * @param HAck 
+	 * @return Boolean
+	 */
+	public boolean equals(HMessage obj) {
+		if(obj.getMsgid() != this.getMsgid())
+			return false;
+		if(obj.getChid() != this.getChid())
+			return false;
+		if(obj.getConvid() != this.getConvid())
+			return false;
+		if(obj.getType() != this.getType())
+			return false;
+		if(obj.getPriority().value() != this.getPriority().value())
+			return false;
+		if(obj.getRelevance() != this.getRelevance())
+			return false;
+		if(obj.getTransient() != this.getTransient())
+			return false;
+		if(obj.getAuthor() != this.getAuthor())
+			return false;
+		if(obj.getPublisher() != this.getPublisher())
+			return false;
+		if(obj.getPublished() != this.getPublished())
+			return false;
+		if(obj.getLocation().equals(this.getLocation()))
+			return false;
+		return true;
 	}
 	
 	@Override

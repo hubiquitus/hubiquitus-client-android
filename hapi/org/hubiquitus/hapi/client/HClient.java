@@ -209,8 +209,6 @@ public class HClient {
 					callback.hDelegate("hstatus", hstatus);
 				}
 			})).start();
-			
-			
 		}
 		return reqid;
 	}
@@ -320,17 +318,34 @@ public class HClient {
 	 */
 	public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOption options) {
 		HMessage hmessage = new HMessage();
-		hmessage.setChid(chid);
-		hmessage.setConvid(options.getConvid());
-		hmessage.setType(type);
-		hmessage.setPriority(options.getPriority());
-		hmessage.setRelevance(options.getRelevance());
-		hmessage.setTransient(options.getTransient());
-		hmessage.setLocation(options.getLocation());
-		hmessage.setAuthor(options.getAuthor());
-		hmessage.setPublisher(transportOptions.getJid().getBareJID());
-		hmessage.setHeaders(options.getHeaders());
-		hmessage.setPayload(payload);
+		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
+			hmessage.setChid(chid);
+			hmessage.setConvid(options.getConvid());
+			hmessage.setType(type);
+			if(options != null) {
+				hmessage.setPriority(options.getPriority());
+				hmessage.setRelevance(options.getRelevance());
+				hmessage.setTransient(options.getTransient());
+				hmessage.setLocation(options.getLocation());
+				hmessage.setAuthor(options.getAuthor());
+				hmessage.setHeaders(options.getHeaders());
+			}
+			if(transportOptions != null && transportOptions.getJid() != null) {
+				hmessage.setPublisher(transportOptions.getJid().getBareJID());
+			} else {
+				hmessage.setPublisher(null);
+			}		
+			hmessage.setPayload(payload);
+		} else {
+			if(callback != null) {
+				(new Thread(new Runnable() {
+					public void run() {
+						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
+						callback.hDelegate("hstatus", hstatus);
+					}
+				})).start();
+			}
+		}
 		return hmessage;
 	}
 	
@@ -344,10 +359,21 @@ public class HClient {
 	 */
 	public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOption options) {
 		HMessage hmessage = new HMessage();
-		HConv hconv = new HConv();
-		hconv.setTopic(topic);
-		hconv.setParticipants(participants);
-		hmessage = buildMessage(chid, "hconv", hconv, options);
+		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
+			HConv hconv = new HConv();
+			hconv.setTopic(topic);
+			hconv.setParticipants(participants);
+			hmessage = buildMessage(chid, "hconv", hconv, options);
+		} else {
+			if(callback != null) {
+				(new Thread(new Runnable() {
+					public void run() {
+						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
+						callback.hDelegate("hstatus", hstatus);
+					}
+				})).start();
+			}
+		}
 		return hmessage;
 	}
 	
@@ -361,10 +387,21 @@ public class HClient {
 	 */
 	public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOption options) {
 		HMessage hmessage = new HMessage();
-		HAck hack = new HAck();
-		hack.setAckid(ackid);
-		hack.setAck(ack);
-		hmessage = buildMessage(chid, "hack", hack, options);
+		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
+			HAck hack = new HAck();
+			hack.setAckid(ackid);
+			hack.setAck(ack);
+			hmessage = buildMessage(chid, "hack", hack, options);
+		} else {
+			if(callback != null) {
+				(new Thread(new Runnable() {
+					public void run() {
+						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
+						callback.hDelegate("hstatus", hstatus);
+					}
+				})).start();
+			}
+		}
 		return hmessage;
 	}
 	
@@ -377,9 +414,20 @@ public class HClient {
 	 */
 	public HMessage buildAlert(String chid, String alert, HMessageOption options) {
 		HMessage hmessage = new HMessage();
-		HAlert halert = new HAlert();
-		halert.setAlert(alert);
-		hmessage = buildMessage(chid, "halert", halert, options);
+		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
+			HAlert halert = new HAlert();
+			halert.setAlert(alert);
+			hmessage = buildMessage(chid, "halert", halert, options);
+		} else {
+			if(callback != null) {
+				(new Thread(new Runnable() {
+					public void run() {
+						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
+						callback.hDelegate("hstatus", hstatus);
+					}
+				})).start();
+			}
+		}
 		return hmessage;
 	}
 	
@@ -393,10 +441,21 @@ public class HClient {
 	 */
 	public HMessage buildMeasure(String chid, String value, String unit, HMessageOption options) {
 		HMessage hmessage = new HMessage();
-		HMeasure hmeasure = new HMeasure();
-		hmeasure.setValue(value);
-		hmeasure.setUnit(unit);
-		hmessage = buildMessage(chid, "hmeasure", hmeasure, options);
+		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
+			HMeasure hmeasure = new HMeasure();
+			hmeasure.setValue(value);
+			hmeasure.setUnit(unit);
+			hmessage = buildMessage(chid, "hmeasure", hmeasure, options);
+		} else {
+			if(callback != null) {
+				(new Thread(new Runnable() {
+					public void run() {
+						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
+						callback.hDelegate("hstatus", hstatus);
+					}
+				})).start();
+			}
+		}
 		return hmessage;
 	}
 	/* HTransportCallback functions */
@@ -418,7 +477,7 @@ public class HClient {
 		this.transportOptions.setHserver(options.getHserver());
 		
 		//by default we user server host rather than publish host if defined
-		if (options.getServerHost() != null) {
+		if (options.getServerHost() != null ) {
 			this.transportOptions.setServerHost(options.getServerHost());
 		} else { 
 			this.transportOptions.setServerHost(jid.getDomain());

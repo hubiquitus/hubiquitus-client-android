@@ -33,7 +33,7 @@ import org.json.JSONObject;
 
 public class HResult implements HJsonObj {
 	
-	private JSONObject hresult;
+	private JSONObject hresult = new JSONObject();
 		
 	public HResult() {	}
 	
@@ -70,9 +70,19 @@ public class HResult implements HJsonObj {
 		return hresult.toString();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hresult.equals(obj);
+	/**
+	 * Check are made on : cmd, reqid and status. 
+	 * @param HResult 
+	 * @return Boolean
+	 */
+	public boolean equals(HResult obj) {
+		if(obj.getCmd() != this.getCmd()) 
+			return false;
+		if(obj.getReqid() != this.getReqid())
+			return false;
+		if(obj.getStatus().value() != this.getStatus().value())
+			return false;
+		return true;
 	}
 	
 	@Override

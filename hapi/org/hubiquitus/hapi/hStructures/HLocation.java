@@ -60,9 +60,19 @@ public class HLocation implements HJsonObj{
 		return hlocation.toString();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hlocation.equals(obj);
+	/**
+	 * Check are made on : lng, lat and zip. 
+	 * @param HLocation 
+	 * @return Boolean
+	 */
+	public boolean equals(HLocation obj) {
+		if(obj.getLat() != this.getLat())
+			return false;
+		if(obj.getLng() != this.getLng())
+			return false;
+		if(obj.getZip() != this.getZip())
+			return false;
+		return true;
 	}
 	
 	@Override

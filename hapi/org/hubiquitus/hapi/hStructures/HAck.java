@@ -63,9 +63,16 @@ public class HAck implements HJsonObj{
 		return hack.toString();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hack.equals(obj);
+	/**
+	 * Check are made on : ackid, ack. 
+	 * @param HAck 
+	 * @return Boolean
+	 */
+	public boolean equals(HAck obj) {
+		if(obj.getAckid() != this.getAckid() || obj.getAck() != this.getAck() ) {
+			return false;
+		}
+		return true;
 	}
 	
 	@Override
@@ -121,9 +128,10 @@ public class HAck implements HJsonObj{
 			if(ack == null) {
 				hack.remove("ack");
 			} else {
-				hack.put("value", ack.value());
+				hack.put("ack", ack.value());
 			}
 		} catch (JSONException e) {
 		}
 	}	
 }
+

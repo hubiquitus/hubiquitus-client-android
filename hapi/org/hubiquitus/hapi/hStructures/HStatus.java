@@ -66,9 +66,19 @@ public class HStatus implements HJsonObj{
 		return hstatus.toString();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hstatus.equals(obj);
+	/**
+	 * Check are made on : status, errorcode and errormsg. 
+	 * @param HStatus 
+	 * @return Boolean
+	 */
+	public boolean equals(HStatus obj) {
+		if(obj.getStatus().value() != this.getStatus().value())
+			return false;
+		if(obj.getErrorCode().value() != this.getErrorCode().value())
+			return false;
+		if(obj.getErrorMsg() != this.getErrorMsg())
+			return false;
+		return true;
 	}
 	
 	@Override

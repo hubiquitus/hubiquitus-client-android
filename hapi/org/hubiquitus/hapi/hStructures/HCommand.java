@@ -76,9 +76,27 @@ public class HCommand implements HJsonObj {
 		return hcommand.toString();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return hcommand.equals(obj);
+	/**
+	 * Check are made on : reqid, requester, sender, entity, sent, cmd and _transient. 
+	 * @param HCommand 
+	 * @return Boolean
+	 */
+	public boolean equals(HCommand obj) {
+		if(obj.getReqid() != this.getReqid())
+			return false;
+		if(obj.getRequester() != this.getRequester())
+			return false;
+		if(obj.getSender() != this.getSender())
+			return false;
+		if(obj.getEntity() != this.getEntity())
+			return false;
+		if(obj.getSent() != this.getSent())
+			return false;
+		if(obj.getCmd() != this.getCmd())
+			return false;
+		if(obj.getTransient() != this.getTransient())
+			return false;
+		return true;
 	}
 	
 	@Override
@@ -286,5 +304,6 @@ public class HCommand implements HJsonObj {
 		} catch (JSONException e) {
 		}
 	}	
+	
 	
 }
