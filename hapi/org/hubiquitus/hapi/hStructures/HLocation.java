@@ -19,6 +19,7 @@
 
 package org.hubiquitus.hapi.hStructures;
 
+import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -83,21 +84,21 @@ public class HLocation implements HJsonObj{
 	/* Getters & Setters */
 	
 	/**
-	 * @return latitude of the location. NULL if undefined
+	 * @return latitude of the location. 0 if undefined
 	 */
-	public String getLat() {
-		String lat;
+	public double getLat() {
+		double lat;
 		try {
-			lat = hlocation.getString("lat");
+			lat = hlocation.getDouble("lat");
 		} catch (Exception e) {
-			lat = null;			
+			lat = 0;			
 		}
 		return lat;
 	}
 
-	public void setLat(String lat) {
+	public void setLat(double lat) {
 		try {
-			if(lat == null) {
+			if(lat == 0) {
 				hlocation.remove("lat");
 			} else {
 				hlocation.put("lat", lat);
@@ -107,21 +108,21 @@ public class HLocation implements HJsonObj{
 	}
 
 	/**
-	 * @return longitude of the location. NULL if undefined
+	 * @return longitude of the location. 0 if undefined
 	 */
-	public String getLng() {
-		String lng;
+	public double getLng() {
+		double lng;
 		try {
-			lng = hlocation.getString("lng");
+			lng = hlocation.getDouble("lng");
 		} catch (Exception e) {
-			lng = null;			
+			lng = 0;			
 		}
 		return lng;
 	}
 
-	public void setLng(String lng) {
+	public void setLng(double lng) {
 		try {
-			if(lng == null) {
+			if(lng == 0) {
 				hlocation.remove("lng");
 			} else {
 				hlocation.put("lng", lng);
@@ -154,4 +155,99 @@ public class HLocation implements HJsonObj{
 		}
 	}
 	
+	/**
+	 * @return address of the location. NULL if undefined
+	 */
+	public String getAddress() {
+		String address;
+		try {
+			address = hlocation.getString("addr");
+		} catch (Exception e) {
+			address = null;			
+		}
+		return address;
+	}
+
+	public void setAddress(String address) {
+		try {
+			if(address == null) {
+				hlocation.remove("addr");
+			} else {
+				hlocation.put("addr", address);
+			}
+		} catch (JSONException e) {
+		}
+	}
+
+	/**
+	 * @return city of the location. NULL if undefined
+	 */
+	public String getCity() {
+		String city;
+		try {
+			city = hlocation.getString("city");
+		} catch (Exception e) {
+			city = null;			
+		}
+		return city;
+	}
+
+	public void setCity(String city) {
+		try {
+			if(city == null) {
+				hlocation.remove("city");
+			} else {
+				hlocation.put("city", city);
+			}
+		} catch (JSONException e) {
+		}
+	}
+	
+	/**
+	 * @return country of the location. NULL if undefined
+	 */
+	public String getCountry() {
+		String country;
+		try {
+			country = hlocation.getString("country");
+		} catch (Exception e) {
+			country = null;			
+		}
+		return country;
+	}
+
+	public void setCountry(String country) {
+		try {
+			if(country == null) {
+				hlocation.remove("country");
+			} else {
+				hlocation.put("country", country);
+			}
+		} catch (JSONException e) {
+		}
+	}
+	
+	/**
+	 * @return params throws to the hserver. NULL if undefined
+	 */
+	public HJsonObj getExtra() {
+		HJsonObj extra;
+		try {
+			extra = new HJsonDictionnary(hlocation.getJSONObject("extra"));
+		} catch (JSONException e) {
+			extra = null;
+		}
+		return extra;
+	}
+
+	public void setExtra(HJsonObj extra) {
+		try {
+			if(extra == null) {
+				hlocation.remove("extra");
+			} else {
+				hlocation.put("extra", extra.toJSON());
+			}
+		} catch (JSONException e) {
+		}
+	}
 }

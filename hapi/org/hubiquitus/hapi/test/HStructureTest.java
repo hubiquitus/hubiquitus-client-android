@@ -78,8 +78,8 @@ public class HStructureTest {
 			jsonObj.put("transient", _transient);
 			
 			HLocation location = new HLocation();
-			location.setLat("100");
-			location.setLng("100");
+			location.setLat(100);
+			location.setLng(100);
 			location.setZip("79000");
 			jsonObj.put("location",location.toJSON());
 			
@@ -154,8 +154,8 @@ public class HStructureTest {
 			Boolean _transient = false;
 			
 			HLocation location = new HLocation();
-			location.setLat("100");
-			location.setLng("100");
+			location.setLat(100);
+			location.setLng(100);
 			location.setZip("79000");
 			
 			String author = "Mysth";
@@ -277,20 +277,37 @@ public class HStructureTest {
 	public void HlocationGetTest() {
 		JSONObject jsonObj = new JSONObject();
 		try {
-			String longitude = "100";
+			Double longitude = 100.0;
 			jsonObj.put("lng", longitude);
 			
-			String latitude = "100";
+			Double latitude = 100.0;
 			jsonObj.put("lat", latitude);
 			
 			String zip = "79000";
 			jsonObj.put("zip", zip);
 			
+			String address = "48 rue des Anges";
+			jsonObj.put("addr", address);
+			
+			String country = "France";
+			jsonObj.put("country", country);
+			
+			String city = "Paris";
+			jsonObj.put("city", city);
+			
+			HJsonDictionnary extra = new HJsonDictionnary();
+			extra.put("test", "temp");
+			jsonObj.put("extra", extra);
+			
 			HLocation hlocation = new HLocation(jsonObj);
 
-			Assert.assertEquals(hlocation.getLng(), longitude);
-			Assert.assertEquals(hlocation.getLat(), latitude);
+			Assert.assertEquals(hlocation.getLng(), longitude, 0);
+			Assert.assertEquals(hlocation.getLat(), latitude, 0);
 			Assert.assertEquals(hlocation.getZip(), zip);
+			Assert.assertEquals(hlocation.getAddress(), address);
+			Assert.assertEquals(hlocation.getCountry(), country);
+			Assert.assertEquals(hlocation.getCity(), city);
+			Assert.assertEquals(hlocation.getExtra(), extra);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			fail("fail");
@@ -301,21 +318,38 @@ public class HStructureTest {
 	public void HlocationSetTest() {
 		JSONObject jsonObj = new JSONObject();
 		try {
-			String longitude = "100";
+			Double longitude = 100.0;
 			
-			String latitude = "100";
+			Double latitude = 100.0;
 			
 			String zip = "79000";
 			
+			String address = "48 rue des Anges";
+			
+			String country = "France";
+			
+			String city = "Paris";
+			
+			HJsonDictionnary extra = new HJsonDictionnary();
+			extra.put("test", "temp");
+			
 			HLocation hlocation = new HLocation();
+			hlocation.setAddress(address);
+			hlocation.setCity(city);
+			hlocation.setCountry(country);
+			hlocation.setExtra(extra);
 			hlocation.setLat(latitude);
 			hlocation.setLng(longitude);
 			hlocation.setZip(zip);
 			jsonObj = hlocation.toJSON();
-
-			Assert.assertEquals(jsonObj.get("lng"), longitude);
-			Assert.assertEquals(jsonObj.get("lat"), latitude);
+			
+			Assert.assertEquals(jsonObj.getDouble("lng"), longitude, 0);
+			Assert.assertEquals(jsonObj.getDouble("lat"), latitude, 0);
 			Assert.assertEquals(jsonObj.get("zip"), zip);
+			Assert.assertEquals(jsonObj.get("addr"), address);
+			Assert.assertEquals(jsonObj.get("country"), country);
+			Assert.assertEquals(jsonObj.get("city"), city);
+			Assert.assertEquals(jsonObj.get("extra").toString(), extra.toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			fail("fail");
