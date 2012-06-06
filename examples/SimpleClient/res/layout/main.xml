@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -22,7 +22,7 @@
             <EditText
                 android:id="@+id/loginText"
                 android:layout_width="wrap_content"
-                android:textSize="10dp"
+                android:textSize="9dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:ems="10" >
@@ -36,7 +36,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -52,7 +52,7 @@
             <EditText
                 android:id="@+id/passwordText"
                 android:layout_width="wrap_content"
-                android:textSize="10dp"
+                android:textSize="9dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -64,7 +64,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -85,7 +85,7 @@
                 <EditText
                     android:id="@+id/gatewaysText"
                     android:layout_width="wrap_content"
-                    android:textSize="10dp"
+                    android:textSize="9dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:ems="10" />
@@ -99,7 +99,7 @@
     
      <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -115,7 +115,7 @@
             <EditText
                 android:id="@+id/serverhostText"
                 android:layout_width="wrap_content"
-                android:textSize="10dp"
+                android:textSize="9dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -125,9 +125,9 @@
 
     </LinearLayout>
     
-     <LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -143,17 +143,19 @@
             <EditText
                 android:id="@+id/serverportText"
                 android:layout_width="wrap_content"
-                android:textSize="10dp"
+                android:textSize="9dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:ems="10"
                 />
 
         </LinearLayout>
-        
-        <LinearLayout
+     
+    </LinearLayout>
+    
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -161,15 +163,71 @@
             android:layout_height="wrap_content" >
 
             <TextView
-                android:id="@+id/hechoLabel"
+                android:id="@+id/ChannelIDLabel"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="hecho" />
+                android:text="Channel ID" />
 
             <EditText
-                android:id="@+id/hechoText"
+                android:id="@+id/ChannelIDText"
                 android:layout_width="wrap_content"
-                android:textSize="10dp"
+                android:textSize="9dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:ems="10"
+                />
+
+        </LinearLayout>
+        
+     </LinearLayout> 
+  
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/nbLastMessageLabel"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="NbLastMsg" />
+
+            <EditText
+                android:id="@+id/NbLastMessageText"
+                android:layout_width="wrap_content"
+                android:textSize="9dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:ems="10"
+                />
+
+        </LinearLayout>
+        
+     </LinearLayout>
+     
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/MessageLabel"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Message" />
+
+            <EditText
+                android:id="@+id/MessageText"
+                android:layout_width="wrap_content"
+                android:textSize="9dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -178,13 +236,10 @@
         </LinearLayout>
 
     </LinearLayout>
-    
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="35dp" >
 
         <RadioGroup
             android:id="@+id/transportGroupbutton"
@@ -194,17 +249,19 @@
 
 	            <RadioButton
 	                android:id="@+id/xmppButton"
-	                android:layout_width="100dp"
+	                android:layout_width="110dp"
 	                android:layout_height="wrap_content"
 	                android:checked="true"
-	                android:text="xmpp" />
+	                android:text="xmpp"
+	                android:textSize="20px" />
 	
 	            <RadioButton
 	                android:id="@+id/socketButton"
 	                android:layout_width="100dp"
 	                android:layout_height="wrap_content"
 	                android:gravity="center"
-	                android:text="socketio" />
+	                android:text="socketio" 
+	                android:textSize="20px"/>
 	        	
 	        	<TextView
 	        	    android:layout_marginLeft="10dp"
@@ -214,12 +271,41 @@
                 	android:text="DISCONNECTED" />
         </RadioGroup>
         
-		 
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp" >
+
+        <RadioGroup
+            android:id="@+id/MessageGroupbutton"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+	            <RadioButton
+	                android:id="@+id/transientButton"
+	                android:layout_width="110dp"
+	                android:layout_height="wrap_content"
+	                android:checked="true"
+	                android:text="Transient" 
+	                android:textSize="20px"/>
+	
+	            <RadioButton
+	                android:id="@+id/notTransienttButton"
+	                android:layout_width="130dp"
+	                android:layout_height="wrap_content"
+	                android:gravity="center"
+	                android:text="not Transient"
+	                android:textSize="20px" />
+	            
+        </RadioGroup>
+        
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -253,8 +339,55 @@
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="hEcho" />
+            
+       </LinearLayout>
 
-        </LinearLayout>
+    </LinearLayout>
+    
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/SubscribeButton"
+                android:textSize="10dp"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:text="Subscribe" />
+
+            <Button
+                android:id="@+id/UnsubscribeButton"
+                android:textSize="10dp"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:text="Unsub" />
+
+            <Button
+                android:id="@+id/PublishButton"
+                android:textSize="10dp"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:text="Publish" />
+            
+            <Button
+                android:id="@+id/GetLastMessageButton"
+                android:textSize="10dp"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:text="GetLstMsg" />
+            
+            <Button
+                android:id="@+id/GetSubcriptionButton"
+                android:textSize="10dp"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:text="GetSubs" />
+       </LinearLayout>
 
     </LinearLayout>
 
@@ -268,4 +401,5 @@
         android:layout_height="match_parent"
         android:text="" />
 	</ScrollView>
+	
 </LinearLayout>
