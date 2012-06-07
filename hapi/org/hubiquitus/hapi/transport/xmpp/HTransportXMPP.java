@@ -243,16 +243,21 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 
 	@Override
 	public void processPacket(Packet receivePacket) {
-		System.out.println(receivePacket.getFrom() + options.getHserverService());
 		if(receivePacket.getClass().equals(Message.class)) {
 			if(receivePacket.getFrom().equalsIgnoreCase(options.getHserverService())) {
 				HMessageXMPP packetExtention = (HMessageXMPP)receivePacket.getExtension("hbody","");
 				if(packetExtention != null) {
+					JSONObject jsonObj = null;
 					try {
-						JSONObject jsonObj = new JSONObject(packetExtention.getContent());
-						callback.dataCallback(packetExtention.getType(), jsonObj);
+						jsonObj = new JSONObject(packetExtention.getContent());
 					} catch (JSONException e) {
-						System.out.println("erreur lors de la reception : JSONObjectMalformat");
+						e.printStackTrace();
+						System.out.println("Received malformted JSon object from hserver in :" + this.getClass());
+					}
+					if(jsonObj != null) {
+						callback.dataCallback(packetExtention.getType(), jsonObj);
+					} else {
+						System.out.println("Received malformted JSon object from hserver in :" + this.getClass());
 					}
 				}else {
 					System.out.println("erreur lors de la reception : PacketExtension erreur");
@@ -272,8 +277,22 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 						for(int i = 0; i < extension.getItems().size(); i++){
 							Item item = (Item)extension.getItems().get(i);
 							if (item instanceof PayloadItem) {
-								PayloadItem<HXMPPPubsubEntry> payloadItem = (PayloadItem<HXMPPPubsubEntry>)item;
-								System.out.println(payloadItem.getPayload().getContent());
+							
+								JSONObject jsonObj = null;
+								try {
+									@SuppressWarnings("unchecked")
+									PayloadItem<HXMPPPubsubEntry> payloadItem = (PayloadItem<HXMPPPubsubEntry>)item;
+									jsonObj = new JSONObject(payloadItem.getPayload().getContent());
+								} catch (JSONException e) {
+									e.printStackTrace();
+									System.out.println("Received malformted JSon object from pubsub in :" + this.getClass());
+									System.err.println("error message :" + e.getMessage());
+								}
+								if(jsonObj != null) {
+									callback.dataCallback("hmessage", jsonObj);
+								} else {
+									System.out.println("Received malformted JSon object from pubsub in :" + this.getClass());
+								}
 							}
 						}
 					}
