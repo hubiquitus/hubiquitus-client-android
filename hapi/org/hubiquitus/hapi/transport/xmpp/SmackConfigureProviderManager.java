@@ -16,6 +16,7 @@ import org.jivesoftware.smackx.provider.DataFormProvider;
 import org.jivesoftware.smackx.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.provider.DiscoverInfoProvider;
 import org.jivesoftware.smackx.provider.DiscoverItemsProvider;
+import org.jivesoftware.smackx.provider.HeaderProvider;
 import org.jivesoftware.smackx.provider.HeadersProvider;
 import org.jivesoftware.smackx.provider.MUCAdminProvider;
 import org.jivesoftware.smackx.provider.MUCOwnerProvider;
@@ -174,7 +175,7 @@ public class SmackConfigureProviderManager {
 		pm.addExtensionProvider("headers", "http://jabber.org/protocol/shim",
 				new HeadersProvider());
 		pm.addExtensionProvider("header", "http://jabber.org/protocol/shim",
-				new HeadersProvider());
+				new HeaderProvider());
 
 		// PubSub
 		pm.addIQProvider("pubsub", "http://jabber.org/protocol/pubsub",

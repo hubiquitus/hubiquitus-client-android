@@ -70,7 +70,7 @@ public class HTransportOptions {
 	}
 	
 	/**
-	 * @return hserver service name (by default it should be "hnode")
+	 * @return hserver service name (by default it should be "hnode.domain")
 	 */
 	public String getHserverService() {
 		String nodeService = null;
@@ -81,6 +81,14 @@ public class HTransportOptions {
 		
 		return nodeService;
 	}
+	
+	/**
+	 * @return pubsub service name (by default it should be "pubsub")
+	 */
+	public String getPubsubService() {
+		return "pubsub" + "." + this.jid.getDomain();
+	}
+	
 	/**
 	 * @return user jid (ie : my_user@domain.com/resource)
 	 */
