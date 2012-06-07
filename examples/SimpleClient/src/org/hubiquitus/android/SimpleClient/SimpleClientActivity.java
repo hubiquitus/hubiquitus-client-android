@@ -247,10 +247,11 @@ public class SimpleClientActivity extends Activity  implements HDelegate{
 				message.setPublished(new GregorianCalendar());
 				message.setType("obj");
 				RadioButton temp = (RadioButton) findViewById(messageRadioGroup.getCheckedRadioButtonId());
-				if(temp.getText().toString() == "false")
-				message.setTransient(true);
-				else
-				message.setTransient(false);
+				if(temp.getText().toString().equalsIgnoreCase("Transient")) {
+					message.setTransient(true);
+				} else {
+					message.setTransient(false);
+				}
 
 				HJsonDictionnary payload = new HJsonDictionnary();
 				payload.put("text",MessageEditText.getText().toString());
