@@ -239,5 +239,8 @@ public class SmackConfigureProviderManager {
 		
 		// Custom provider
 		pm.addExtensionProvider("hbody", "jabber:client", new HMessageXMPP.Provider());
+		
+		// Pubsub entry provider
+		pm.addExtensionProvider("entry", "http://jabber.org/protocol/pubsub", new HXMPPPubsubEntry.Provider());
 	}
 }

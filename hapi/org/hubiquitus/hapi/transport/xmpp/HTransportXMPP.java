@@ -34,9 +34,14 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.FromContainsFilter;
+import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.pubsub.EventElement;
+import org.jivesoftware.smackx.pubsub.Item;
+import org.jivesoftware.smackx.pubsub.ItemsExtension;
+import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -84,7 +89,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 		//because smack doesn't allow setting host, or configuration on existing objects
 		//@todo check if config has changed rather than create a new one
 		this.config = new ConnectionConfiguration(serverHost, serverPort, serviceName);
-		//patch for android to support security
+//		//patch for android to support security
 		config.setTruststorePath("/system/etc/security/cacerts.bks");
 	    config.setTruststoreType("bks");
 
@@ -118,7 +123,9 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 							//try to login and update status
 							connection.login(localOptions.getUsername(), localOptions.getPassword(), localOptions.getResource());
 							updateStatus(ConnectionStatus.CONNECTED, null, null);
-							PacketFilter packetFilter = new FromContainsFilter(localOptions.getHserverService());
+							PacketFilter hserverPacketFilter = new FromContainsFilter(localOptions.getHserverService());
+							PacketFilter pubsubPacketFilter = new FromContainsFilter(localOptions.getPubsubService());
+							PacketFilter packetFilter = new OrFilter(hserverPacketFilter, pubsubPacketFilter);
 							connection.addPacketListener(outerClass,packetFilter);
 						} catch(Exception e) { //login failed
 							boolean wasConnected = false;
@@ -236,25 +243,49 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 
 	@Override
 	public void processPacket(Packet receivePacket) {
+		System.out.println(receivePacket.getFrom() + options.getHserverService());
 		if(receivePacket.getClass().equals(Message.class)) {
-			HMessageXMPP packetExtention = (HMessageXMPP)receivePacket.getExtension("hbody","");
-			if(packetExtention != null) {
-				try {
-					JSONObject jsonObj = new JSONObject(packetExtention.getContent());
-					callback.dataCallback(packetExtention.getType(), jsonObj);
-				} catch (JSONException e) {
-					System.out.println("erreur lors de la reception : JSONObjectMalformat");
+			if(receivePacket.getFrom().equalsIgnoreCase(options.getHserverService())) {
+				HMessageXMPP packetExtention = (HMessageXMPP)receivePacket.getExtension("hbody","");
+				if(packetExtention != null) {
+					try {
+						JSONObject jsonObj = new JSONObject(packetExtention.getContent());
+						callback.dataCallback(packetExtention.getType(), jsonObj);
+					} catch (JSONException e) {
+						System.out.println("erreur lors de la reception : JSONObjectMalformat");
+					}
+				}else {
+					System.out.println("erreur lors de la reception : PacketExtension erreur");
 				}
-			}else {
-				System.out.println("erreur lors de la reception : PacketExtention erreur");
+			} else if(receivePacket.getFrom().equalsIgnoreCase(options.getPubsubService())) {
+				Message message = (Message)receivePacket;
+				if(message.getExtension("http://jabber.org/protocol/pubsub#event") instanceof EventElement){
+
+					// get the event extension
+					EventElement event = (EventElement)message.getExtension("http://jabber.org/protocol/pubsub#event");
+
+					if(event.getEventType().name().equals("items")){ // get the type of the event to check if it actually contains items
+						// get the event
+						ItemsExtension extension = (ItemsExtension)event.getEvent();
+
+						// get the items
+						for(int i = 0; i < extension.getItems().size(); i++){
+							Item item = (Item)extension.getItems().get(i);
+							if (item instanceof PayloadItem) {
+								PayloadItem<HXMPPPubsubEntry> payloadItem = (PayloadItem<HXMPPPubsubEntry>)item;
+								System.out.println(payloadItem.getPayload().getContent());
+							}
+						}
+					}
+				}
 			}
 		}
 	}
-	
+
 	/* Connection listener interface */
 	@Override
 	public void connectionClosed() {
-		
+
 	}
 
 	@Override
@@ -263,9 +294,9 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 		this.connectionThread = null;
 		this.connection = null;
 		this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
-		
+
 	}
-	
+
 	//as we use our reconnection system, this shouldn't be called
 	@Override
 	public void reconnectingIn(int arg0) {
@@ -281,5 +312,5 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 	public void reconnectionSuccessful() {
 	}
 
-	
+
 }
