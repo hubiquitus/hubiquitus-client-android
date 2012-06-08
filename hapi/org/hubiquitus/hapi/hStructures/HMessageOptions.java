@@ -27,7 +27,7 @@ import java.util.List;
  * hAPI MessageOption. For more info, see Hubiquitus reference
  */
 
-public class HMessageOption {
+public class HMessageOptions {
 	
 	private String convid = null;
 	private HMessagePriority priority = null;
@@ -36,7 +36,7 @@ public class HMessageOption {
 	private HLocation location = null;
 	private String author = null;
 	private List<HJsonObj> headers = null;
-	
+	private Calendar published = null;
 	/**
 	 * @return conversation id. NULL if undefined 
 	 */
@@ -112,5 +112,15 @@ public class HMessageOption {
 		this.headers = headers;
 	}
 	
+	/**
+	 * Date-time when the message is publish
+	 * @return relevance. NULL if undefined
+	 */
+	public Calendar getPublished() {
+		return published;
+	}
+	public void setPublished(Calendar published) {
+		this.published = published;
+	}
 	
 }

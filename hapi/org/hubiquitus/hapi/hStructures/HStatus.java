@@ -41,7 +41,7 @@ public class HStatus implements HJsonObj{
 		setStatus(status);
 		setErrorCode(errorCode);
 		setErrorMsg(errorMsg);
-	};
+	}
 
 	/* HJsonObj interface */
 	

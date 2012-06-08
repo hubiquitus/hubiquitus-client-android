@@ -35,7 +35,7 @@ import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HLocation;
 import org.hubiquitus.hapi.hStructures.HMeasure;
 import org.hubiquitus.hapi.hStructures.HMessage;
-import org.hubiquitus.hapi.hStructures.HMessageOption;
+import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HMessagePriority;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
@@ -77,7 +77,7 @@ public class HBuilderTest {
 		}
 		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
-		HMessageOption hmessageOption = new HMessageOption();
+		HMessageOptions hmessageOption = new HMessageOptions();
 		
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");
@@ -153,7 +153,7 @@ public class HBuilderTest {
 		}
 		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
-		HMessageOption hmessageOption = new HMessageOption();
+		HMessageOptions hmessageOption = new HMessageOptions();
 		
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");
@@ -222,7 +222,7 @@ public class HBuilderTest {
 		}
 		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
-		HMessageOption hmessageOption = new HMessageOption();
+		HMessageOptions hmessageOption = new HMessageOptions();
 		
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");
@@ -291,7 +291,7 @@ public class HBuilderTest {
 		}
 		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
-		HMessageOption hmessageOption = new HMessageOption();
+		HMessageOptions hmessageOption = new HMessageOptions();
 		
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");
@@ -359,7 +359,7 @@ public class HBuilderTest {
 		}
 		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
-		HMessageOption hmessageOption = new HMessageOption();
+		HMessageOptions hmessageOption = new HMessageOptions();
 		
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");

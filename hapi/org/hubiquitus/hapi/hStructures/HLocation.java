@@ -25,7 +25,7 @@ import org.json.JSONObject;
 
 /**
  * @version 0.3
- * This structure describe the connection status
+ * This structure describe the location
  */
 
 public class HLocation implements HJsonObj{
@@ -62,7 +62,7 @@ public class HLocation implements HJsonObj{
 	}
 	
 	/**
-	 * Check are made on : lng, lat and zip. 
+	 * Check are made on : lng, lat, zip, address, city and country. 
 	 * @param HLocation 
 	 * @return Boolean
 	 */
@@ -72,6 +72,12 @@ public class HLocation implements HJsonObj{
 		if(obj.getLng() != this.getLng())
 			return false;
 		if(obj.getZip() != this.getZip())
+			return false;
+		if(obj.getAddress() != this.getAddress())
+			return false;
+		if(obj.getCity() != this.getCity())
+			return false;
+		if(obj.getCountry() != this.getCountry())
 			return false;
 		return true;
 	}

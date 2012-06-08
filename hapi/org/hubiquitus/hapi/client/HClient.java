@@ -32,7 +32,7 @@ import org.hubiquitus.hapi.hStructures.HConv;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HMeasure;
 import org.hubiquitus.hapi.hStructures.HMessage;
-import org.hubiquitus.hapi.hStructures.HMessageOption;
+import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
@@ -316,7 +316,7 @@ public class HClient {
 	 * @param options
 	 * @return hMessage
 	 */
-	public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOption options) {
+	public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			hmessage.setChid(chid);
@@ -357,7 +357,7 @@ public class HClient {
 	 * @param options
 	 * @return hmessage
 	 */
-	public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOption options) {
+	public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			HConv hconv = new HConv();
@@ -385,7 +385,7 @@ public class HClient {
 	 * @param options
 	 * @return hmessage
 	 */
-	public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOption options) {
+	public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			HAck hack = new HAck();
@@ -412,7 +412,7 @@ public class HClient {
 	 * @param options
 	 * @return hmessage
 	 */
-	public HMessage buildAlert(String chid, String alert, HMessageOption options) {
+	public HMessage buildAlert(String chid, String alert, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			HAlert halert = new HAlert();
@@ -439,7 +439,7 @@ public class HClient {
 	 * @param options
 	 * @return hmessage
 	 */
-	public HMessage buildMeasure(String chid, String value, String unit, HMessageOption options) {
+	public HMessage buildMeasure(String chid, String value, String unit, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			HMeasure hmeasure = new HMeasure();
