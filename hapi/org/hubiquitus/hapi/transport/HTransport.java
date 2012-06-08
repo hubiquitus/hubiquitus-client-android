@@ -22,7 +22,7 @@ package org.hubiquitus.hapi.transport;
 import org.json.JSONObject;
 
 /**
- * @internal
+ * @cond internal
  * @version 0.3
  * Interface abstracting transport layer
  */
@@ -48,3 +48,7 @@ public interface HTransport {
 	 */
 	public void sendObject(JSONObject object);
 }
+
+/**
+ * @endcond
+ */

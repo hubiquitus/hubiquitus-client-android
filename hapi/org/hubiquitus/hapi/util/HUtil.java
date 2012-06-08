@@ -24,6 +24,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
+ * @cond internal
  * @version 0.3
  * Contain some utils function
  */
@@ -107,3 +108,7 @@ public class HUtil {
 	}
 	
 }
+
+/**
+ * @endcond
+ */

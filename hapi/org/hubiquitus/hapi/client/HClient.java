@@ -263,6 +263,7 @@ public class HClient {
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hpublish", message);
 		return this.command(cmd);				
 	}
+	
 	/**
 	 * Demands the hserver a list of the last messages saved for a dedicated channel.
 	 * The publisher must be in the channel’s participants list.
@@ -530,7 +531,7 @@ public class HClient {
 	
 
 	/**
-	 * @internal
+	 * @cond internal
 	 * Class used to get callbacks from transport layer.
 	 */
 	private class TransportCallback implements HTransportCallback {
@@ -563,6 +564,10 @@ public class HClient {
 			}
 		}
 	}
+	
+	/**
+	 * @endcond
+	 */
 
 	
 }

@@ -22,7 +22,7 @@ package org.hubiquitus.hapi.transport;
 import org.hubiquitus.hapi.structures.JabberID;
 
 /** 
- * @internal
+ * @cond internal
  * @version 0.3
  * options used for transport layers
  */
@@ -260,3 +260,7 @@ public class HTransportOptions {
 		return true;
 	}
 }
+
+/**
+ * @endcond
+ */

@@ -42,6 +42,7 @@ import org.jivesoftware.smackx.pubsub.provider.SubscriptionsProvider;
 import org.jivesoftware.smackx.search.UserSearch;
 
 /**
+ * @cond internal
  * Since dalvik on Android does not allow the loading of META-INF files from the
  * filesystem, we have to register every provider manually.
  * 
@@ -244,3 +245,7 @@ public class SmackConfigureProviderManager {
 		pm.addExtensionProvider("entry", "http://jabber.org/protocol/pubsub", new HXMPPPubsubEntry.Provider());
 	}
 }
+
+/**
+ * @endcond
+ */

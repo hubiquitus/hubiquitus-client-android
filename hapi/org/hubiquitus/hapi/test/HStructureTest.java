@@ -49,6 +49,10 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @cond internal
+ */
+
 public class HStructureTest {
 	
 	//HMessage test
@@ -678,3 +682,7 @@ public class HStructureTest {
 	
 	
 }
+
+/**
+ * @endcond
+ */

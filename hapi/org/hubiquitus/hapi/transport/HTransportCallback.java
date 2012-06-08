@@ -24,7 +24,7 @@ import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.json.JSONObject;
 
 /**
- * @internal
+ * @cond internal
  * @version 0.3
  * Interface of HTransportCallback
  */
@@ -46,3 +46,7 @@ public interface HTransportCallback {
 	 */
 	public void dataCallback(String type, JSONObject jsonData); 
 }
+
+/**
+ * @endcond
+ */

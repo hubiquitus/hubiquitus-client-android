@@ -47,6 +47,7 @@ import org.json.JSONObject;
 
 
 /**
+ * @cond internal
  * @version 0.3
  * HTransportXMPP is the xmpp transport layer of the hubiquitus hAPI client
  */
@@ -333,3 +334,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 
 
 }
+
+/**
+ * @endcond
+ */

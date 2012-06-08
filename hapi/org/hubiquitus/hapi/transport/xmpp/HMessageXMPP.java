@@ -24,6 +24,7 @@ import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
+ * @cond internal
  * @version 0.3
  * Class HMessageXMPP for send/get the hCommand
  * Smack packet extension to be able to receive messages from the hserver
@@ -101,3 +102,7 @@ public class HMessageXMPP implements PacketExtension{
     	}
 	}
 }
+
+/**
+ * @endcond
+ */

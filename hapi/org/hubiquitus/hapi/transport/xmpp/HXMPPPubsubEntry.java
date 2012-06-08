@@ -24,6 +24,7 @@ import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
+ * @cond internal
  * @version 0.3
  * Class HXMPPPubsubEntry to receive pubsub entry from xmpp
  * Smack packet extension to be able to receive pubsub
@@ -82,3 +83,7 @@ public class HXMPPPubsubEntry implements PacketExtension{
     	}
 	}
 }
+
+/**
+ * @endcond
+ */

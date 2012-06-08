@@ -17,7 +17,6 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package org.hubiquitus.hapi.test;
 
 import java.util.ArrayList;
@@ -43,6 +42,10 @@ import org.hubiquitus.hapi.util.DateISO8601;
 import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.junit.Assert;
 import org.junit.Test;
+
+/**
+ * @cond internal
+ */
 
 public class HBuilderTest {
 	
@@ -397,3 +400,7 @@ public class HBuilderTest {
 		Assert.assertEquals(hmessage.getPayload().toString(),hmeasure.toString());
 	}
 }
+
+/**
+ * @endcond
+ */

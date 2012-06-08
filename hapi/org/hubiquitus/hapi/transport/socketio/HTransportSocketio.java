@@ -36,7 +36,7 @@ import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.json.JSONObject;
 
 /**
- * @internal
+ * @cond internal
  * @version 0.3
  * HTransportSocketIO is the socketio transport layer of the hubiquitus hAPI client
  */
@@ -289,3 +289,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				+ connectionStatus + ", timeoutTimer=" + timeoutTimer + "]";
 	}
 }
+
+/**
+ * @endcond
+ */
