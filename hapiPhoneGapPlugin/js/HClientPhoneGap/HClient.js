@@ -36,6 +36,12 @@ define(
 					connect : function(publisher, password, hCallback, hOptions){
 						this.hCallback = hCallback;
 						this.publisher = publisher;
+						this.options = hOptions;
+						
+						//get domain
+						var jid = publisher.split('@');
+						this.domain = jid[1];
+						
 						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [{publisher: publisher, password: password, callback: String(hCallback), options:hOptions}]);
 					},
 					disconnect : function(){
@@ -45,32 +51,61 @@ define(
 					},
 
 					command: function(hCommand){
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'command', [{hcommand: hCommand}]);
+						hCommand.reqid = hCommand.reqid || 'jscommand' + Math.floor(Math.random()*100001);
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'command', [{hcommand: hCommand}]);
+						return hCommand.reqid;
 					},
 
 					subscribe : function(channel){
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'subscribe', [{chid: channel}]);
+						var hServer = this.options.hServer || "hnode";
+						var hCommand = {
+			                    entity: hServer + '.' + this.domain,
+			                    cmd: 'hSubscribe',
+			                    params: {chid: channel}
+			                };
+			            return this.command(hCommand);
 					},
 
 					unsubscribe : function(channel){
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'unsubscribe', [{chid: channel}]);
+						var hServer = this.options.hServer || "hnode";
+						var hCommand = {
+			                    entity: hServer + '.' + this.domain,
+			                    cmd: 'hUnsubscribe',
+			                    params: {chid: channel}
+			                };
+			            return this.command(hCommand);
 					},
 
 					publish : function(hMessage){
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'publish', [{hmessage: hMessage}]);
+						var hServer = this.options.hServer || "hnode";
+						var hCommand = {
+			                    entity: hServer + '.' + this.domain,
+			                    cmd: 'hPublish',
+			                    params: hMessage
+			                };
+			               return this.command(hCommand);
 					},
 
 					getSubscriptions: function(){
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getsubscriptions', [{chid: channel}]);
+						var hServer = this.options.hServer || "hnode";
+						var hCommand = {
+			                    entity: hServer + '.' + this.domain,
+			                    cmd: 'hGetSubscriptions'
+			                };
+			            return this.command(hCommand);
 					},
 
 					getLastMessages: function(chid, quantity){
-						if (quantity !== undefined || quantity !== null) {
-							return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getlastmessages', [{chid: chid, nbLastMessages: quantity}]);
-						} else {
-							return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getlastmessages', [{chid: chid}]);
-						}
-
+						var hServer = this.options.hServer || "hnode";
+						var hCommand = {
+			                    entity: hServer + '.' + this.domain,
+			                    cmd: 'hGetLastMessages',
+			                    params: {
+			                        chid: chid,
+			                        nbLastMsg: quantity
+			                    }
+			                };
+			            return this.command(hCommand);
 					},
 
 					buildMessage: function(chid, type, payload, options){
