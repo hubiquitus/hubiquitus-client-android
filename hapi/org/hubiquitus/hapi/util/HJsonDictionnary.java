@@ -63,7 +63,7 @@ public class HJsonDictionnary implements HJsonObj{
 				jsonObj.put(key, ((HJsonObj)value).toJSON());
 			} else if ((value instanceof JSONObject) || (value instanceof JSONArray) || 
 					(value instanceof Boolean) || (value instanceof Integer) ||
-					(value instanceof Double)) {
+					(value instanceof Double)  || (value instanceof String )) {
 				jsonObj.put(key, value);
 			} else if (value instanceof Calendar) {
 				jsonObj.put(key, DateISO8601.fromCalendar((Calendar)value));

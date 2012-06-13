@@ -263,7 +263,6 @@ public class HClient {
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hpublish", message);
 		return this.command(cmd);				
 	}
-	
 	/**
 	 * Demands the hserver a list of the last messages saved for a dedicated channel.
 	 * The publisher must be in the channel’s participants list.
@@ -311,32 +310,46 @@ public class HClient {
 	/**
 	 * Helper to create hmessage
 	 * @see HMessage
-	 * @param chid - channel id
-	 * @param type
-	 * @param payload
+	 * @param chid - channel id : mandatory
+	 * @param type : mandatory
+	 * @param payload : mandatory
 	 * @param options
 	 * @return hMessage
 	 */
 	public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			hmessage.setChid(chid);
-			hmessage.setConvid(options.getConvid());
-			hmessage.setType(type);
-			if(options != null) {
-				hmessage.setPriority(options.getPriority());
-				hmessage.setRelevance(options.getRelevance());
-				hmessage.setTransient(options.getTransient());
-				hmessage.setLocation(options.getLocation());
-				hmessage.setAuthor(options.getAuthor());
-				hmessage.setHeaders(options.getHeaders());
-			}
-			if(transportOptions != null && transportOptions.getJid() != null) {
-				hmessage.setPublisher(transportOptions.getJid().getBareJID());
+			if(chid != null && type != null && payload != null) {
+				hmessage.setChid(chid);
+				hmessage.setConvid(options.getConvid());
+				hmessage.setType(type);
+				if(options != null) {
+					hmessage.setPriority(options.getPriority());
+					hmessage.setRelevance(options.getRelevance());
+					hmessage.setTransient(options.getTransient());
+					hmessage.setLocation(options.getLocation());
+					hmessage.setAuthor(options.getAuthor());
+					hmessage.setHeaders(options.getHeaders());
+				}				
+				if(transportOptions != null && transportOptions.getJid() != null) {
+					hmessage.setPublisher(transportOptions.getJid().getBareJID());
+				} else {
+					hmessage.setPublisher(null);
+				}		
+				hmessage.setPayload(payload);
 			} else {
-				hmessage.setPublisher(null);
-			}		
-			hmessage.setPayload(payload);
+				(new Thread(new Runnable() {
+					public void run() {
+						HResult hresult = new HResult();
+						hresult.setCmd("publish");
+						hresult.setStatus(ResultStatus.MISSING_ATTR);
+						HJsonDictionnary result = new HJsonDictionnary();
+						result.put("error", "missing attribut");
+						hresult.setResult(result);
+						callback.hDelegate("hresult", hresult);
+					}
+				})).start();
+			}
 		} else {
 			if(callback != null) {
 				(new Thread(new Runnable() {
@@ -352,19 +365,33 @@ public class HClient {
 	
 	/**
 	 * Helper to create hconv
-	 * @param chid - channel id
-	 * @param topic
-	 * @param participants
+	 * @param chid - channel id : mandatory
+	 * @param topic : mandatory
+	 * @param participants : mandatory
 	 * @param options
 	 * @return hmessage
 	 */
 	public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			HConv hconv = new HConv();
-			hconv.setTopic(topic);
-			hconv.setParticipants(participants);
-			hmessage = buildMessage(chid, "hconv", hconv, options);
+			if(chid != null && topic != null && participants != null) {
+				HConv hconv = new HConv();
+				hconv.setTopic(topic);
+				hconv.setParticipants(participants);
+				hmessage = buildMessage(chid, "hconv", hconv, options);
+			} else {
+				(new Thread(new Runnable() {
+					public void run() {
+						HResult hresult = new HResult();
+						hresult.setCmd("publish");
+						hresult.setStatus(ResultStatus.MISSING_ATTR);
+						HJsonDictionnary result = new HJsonDictionnary();
+						result.put("error", "missing attribut");
+						hresult.setResult(result);
+						callback.hDelegate("hresult", hresult);
+					}
+				})).start();
+			}
 		} else {
 			if(callback != null) {
 				(new Thread(new Runnable() {
@@ -380,19 +407,33 @@ public class HClient {
 	
 	/**
 	 * Helper to create hack
-	 * @param chid - channel id
-	 * @param ackid
-	 * @param ack
+	 * @param chid - channel id : mandatory
+	 * @param ackid : mandatory
+	 * @param ack : mandatory
 	 * @param options
 	 * @return hmessage
 	 */
 	public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			HAck hack = new HAck();
-			hack.setAckid(ackid);
-			hack.setAck(ack);
-			hmessage = buildMessage(chid, "hack", hack, options);
+			if(chid != null && ackid != null && ack != null) {
+				HAck hack = new HAck();
+				hack.setAckid(ackid);
+				hack.setAck(ack);
+				hmessage = buildMessage(chid, "hack", hack, options);
+			} else {
+				(new Thread(new Runnable() {
+					public void run() {
+						HResult hresult = new HResult();
+						hresult.setCmd("publish");
+						hresult.setStatus(ResultStatus.MISSING_ATTR);
+						HJsonDictionnary result = new HJsonDictionnary();
+						result.put("error", "missing attribut");
+						hresult.setResult(result);
+						callback.hDelegate("hresult", hresult);
+					}
+				})).start();
+			}
 		} else {
 			if(callback != null) {
 				(new Thread(new Runnable() {
@@ -408,17 +449,31 @@ public class HClient {
 	
 	/**
 	 * Helper to create halert
-	 * @param chid - channel id
-	 * @param alert
+	 * @param chid - channel id : mandatory
+	 * @param alert : mandatory
 	 * @param options
 	 * @return hmessage
 	 */
 	public HMessage buildAlert(String chid, String alert, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
+			if(chid != null && alert != null) {
 			HAlert halert = new HAlert();
 			halert.setAlert(alert);
 			hmessage = buildMessage(chid, "halert", halert, options);
+			} else {
+				(new Thread(new Runnable() {
+					public void run() {
+						HResult hresult = new HResult();
+						hresult.setCmd("publish");
+						hresult.setStatus(ResultStatus.MISSING_ATTR);
+						HJsonDictionnary result = new HJsonDictionnary();
+						result.put("error", "missing attribut");
+						hresult.setResult(result);
+						callback.hDelegate("hresult", hresult);
+					}
+				})).start();
+			}
 		} else {
 			if(callback != null) {
 				(new Thread(new Runnable() {
@@ -434,19 +489,33 @@ public class HClient {
 	
 	/**
 	 * Helper to create hmeasure
-	 * @param chid - channel id
-	 * @param value
-	 * @param unit
+	 * @param chid - channel id : mandatory
+	 * @param value : mandatory
+	 * @param unit : mandatory
 	 * @param options
 	 * @return hmessage
 	 */
 	public HMessage buildMeasure(String chid, String value, String unit, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			HMeasure hmeasure = new HMeasure();
-			hmeasure.setValue(value);
-			hmeasure.setUnit(unit);
-			hmessage = buildMessage(chid, "hmeasure", hmeasure, options);
+			if(chid != null && value != null && unit != null) {
+				HMeasure hmeasure = new HMeasure();
+				hmeasure.setValue(value);
+				hmeasure.setUnit(unit);
+				hmessage = buildMessage(chid, "hmeasure", hmeasure, options);
+			} else {
+				(new Thread(new Runnable() {
+					public void run() {
+						HResult hresult = new HResult();
+						hresult.setCmd("publish");
+						hresult.setStatus(ResultStatus.MISSING_ATTR);
+						HJsonDictionnary result = new HJsonDictionnary();
+						result.put("error", "missing attribut");
+						hresult.setResult(result);
+						callback.hDelegate("hresult", hresult);
+					}
+				})).start();
+			}
 		} else {
 			if(callback != null) {
 				(new Thread(new Runnable() {
@@ -531,7 +600,7 @@ public class HClient {
 	
 
 	/**
-	 * @cond internal
+	 * @internal
 	 * Class used to get callbacks from transport layer.
 	 */
 	private class TransportCallback implements HTransportCallback {
@@ -564,10 +633,6 @@ public class HClient {
 			}
 		}
 	}
-	
-	/**
-	 * @endcond
-	 */
 
 	
 }
