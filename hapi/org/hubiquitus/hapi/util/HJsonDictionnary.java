@@ -19,7 +19,10 @@
 
 package org.hubiquitus.hapi.util;
 
+import java.util.Calendar;
+
 import org.hubiquitus.hapi.hStructures.HJsonObj;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -48,9 +51,23 @@ public class HJsonDictionnary implements HJsonObj{
 		return value;
 	}
 	
+	/**
+	 * Only objects allowed are : String, JSONObject, JSONArray, HJsonObj, Boolean, Integer, Double, Calendar. 
+	 * If not one of the types, object is not stored
+	 * @param key
+	 * @param value
+	 */
 	public void put(String key, Object value) {
 		try {
-			jsonObj.put(key, value);
+			if (value instanceof HJsonObj) {
+				jsonObj.put(key, ((HJsonObj)value).toJSON());
+			} else if ((value instanceof JSONObject) || (value instanceof JSONArray) || 
+					(value instanceof Boolean) || (value instanceof Integer) ||
+					(value instanceof Double)) {
+				jsonObj.put(key, value);
+			} else if (value instanceof Calendar) {
+				jsonObj.put(key, DateISO8601.fromCalendar((Calendar)value));
+			}
 		} catch (Exception e) {
 			System.out.println("erreur :" + this.getClass());
 		}		
