@@ -26,6 +26,7 @@ import java.util.TimerTask;
 
 import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
+import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
@@ -46,7 +47,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class SimpleClientActivity extends Activity  implements HDelegate, HStatusDelegate{
+public class SimpleClientActivity extends Activity  implements HDelegate, HStatusDelegate, HMessageDelegate{
 	/** Called when the activity is first created. */
 
 	private String login;
@@ -102,6 +103,7 @@ public class SimpleClientActivity extends Activity  implements HDelegate, HStatu
 
 		client = new HClient();
 		client.onStatus(this);
+		client.onMessage(this);
 	}
 
 	public void initComponent() {
@@ -328,28 +330,53 @@ public class SimpleClientActivity extends Activity  implements HDelegate, HStatu
 
 			public void run() {
 				connectionStatusLabel.setText(status.getStatus().toString());
-				
-				if(true) {
-					outputTextArea.append("Status : " + status.getStatus() + " error : " + status.getErrorCode() + "  errorMsg : " + status.getErrorMsg() + "\n\n");
-					Timer scrollTimer = new Timer();
-					TimerTask scrollTask = new TimerTask() {
-	
-						@Override
-						public void run() {
-							runOnUiThread(new Runnable() {
-	
-								public void run() {
-									outputScroller.smoothScrollTo(0, outputTextArea.getBottom());
-	
-								}
-							});
-	
-						}
-					};
-	
-					scrollTimer.schedule(scrollTask, 10);
-				}
+				outputTextArea.append("Status : " + status.getStatus() + " error : " + status.getErrorCode() + "  errorMsg : " + status.getErrorMsg() + "\n\n");
+				Timer scrollTimer = new Timer();
+				TimerTask scrollTask = new TimerTask() {
+
+					@Override
+					public void run() {
+						runOnUiThread(new Runnable() {
+
+							public void run() {
+								outputScroller.smoothScrollTo(0, outputTextArea.getBottom());
+
+							}
+						});
+
+					}
+				};
+
+				scrollTimer.schedule(scrollTask, 10);
 			}
 		});	
+	}
+
+	@Override
+	public void onMessage(final HMessage message) {
+		runOnUiThread(new Runnable() {
+
+			public void run() {
+				outputTextArea.append("HMessage : " + message + "\n\n");
+				Timer scrollTimer = new Timer();
+				TimerTask scrollTask = new TimerTask() {
+
+					@Override
+					public void run() {
+						runOnUiThread(new Runnable() {
+
+							public void run() {
+								outputScroller.smoothScrollTo(0, outputTextArea.getBottom());
+
+							}
+						});
+
+					}
+				};
+
+				scrollTimer.schedule(scrollTask, 10);
+			}
+		});	
+
 	}
 }	

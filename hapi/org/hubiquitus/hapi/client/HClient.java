@@ -627,6 +627,32 @@ public class HClient {
 		}
 	}
 	
+	/**
+	 * @internal
+	 * notify message delagate of an incoming hmessage
+	 */
+	private void notifyMessage(final HMessage message) {
+		try {
+			if (this.messageDelegate != null) {
+				
+				//return message asynchronously
+				(new Thread(new Runnable() {
+					public void run() {
+						try {
+							messageDelegate.onMessage(message);
+						} catch (Exception e) {
+							// TODO: Add a message to message logger
+							e.printStackTrace();
+						}
+					}
+				})).start();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: Add a message to message logger
+		}
+	}
+	
 
 	/**
 	 * @internal
@@ -652,9 +678,7 @@ public class HClient {
 				if(type.equalsIgnoreCase("hresult")) {
 					callback.hDelegate(type, new HResult(jsonData));
 				} else if (type.equalsIgnoreCase("hmessage")) {
-					callback.hDelegate(type, new HMessage(jsonData));
-				} else {
-					callback.hDelegate(type, new HJsonDictionnary(jsonData));
+					notifyMessage(new HMessage(jsonData));
 				}
 			} catch (Exception e) {
 				System.out.println("erreur datacallBack");
