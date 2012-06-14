@@ -31,7 +31,7 @@ import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.transport.HTransport;
-import org.hubiquitus.hapi.transport.HTransportCallback;
+import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions; 
 import org.json.JSONObject;
 
@@ -43,7 +43,7 @@ import org.json.JSONObject;
 
 public class HTransportSocketio implements HTransport, IOCallback {
 
-	private HTransportCallback callback = null;
+	private HTransportDelegate callback = null;
 	private HTransportOptions options = null;
 	private SocketIO socketio = null;
 	private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
@@ -57,7 +57,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 * @param callback - see HTransportCallback for more informations
 	 * @param options - transport options
 	 */
-	public void connect(HTransportCallback callback, HTransportOptions options){	
+	public void connect(HTransportDelegate callback, HTransportOptions options){	
 		this.connectionStatus = ConnectionStatus.CONNECTING;
 		
 		this.callback = callback;
@@ -117,7 +117,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	public void updateStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
 		this.connectionStatus = status;
 		if (callback != null) {
-			callback.connectionCallback(status, error, errorMsg);
+			callback.onStatus(status, error, errorMsg);
 		} else {
 			throw new NullPointerException("Error : " + this.getClass().getName() + " requires a callback");
 		}
@@ -200,7 +200,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
 				}
-				callback.dataCallback(type, data);
+				callback.onData(type, data);
 			} catch (Exception e) {
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();

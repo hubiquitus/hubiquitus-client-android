@@ -17,38 +17,22 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hubiquitus.hapi.transport;
+package org.hubiquitus.hapi.client;
 
-import org.json.JSONObject;
+import org.hubiquitus.hapi.hStructures.HMessage;
 
 /**
- * @cond internal
- * @version 0.3
- * Interface abstracting transport layer
+ * @version 0.4
+ * Delegate called on incoming messages
+ * Events are received asynchronously and threaded
  */
 
-public interface HTransport {
+public interface HMessageDelegate {
 
 	/**
-	 * transport layer connect
-	 * should connect asynchronously and catch all errors and return them through callback
-	 * @param callback
-	 * @param options
+	 * Called on incoming message
+	 * @param type
+	 * @param data
 	 */
-	public void connect(HTransportDelegate callback, HTransportOptions options);
-	
-	/**
-	 * transport layer disconnect
-	 */
-	public void disconnect();
-	
-	/**
-	 * transport the object to send it to the server
-	 * @param object
-	 */
-	public void sendObject(JSONObject object);
+	public void onMessage(HMessage message);
 }
-
-/**
- * @endcond
- */

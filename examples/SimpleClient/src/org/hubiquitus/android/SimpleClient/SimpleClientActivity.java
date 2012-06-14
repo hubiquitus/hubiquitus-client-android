@@ -26,6 +26,7 @@ import java.util.TimerTask;
 
 import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
+import org.hubiquitus.hapi.client.HStatusDelegate;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HMessage;
@@ -45,7 +46,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class SimpleClientActivity extends Activity  implements HDelegate{
+public class SimpleClientActivity extends Activity  implements HDelegate, HStatusDelegate{
 	/** Called when the activity is first created. */
 
 	private String login;
@@ -100,6 +101,7 @@ public class SimpleClientActivity extends Activity  implements HDelegate{
 		initListenerGetSubscriptionButton();
 
 		client = new HClient();
+		client.onStatus(this);
 	}
 
 	public void initComponent() {
@@ -170,7 +172,7 @@ public class SimpleClientActivity extends Activity  implements HDelegate{
 				options.setEndpoints(endpoints);
 
 				//client.connect("admin@localhost", "", parentClass, new HOptions());
-				client.connect(login, password, parentClass, options);
+				client.connect(login, password, options);
 			}
 		};
 		connectionButton.setOnClickListener(listener);
@@ -289,17 +291,12 @@ public class SimpleClientActivity extends Activity  implements HDelegate{
 		};
 		getSubcriptionButton.setOnClickListener(listener);
 	}
-
+	
 	public void hDelegate(final String type, final HJsonObj data) {
 		Log.i("DEBUG", "callback for type " + type + " with data " + data.toString());
 		runOnUiThread(new Runnable() {
 
 			public void run() {
-				if (type.equals("hstatus")) {
-					HStatus status = (HStatus)data;
-					connectionStatusLabel.setText(status.getStatus().toString());
-				}
-				
 				if(true) {
 					outputTextArea.append("Type : " + type + "  data : " + data.toString() + "\n\n");
 					Timer scrollTimer = new Timer();
@@ -325,6 +322,34 @@ public class SimpleClientActivity extends Activity  implements HDelegate{
 
 	}
 
+	@Override
+	public void onStatus(final HStatus status) {
+		runOnUiThread(new Runnable() {
 
-
+			public void run() {
+				connectionStatusLabel.setText(status.getStatus().toString());
+				
+				if(true) {
+					outputTextArea.append("Status : " + status.getStatus() + " error : " + status.getErrorCode() + "  errorMsg : " + status.getErrorMsg() + "\n\n");
+					Timer scrollTimer = new Timer();
+					TimerTask scrollTask = new TimerTask() {
+	
+						@Override
+						public void run() {
+							runOnUiThread(new Runnable() {
+	
+								public void run() {
+									outputScroller.smoothScrollTo(0, outputTextArea.getBottom());
+	
+								}
+							});
+	
+						}
+					};
+	
+					scrollTimer.schedule(scrollTask, 10);
+				}
+			}
+		});	
+	}
 }	

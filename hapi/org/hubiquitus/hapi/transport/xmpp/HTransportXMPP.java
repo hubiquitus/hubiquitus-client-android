@@ -25,7 +25,7 @@ import java.util.TimerTask;
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.transport.HTransport;
-import org.hubiquitus.hapi.transport.HTransportCallback;
+import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -54,7 +54,7 @@ import org.json.JSONObject;
 
 public class HTransportXMPP implements HTransport, ConnectionListener,PacketListener {
 
-	private HTransportCallback callback = null;
+	private HTransportDelegate callback = null;
 	private HTransportOptions options = null;
 	private Connection connection = null;
 	private ConnectionConfiguration config = null;
@@ -72,7 +72,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 	 * @param callback - see HTransportCallback for more informations
 	 * @param options - transport options
 	 */
-	public void connect(HTransportCallback callback, HTransportOptions options){	
+	public void connect(HTransportDelegate callback, HTransportOptions options){	
 		if (connection != null && connection.isConnected()) {
 			connection.disconnect();
 		}
@@ -123,7 +123,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 						try {
 							//try to login and update status
 							connection.login(localOptions.getUsername(), localOptions.getPassword(), localOptions.getResource());
-							updateStatus(ConnectionStatus.CONNECTED, null, null);
+							updateStatus(ConnectionStatus.CONNECTED, ConnectionError.NO_ERROR, null);
 							PacketFilter hserverPacketFilter = new FromContainsFilter(localOptions.getHserverService());
 							PacketFilter pubsubPacketFilter = new FromContainsFilter(localOptions.getPubsubService());
 							PacketFilter packetFilter = new OrFilter(hserverPacketFilter, pubsubPacketFilter);
@@ -185,7 +185,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 	public void updateStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
 		this.connectionStatus = status;
 		if (callback != null) {
-			callback.connectionCallback(status, error, errorMsg);
+			callback.onStatus(status, error, errorMsg);
 			if(this.connectionStatus == ConnectionStatus.DISCONNECTED) {
 				callback = null;
 			}
@@ -256,7 +256,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 						System.out.println("Received malformted JSon object from hserver in :" + this.getClass());
 					}
 					if(jsonObj != null) {
-						callback.dataCallback(packetExtention.getType(), jsonObj);
+						callback.onData(packetExtention.getType(), jsonObj);
 					} else {
 						System.out.println("Received malformted JSon object from hserver in :" + this.getClass());
 					}
@@ -290,7 +290,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 									System.err.println("error message :" + e.getMessage());
 								}
 								if(jsonObj != null) {
-									callback.dataCallback("hmessage", jsonObj);
+									callback.onData("hmessage", jsonObj);
 								} else {
 									System.out.println("Received malformted JSon object from pubsub in :" + this.getClass());
 								}

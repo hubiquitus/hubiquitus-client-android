@@ -26,10 +26,10 @@ import org.json.JSONObject;
 /**
  * @cond internal
  * @version 0.3
- * Interface of HTransportCallback
+ * Transport layer delegate to notify events
  */
 
-public interface HTransportCallback {
+public interface HTransportDelegate {
 	
 	/**
 	 * transport layer callback to return an update of connection status
@@ -38,13 +38,13 @@ public interface HTransportCallback {
 	 * @param error hapi error code
 	 * @param errorMsg low level error message
 	 */
-	public void connectionCallback(ConnectionStatus status, ConnectionError error, String errorMsg);
+	public void onStatus(ConnectionStatus status, ConnectionError error, String errorMsg);
 	
 	/**
-	 * transport layer callback to get received serialized hapi objects
+	 * transport layer callback to received serialized hapi objects
 	 * @param jsonData serialized hapi object
 	 */
-	public void dataCallback(String type, JSONObject jsonData); 
+	public void onData(String type, JSONObject jsonData); 
 }
 
 /**

@@ -47,7 +47,7 @@ import org.junit.Test;
  * @cond internal
  */
 
-public class HBuilderTest {
+/*public class HBuilderTest {
 	
 	@Test
 	public void HMessageBuildTest() {
@@ -400,7 +400,7 @@ public class HBuilderTest {
 		Assert.assertEquals(hmessage.getPayload().toString(),hmeasure.toString());
 	}
 }
-
+*/
 /**
  * @endcond
  */

@@ -39,7 +39,7 @@ import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.hStructures.ResultStatus;
 import org.hubiquitus.hapi.structures.JabberID;
 import org.hubiquitus.hapi.transport.HTransport;
-import org.hubiquitus.hapi.transport.HTransportCallback;
+import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketio;
 import org.hubiquitus.hapi.transport.xmpp.HTransportXMPP;
@@ -56,13 +56,15 @@ import org.json.JSONObject;
 public class HClient {
 	
 	private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED; /* only connecting, connected, diconnecting, disconnected */
-	@SuppressWarnings("unused")
 	private HOptions options = null;
 	private HTransportOptions transportOptions = null;
 	private HDelegate callback = null;
 	private HTransport transport;
 	
-	private TransportCallback transportCallback = new TransportCallback();
+	private HStatusDelegate statusDelegate = null;
+	private HMessageDelegate messageDelegate = null;
+	
+	private TransportDelegate transportDelegate= new TransportDelegate();
 	
 	public HClient() {
 		transportOptions = new HTransportOptions();
@@ -75,7 +77,7 @@ public class HClient {
 	 * @param callback - client callback to get api notifications
 	 * @param options
 	 */
-	public void connect(String publisher, String password, HDelegate callback, HOptions options) {
+	public void connect(String publisher, String password, HOptions options) {
 		boolean shouldConnect = false;
 		boolean connInProgress = false;
 		boolean disconInProgress = false;
@@ -96,17 +98,15 @@ public class HClient {
 		
 		if (shouldConnect) { //if not connected, then connect
 			
-			this.callback = callback;
-			
 			//notify connection
-			this.updateStatus(ConnectionStatus.CONNECTING, ConnectionError.NO_ERROR, null);
+			this.notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.NO_ERROR, null);
 			
 			//fill HTransportOptions
 			try {
 				this.fillHTransportOptions(publisher, password, options);
 			} catch (Exception e) { 
 				//stop connecting if filling error
-				this.updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.JID_MALFORMAT, e.getMessage());
+				this.notifyStatus(ConnectionStatus.DISCONNECTED, ConnectionError.JID_MALFORMAT, e.getMessage());
 				return;
 			}
 			
@@ -118,21 +118,21 @@ public class HClient {
 				if (this.transport == null || (this.transport.getClass() != HTransportSocketio.class)) {
 					this.transport = new HTransportSocketio();
 				}
-				this.transport.connect(transportCallback, this.transportOptions);
+				this.transport.connect(transportDelegate, this.transportOptions);
 			} else {
 				/*if (this.transport != null) { //check if other transport mode connect
 					this.transport.disconnect();
 				}*/
 				this.transport = new HTransportXMPP();
-				this.transport.connect(transportCallback, this.transportOptions);
+				this.transport.connect(transportDelegate, this.transportOptions);
 			}
 		} else {
 			if (connInProgress) {
-				updateStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, null);
+				notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, null);
 			} else if (disconInProgress) {
 				//updateStatus(ConnectionStatus.DISCONNECTING, ConnectionError.ALREADY_CONNECTED, null);
 			} else {
-				updateStatus(ConnectionStatus.CONNECTED, ConnectionError.ALREADY_CONNECTED, null);
+				notifyStatus(ConnectionStatus.CONNECTED, ConnectionError.ALREADY_CONNECTED, null);
 			}	
 		}
 	}
@@ -151,19 +151,41 @@ public class HClient {
 		}
 		
 		if(shouldDisconnect) {
-			updateStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
+			notifyStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
 			transport.disconnect();
 		} else if (connectInProgress) {
-			updateStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, "Can't disconnect while a connection is in progress");
+			notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, "Can't disconnect while a connection is in progress");
 		} else {
-			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
-			//remove callback
-			this.callback = null;
+			notifyStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
 		}
 		
 		
 	}
-
+	
+	/**
+	 * Status delegate receive all connection status events.
+	 * @param statusDelgate
+	 */
+	public void onStatus(HStatusDelegate statusDelgate) {
+		this.statusDelegate = statusDelgate;
+	}
+	
+	/**
+	 * Message delegate receive all incoming HMessage
+	 * @param messageDelegate
+	 */
+	public void onMessage(HMessageDelegate messageDelegate) {
+		this.messageDelegate = messageDelegate;
+	}
+	
+	/**
+	 * Get current connection status
+	 * @return
+	 */
+	public ConnectionStatus status() {
+		return this.connectionStatus;
+	}
+	
 	/**
 	 * Used to perform a command on an hubiquitus component : a hserver or a hubot.
 	 * @param cmd - name of the command
@@ -576,25 +598,32 @@ public class HClient {
 	 * @param error - error code
 	 * @param errorMsg - a low level description of the error
 	 */
-	private void updateStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
-		if (callback != null) {
-			connectionStatus = status;
-			//create structure 
-			HStatus hstatus = new HStatus();
-			hstatus.setStatus(status);
-			hstatus.setErrorCode(error);
-			hstatus.setErrorMsg(errorMsg);
-			
-			try {
-				callback.hDelegate("hstatus", hstatus);
-			} catch(Exception e) {
+	private void notifyStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
+		try {
+			if (this.statusDelegate != null) {
+				connectionStatus = status;
+				
+				//create structure 
+				final HStatus hstatus = new HStatus();
+				hstatus.setStatus(status);
+				hstatus.setErrorCode(error);
+				hstatus.setErrorMsg(errorMsg);
+				
+				//return status asynchronously
+				(new Thread(new Runnable() {
+					public void run() {
+						try {
+							statusDelegate.onStatus(hstatus);
+						} catch (Exception e) {
+							// TODO: Add a message to message logger
+							e.printStackTrace();
+						}
+					}
+				})).start();
 			}
-			
-			if(status == ConnectionStatus.DISCONNECTED) {
-				callback = null;
-			}
-		} else {
-			System.out.println("Error : " + this.getClass().getName() + " requires a callback");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: Add a message to message logger
 		}
 	}
 	
@@ -603,23 +632,22 @@ public class HClient {
 	 * @internal
 	 * Class used to get callbacks from transport layer.
 	 */
-	private class TransportCallback implements HTransportCallback {
+	private class TransportDelegate implements HTransportDelegate {
 
 		/**
 		 * @internal
-		 * see HTransportCallback for more informations
+		 * see HTransportDelegate for more informations
 		 */
-		public void connectionCallback(ConnectionStatus status,
-				ConnectionError error, String errorMsg) {
-			updateStatus(status, error, errorMsg);
+		public void onStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
+			notifyStatus(status, error, errorMsg);
 		}
 
 		/**
 		 * @internal
-		 * see HTransportCallback for more information
+		 * see HTransportDelegate for more information
 		 */
 		@Override
-		public void dataCallback(String type, JSONObject jsonData) {
+		public void onData(String type, JSONObject jsonData) {
 			try {
 				if(type.equalsIgnoreCase("hresult")) {
 					callback.hDelegate(type, new HResult(jsonData));
