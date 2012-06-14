@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.hubiquitus.hapi.client.HCommandDelegate;
 import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.client.HMessageDelegate;
@@ -32,6 +33,7 @@ import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
+import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.util.HJsonDictionnary;
 
@@ -47,7 +49,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class SimpleClientActivity extends Activity  implements HDelegate, HStatusDelegate, HMessageDelegate{
+public class SimpleClientActivity extends Activity  implements HStatusDelegate, HMessageDelegate, HCommandDelegate{
 	/** Called when the activity is first created. */
 
 	private String login;
@@ -211,13 +213,14 @@ public class SimpleClientActivity extends Activity  implements HDelegate, HStatu
 	}
 
 	public void initListenerhechoButton() {
+		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener()
 		{
 			public void onClick(View v) {
 				HJsonDictionnary params = new HJsonDictionnary();
 				params.put("text",MessageEditText.getText().toString());
 				HCommand cmd = new HCommand("hnode.hub.novediagroup.com", "hecho", params);
-				client.command(cmd);
+				client.command(cmd, outerClass);
 			}
 
 		};
@@ -225,24 +228,27 @@ public class SimpleClientActivity extends Activity  implements HDelegate, HStatu
 	}
 	
 	public void initListenerSubscribeButton() {
+		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				client.subscribe(channelIDText.getText().toString());
+				client.subscribe(channelIDText.getText().toString(), outerClass);
 			}
 		};
 		subscribeButton.setOnClickListener(listener);
 	}
 	
 	public void initListenerUnsubscribeButton() {
+		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				client.unsubscribe(channelIDText.getText().toString());
+				client.unsubscribe(channelIDText.getText().toString(), outerClass);
 			}
 		};
 		unsubscribeButton.setOnClickListener(listener);
 	}
 	
 	public void initListenerPublishButton() {
+		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
 				HMessage message = new HMessage();
@@ -260,25 +266,26 @@ public class SimpleClientActivity extends Activity  implements HDelegate, HStatu
 				HJsonDictionnary payload = new HJsonDictionnary();
 				payload.put("text",MessageEditText.getText().toString());
 				message.setPayload(payload);
-				client.publish(message);
+				client.publish(message, outerClass);
 			}
 		};
 		publishButton.setOnClickListener(listener);
 	}
 	
 	public void initListenerGetLastMessageButton() {
+		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
 				String chid = channelIDText.getText().toString();
 				try{
 					int nbLastMessage = Integer.parseInt(nbLastMessageText.getText().toString());
 					if(nbLastMessage > 0) {
-					client.getLastMessages(chid, nbLastMessage);
+						client.getLastMessages(chid, nbLastMessage, outerClass);
 					} else {
-					client.getLastMessages(chid);
+						client.getLastMessages(chid, outerClass);
 					}
 				} catch (Exception e) {
-					client.getLastMessages(chid);
+					e.printStackTrace();
 				}
 			}
 		};
@@ -286,21 +293,21 @@ public class SimpleClientActivity extends Activity  implements HDelegate, HStatu
 	}
 	
 	public void initListenerGetSubscriptionButton() {
+		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				client.getSubscriptions();
+				client.getSubscriptions(outerClass);
 			}
 		};
 		getSubcriptionButton.setOnClickListener(listener);
 	}
 	
-	public void hDelegate(final String type, final HJsonObj data) {
-		Log.i("DEBUG", "callback for type " + type + " with data " + data.toString());
+	public void onResult(final HResult result) {
 		runOnUiThread(new Runnable() {
 
 			public void run() {
 				if(true) {
-					outputTextArea.append("Type : " + type + "  data : " + data.toString() + "\n\n");
+					outputTextArea.append("HResult : " + result + "\n\n");
 					Timer scrollTimer = new Timer();
 					TimerTask scrollTask = new TimerTask() {
 	

@@ -34,5 +34,5 @@ public interface HCommandDelegate {
 	 * @param type
 	 * @param data
 	 */
-	public void onStatus(HResult result);
+	public void onResult(HResult result);
 }

@@ -19,6 +19,7 @@
 
 package org.hubiquitus.hapi.client;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
@@ -63,6 +64,7 @@ public class HClient {
 	
 	private HStatusDelegate statusDelegate = null;
 	private HMessageDelegate messageDelegate = null;
+	private Hashtable<String, HCommandDelegate> commandsDelegates = new Hashtable<String, HCommandDelegate>();
 	
 	private TransportDelegate transportDelegate= new TransportDelegate();
 	
@@ -189,50 +191,40 @@ public class HClient {
 	/**
 	 * Used to perform a command on an hubiquitus component : a hserver or a hubot.
 	 * @param cmd - name of the command
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
 	 * @return reqid
 	 */
-	public String command(HCommand cmd) {
-		String reqid = null;
-		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(cmd == null) {
-				cmd = new HCommand();
-			}
+	public void command(HCommand cmd, HCommandDelegate commandDelegate) {
+		if(this.connectionStatus == ConnectionStatus.CONNECTED && cmd != null) {
+			String reqid = null;
 			reqid = cmd.getReqid();
 			if(reqid == null) {
 				Random rand = new Random();
 				reqid = "javaCmd:" + rand.nextInt();
 				cmd.setReqid(reqid);
 			}
+			
 			if(cmd.getSender() == null) {
 				cmd.setSender(transportOptions.getJid().getFullJID());
 			}
+			
 			if(cmd.getTransient() == null) {
 				cmd.setTransient(true);
 			}
 			
 			if(cmd.getEntity() != null) {
+				if (commandDelegate != null) {
+					commandsDelegates.put(reqid, commandDelegate);
+				}
 				transport.sendObject(cmd.toJSON());
 			} else {
-				final HCommand command = cmd;
-				(new Thread(new Runnable() {
-					public void run() {
-						HJsonDictionnary obj = new HJsonDictionnary(); 
-						obj.put("errorMsg", "Entity not found");
-						HResult hresult = new HResult(command.getReqid(),command.getCmd(),obj);
-						hresult.setStatus(ResultStatus.MISSING_ATTR);
-						callback.hDelegate("hresult", hresult);
-					}
-				})).start();
+				this.notifyResultError(cmd.getReqid(), cmd.getCmd(), ResultStatus.MISSING_ATTR, "Entity not found");
 			}
-		} else if(callback != null){
-			(new Thread(new Runnable() {
-				public void run() {
-					HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not send hCommand. Not connected");
-					callback.hDelegate("hstatus", hstatus);
-				}
-			})).start();
+		} else if (cmd == null) {
+			this.notifyResultError(null, null, ResultStatus.MISSING_ATTR, "Provided cmd is null", commandDelegate);
+		} else {
+			this.notifyResultError(cmd.getReqid(), cmd.getCmd(), ResultStatus.NOT_CONNECTED, null);
 		}
-		return reqid;
 	}
 	
 	/**
@@ -240,34 +232,37 @@ public class HClient {
 	 * The hAPI performs a hCommand of type hsubscribe.
 	 * The server will check if not already subscribed and if authorized and subscribe him.
 	 * @param chid - channel id
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
 	 * @return request id
 	 */
-	public String subscribe(String chid) {
+	public void subscribe(String chid, HCommandDelegate commandDelegate) {
 		HJsonDictionnary params = new HJsonDictionnary();
 		params.put("chid", chid);
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hsubscribe", params);
-		return this.command(cmd);
+		this.command(cmd, commandDelegate);
 	}
 	
 	/**
 	 * Demands the server an unsubscription to the channel id.
 	 * The hAPI checks the current publisher’s subscriptions and if he is subscribed performs a hCommand of type hunsubscribe.
 	 * @param chid - channel id
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
 	 * @return request id
 	 */
-	public String unsubscribe(String chid) {
+	public void unsubscribe(String chid, HCommandDelegate commandDelegate) {
 		HJsonDictionnary params = new HJsonDictionnary();
 		params.put("chid", chid);
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hunsubscribe", params);
-		return this.command(cmd);
+		this.command(cmd, commandDelegate);
 	}
 	
 	/**
 	 * Perform a publish operation of the provided hMessage to a channel.
 	 * @param message
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
 	 * @return reqid
 	 */
-	public String publish(HMessage message) {
+	public void publish(HMessage message, HCommandDelegate commandDelegate) {
 		//fill mandatory fields
 		String msgid = message.getMsgid();
 		if(msgid == null) {
@@ -283,7 +278,7 @@ public class HClient {
 				
 		message.setConvid(convid);
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hpublish", message);
-		return this.command(cmd);				
+		this.command(cmd, commandDelegate);				
 	}
 	/**
 	 * Demands the hserver a list of the last messages saved for a dedicated channel.
@@ -295,36 +290,39 @@ public class HClient {
 	 * @warning HResult result type will be a JSonArray if successful
 	 * @param chid - channel id
 	 * @param nbLastMsg
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
 	 * @return request id
 	 */
-	public String getLastMessages(String chid, int nbLastMsg) {
+	public void getLastMessages(String chid, int nbLastMsg, HCommandDelegate commandDelegate) {
 		HJsonDictionnary params = new HJsonDictionnary();
 		params.put("chid", chid);
 		if(nbLastMsg > 0) {
 			params.put("nbLastMsg", nbLastMsg);
 		}
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hgetlastmessages", params);
-		return this.command(cmd);
+		this.command(cmd, commandDelegate);
 	}
 	
 	/**
 	 * @see getLastMessages(String chid, int nbLastMsg) 
 	 * @param chid - channel id
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
 	 * @return request id 
 	 */
-	public String getLastMessages(String chid) {
-		return this.getLastMessages(chid,-1);
+	public void getLastMessages(String chid, HCommandDelegate commandDelegate) {
+		this.getLastMessages(chid,-1, commandDelegate);
 	}
 	
 	/**
 	 * Demands the server a list of the publisher’s subscriptions.	
 	 * 
 	 * Nominal response : a hCallback with a hResult will be performed when the result is available with an array of channel id.
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
 	 * @return request id
 	 */
-	public String getSubscriptions() {
+	public void getSubscriptions(HCommandDelegate commandDelegate) {
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hgetsubscriptions", null);
-		return this.command(cmd);
+		this.command(cmd, commandDelegate);
 	}
 	
 	/* Builder */
@@ -653,6 +651,81 @@ public class HClient {
 		}
 	}
 	
+	/**
+	 * @internal
+	 * notify to a command delegate it's result
+	 */
+	private void notifyResult(final HResult result, final HCommandDelegate commandDelegate) {
+		try {
+			if (commandDelegate != null) {
+				
+				//return result asynchronously
+				(new Thread(new Runnable() {
+					public void run() {
+						try {
+							commandDelegate.onResult(result);
+						} catch (Exception e) {
+							// TODO: Add a message to message logger
+							e.printStackTrace();
+						}
+					}
+				})).start();
+			} else {
+				// TODO: add a message to logger in debug mode to know which results are dropped
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: Add a message to message logger
+		}
+	}
+	
+	/**
+	 * @internal
+	 * notify to a command delegate it's result
+	 * internally calls notifyResult(final HResult result, HCommandDelegate commandDelegate) with
+	 * the right delegate
+	 */
+	private void notifyResult(final HResult result) {
+		HCommandDelegate commandDelegate = commandsDelegates.get(result.getReqid());
+		notifyResult(result, commandDelegate);
+	}
+	
+	/**
+	 * Helper function to return a hresult with a payload error
+	 * @param resultstatus
+	 * @param errorMsg
+	 */
+	private void notifyResultError(String reqid, String cmd, ResultStatus resultstatus, String errorMsg) {
+		HJsonDictionnary obj = new HJsonDictionnary(); 
+		obj.put("errorMsg", errorMsg);
+		HResult hresult = new HResult();
+		hresult.setResult(obj);
+		hresult.setStatus(resultstatus);
+		
+		hresult.setReqid(reqid);
+		hresult.setCmd(cmd);
+		
+		this.notifyResult(hresult);
+	}
+	
+	/**
+	 * Helper function to return a hresult with a payload error
+	 * @param resultstatus
+	 * @param errorMsg
+	 */
+	private void notifyResultError(String reqid, String cmd, ResultStatus resultstatus, String errorMsg, HCommandDelegate commandDelegate) {
+		HJsonDictionnary obj = new HJsonDictionnary(); 
+		obj.put("errorMsg", errorMsg);
+		HResult hresult = new HResult();
+		hresult.setResult(obj);
+		hresult.setStatus(resultstatus);
+		
+		hresult.setReqid(reqid);
+		hresult.setCmd(cmd);
+		
+		this.notifyResult(hresult, commandDelegate);
+	}
+	
 
 	/**
 	 * @internal
@@ -676,7 +749,7 @@ public class HClient {
 		public void onData(String type, JSONObject jsonData) {
 			try {
 				if(type.equalsIgnoreCase("hresult")) {
-					callback.hDelegate(type, new HResult(jsonData));
+					notifyResult(new HResult(jsonData));
 				} else if (type.equalsIgnoreCase("hmessage")) {
 					notifyMessage(new HMessage(jsonData));
 				}
