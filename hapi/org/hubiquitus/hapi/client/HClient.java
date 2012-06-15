@@ -330,15 +330,15 @@ public class HClient {
 	 * Helper to create hmessage
 	 * @see HMessage
 	 * @param chid - channel id : mandatory
-	 * @param type : mandatory
-	 * @param payload : mandatory
+	 * @param type
+	 * @param payload
 	 * @param options
 	 * @return hMessage
 	 */
 	/*public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && type != null && payload != null) {
+			if(chid != null && chid.length() > 0) {
 				hmessage.setChid(chid);
 				hmessage.setConvid(options.getConvid());
 				hmessage.setType(type);
@@ -363,7 +363,7 @@ public class HClient {
 						hresult.setCmd("publish");
 						hresult.setStatus(ResultStatus.MISSING_ATTR);
 						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut");
+						result.put("error", "missing attribut : chid");
 						hresult.setResult(result);
 						callback.hDelegate("hresult", hresult);
 					}
@@ -385,15 +385,15 @@ public class HClient {
 	/**
 	 * Helper to create hconv
 	 * @param chid - channel id : mandatory
-	 * @param topic : mandatory
-	 * @param participants : mandatory
+	 * @param topic
+	 * @param participants
 	 * @param options
 	 * @return hmessage
 	 */
 	/*public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && topic != null && participants != null) {
+			if(chid != null  && chid.length()>0) {
 				HConv hconv = new HConv();
 				hconv.setTopic(topic);
 				hconv.setParticipants(participants);
@@ -405,7 +405,7 @@ public class HClient {
 						hresult.setCmd("publish");
 						hresult.setStatus(ResultStatus.MISSING_ATTR);
 						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut");
+						result.put("error", "missing attribut : chid");
 						hresult.setResult(result);
 						callback.hDelegate("hresult", hresult);
 					}
@@ -435,7 +435,7 @@ public class HClient {
 	/*public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && ackid != null && ack != null) {
+			if(chid != null && chid.length()>0 && ackid != null && ackid.length()>0 && ack != null) {
 				HAck hack = new HAck();
 				hack.setAckid(ackid);
 				hack.setAck(ack);
@@ -447,7 +447,7 @@ public class HClient {
 						hresult.setCmd("publish");
 						hresult.setStatus(ResultStatus.MISSING_ATTR);
 						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut");
+						result.put("error", "missing attribut : chid, ackid or ack");
 						hresult.setResult(result);
 						callback.hDelegate("hresult", hresult);
 					}
@@ -476,7 +476,7 @@ public class HClient {
 	/*public HMessage buildAlert(String chid, String alert, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && alert != null) {
+			if(chid != null && chid.length()>0 && alert != null  && alert.length()>0) {
 			HAlert halert = new HAlert();
 			halert.setAlert(alert);
 			hmessage = buildMessage(chid, "halert", halert, options);
@@ -487,7 +487,7 @@ public class HClient {
 						hresult.setCmd("publish");
 						hresult.setStatus(ResultStatus.MISSING_ATTR);
 						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut");
+						result.put("error", "missing attribut : chid or alert");
 						hresult.setResult(result);
 						callback.hDelegate("hresult", hresult);
 					}
@@ -517,7 +517,8 @@ public class HClient {
 	/*public HMessage buildMeasure(String chid, String value, String unit, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && value != null && unit != null) {
+			if(chid != null && chid.length() > 0 && value != null 
+				&& value.length() > 0 && unit != null && unit.length() > 0) {
 				HMeasure hmeasure = new HMeasure();
 				hmeasure.setValue(value);
 				hmeasure.setUnit(unit);
@@ -529,7 +530,7 @@ public class HClient {
 						hresult.setCmd("publish");
 						hresult.setStatus(ResultStatus.MISSING_ATTR);
 						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut");
+						result.put("error", "missing attribut : chid, value or unit");
 						hresult.setResult(result);
 						callback.hDelegate("hresult", hresult);
 					}
@@ -744,7 +745,6 @@ public class HClient {
 		 * @internal
 		 * see HTransportDelegate for more information
 		 */
-		@Override
 		public void onData(String type, JSONObject jsonData) {
 			try {
 				if(type.equalsIgnoreCase("hresult")) {
