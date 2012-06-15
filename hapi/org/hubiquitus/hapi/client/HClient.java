@@ -309,7 +309,7 @@ public class HClient {
 	 * @return request id 
 	 */
 	public void getLastMessages(String chid, HCommandDelegate commandDelegate) {
-		this.getLastMessages(chid, options.getNbLastMessage(), commandDelegate);
+		this.getLastMessages(chid,-1, commandDelegate);
 	}
 	
 	/**
