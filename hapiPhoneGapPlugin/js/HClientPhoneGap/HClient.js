@@ -49,10 +49,8 @@ define(
 					},
 					
 
-					command: function(hCommand){
-						hCommand.reqid = hCommand.reqid || 'jscommand' + Math.floor(Math.random()*100001);
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'command', [{hcommand: hCommand}]);
-						return hCommand.reqid;
+					command: function(hCommand, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'command', [{hcommand: hCommand, callback: String(callback)}]);
 					},
 
 					subscribe : function(channel){

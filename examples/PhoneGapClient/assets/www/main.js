@@ -90,7 +90,8 @@ function send_hEcho(){
             params : {hello : value},
             transient : !!document.getElementById("transientCheckBox").checked
         };
-        hClient.command(echoCmd, console.log);
+        var fct = function (hresult) {onResult(hresult)};
+        hClient.command(echoCmd, fct);
     }
 
 }
@@ -206,7 +207,10 @@ function onStatus(hStatus){
     document.getElementById("status").innerHTML = 'Status: ' + status + ' / ' + error;
 }
 
+function onResult(hresult) {
+	document.getElementById("results").innerHTML = JSON.stringify(hresult);
+}
+
 function onMessage(hMessage){
-    console.log('Received hMessage', hMessage);
     document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
 }

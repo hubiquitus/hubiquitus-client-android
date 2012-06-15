@@ -21,13 +21,16 @@ package org.hubiquitus.hapi.phonegap;
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
 import org.hubiquitus.hapi.client.HClient;
+import org.hubiquitus.hapi.client.HCommandDelegate;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
+import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
+import org.jivesoftware.smack.filter.NotFilter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -191,13 +194,17 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		try {
 			jsonObj = data.getJSONObject(0);
 			jsonCmd = (JSONObject)jsonObj.get("hcommand");
+			final String cmdCallback = (String)jsonObj.get("callback");
 			cmd = new HCommand(jsonCmd);
+			
+			//set the callback
+			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
+			
+			hclient.command(cmd, commandDelegate);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		Log.i("Debug","Command : " + cmd);
-		//hclient.command(cmd);
+		}
+		
 	}
 	
 	/**
@@ -266,34 +273,29 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		notifyJsCallback("hClient.onMessage", message.toJSON().toString());		
 	}
 	
-	
-	
-	
 	/**
-	 * Receives HClient callbacks, convert them to JSONObject and send them throught javascript to js callback
+	 * Command delegate for all js commands. call the right js callback
+	 *
 	 */
-	//@Override
-	/*public void hDelegate(final String type, final HJsonObj data) {
-		//do callback on main thread
-		this.webView.post(new Runnable() {
-			
-			public void run() {
-				//update javascript connection status if needed
-				if (type.equalsIgnoreCase("hstatus")) {
-					HStatus hStatusData = (HStatus)data;
-					String jsConnStatusCallback = "hClient._connectionStatus = " + hStatusData.getStatus().value() + ";"; 
-					sendJavascript(jsConnStatusCallback);
-				}
-				
-				//send callback through javascript
-			 	JSONObject jsonCallback = data.toJSON();
-			 	String jsCallbackFct = "var tmpcallback = " + jsHClientCallback + "; tmpcallback({type: \"" + type + "\",data: " + jsonCallback.toString() + "});";
-			 	sendJavascript(jsCallbackFct);
-			}
-		});	
-		
-	}*/
+	private class CommandsDelegate implements HCommandDelegate {
 
+		private String cmdCallback = null;
+		
+		/**
+		 * Init with js callback function
+		 * @param cmdCallback
+		 */
+		public CommandsDelegate(String cmdCallback) {
+			this.cmdCallback = cmdCallback;
+		}
+		
+		@Override
+		public void onResult(HResult result) {
+			notifyJsCallback("var tmpcallback = " + this.cmdCallback + "; tmpcallback", result.toJSON().toString());	
+			
+		}
+		
+	}
 }
 
 /**
