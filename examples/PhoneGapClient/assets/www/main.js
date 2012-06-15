@@ -33,9 +33,13 @@ function connect(){
         transport: transport,
         endpoints: endpoints
     };
+
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
-    hClient.connect(username, password, hCallback, hOptions);
+
+    hClient.onMessage = onMessage;
+    hClient.onStatus = onStatus;
+    hClient.connect(username, password, hOptions);
 }
 
 function disconnect(){
@@ -47,42 +51,47 @@ function publish(){
     var msg = document.getElementById('hMessage').value;
     hClient.publish(hClient.buildMessage(chid, 'string', msg, {
         transient: !!document.getElementById("hMessageTransient").checked
-    }));
+    }), console.log);
 }
 
 function subscribe(){
     var chid = document.getElementById('chid').value;
-    hClient.subscribe(chid)
+    hClient.subscribe(chid, console.log)
 }
 
 function unsubscribe(){
     var chid = document.getElementById('chid').value;
-    hClient.unsubscribe(chid)
+    hClient.unsubscribe(chid, console.log)
 }
 
 function get_messages(){
     var chid = document.getElementById('chid').value;
     var quantity = prompt('Max Messages (can be empty):');
-    hClient.getLastMessages(chid, quantity);
+    hClient.getLastMessages(chid, quantity, console.log);
 }
 
 function get_subscriptions(){
-    hClient.getSubscriptions();
+    hClient.getSubscriptions(console.log);
 }
 
 function clear_divs(){
-    document.getElementById("status").innerHTML = '';
+    document.getElementById("status").innerHTML = 'Status: ';
     document.getElementById("fetched").innerHTML = '';
 }
 
 function send_hEcho(){
-    var value = prompt('Your Name:');
-    var echoCmd = {
-        entity : 'hnode.' + 'hub.novediagroup.com',
-        cmd : 'hecho',
-        params : {hello : value}
-    };
-    hClient.command(echoCmd);
+    if(!hClient.publisher || hClient.publisher.split('@').length != 2)
+        alert('Please connect before trying to send an hEcho');
+    else{
+        var value = prompt('Your Name:');
+        var echoCmd = {
+            entity : 'hnode.' + hClient.publisher.split('@')[1],
+            cmd : 'hEcho',
+            params : {hello : value},
+            transient : !!document.getElementById("transientCheckBox").checked
+        };
+        hClient.command(echoCmd, console.log);
+    }
 
 }
 
@@ -90,26 +99,38 @@ function build_measure(){
     var value = prompt('Value:');
     var unit = prompt('Unit:');
     var chid = prompt('Channel:');
-    var hMessage = hClient.buildMeasure(chid, value, unit);
+    var hMessage = hClient.buildMeasure(chid, value, unit, {
+        transient: !!document.getElementById("hMessageTransient").checked
+    });
     if(hMessage)
-        document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+        console.log('Created hMessage', hMessage);
+    if(document.getElementById("sendBuiltMessage").checked)
+        hClient.publish(hMessage, console.log);
 }
 
 function build_alert(){
     var alert = prompt('Alert:');
     var chid = prompt('Channel:');
-    var hMessage = hClient.buildAlert(chid, alert);
+    var hMessage = hClient.buildAlert(chid, alert, {
+        transient: !!document.getElementById("hMessageTransient").checked
+    });
     if(hMessage)
-        document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+        console.log('Created hMessage', hMessage);
+    if(document.getElementById("sendBuiltMessage").checked)
+        hClient.publish(hMessage, console.log);
 }
 
 function build_ack(){
     var ackID = prompt('AckID:');
     var ack= prompt('Ack (recv|read):');
     var chid = prompt('Channel:');
-    var hMessage = hClient.buildAck(chid, ackID, ack);
+    var hMessage = hClient.buildAck(chid, ackID, ack, {
+        transient: !!document.getElementById("hMessageTransient").checked
+    });
     if(hMessage)
-        document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+        console.log('Created hMessage', hMessage);
+    if(document.getElementById("sendBuiltMessage").checked)
+        hClient.publish(hMessage, console.log);
 }
 
 function build_conv(){
@@ -117,73 +138,75 @@ function build_conv(){
     var participants = prompt('Participants (comma separated):');
     participants = participants.replace(/ /g, '').split(',');
     var chid = prompt('Channel:');
-    var hMessage = hClient.buildConv(chid, topic, participants);
+    var hMessage = hClient.buildConv(chid, topic, participants, {
+        transient: !!document.getElementById("hMessageTransient").checked
+    });
     if(hMessage)
-        document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+        console.log('Created hMessage', hMessage);
+    if(document.getElementById("sendBuiltMessage").checked)
+        hClient.publish(hMessage, console.log);
 }
 
-function hCallback(msg){
-    console.log(JSON.stringify(msg));
-    var status = '';
-    var error = '';
-    console.log("A Call back has arrived : " + msg);
-    if(msg.type.toLowerCase() == 'hstatus'){
-        switch(msg.data.status){
-            case hClient.status.CONNECTED:
-                status = 'Connected';
-                break;
-            case hClient.status.CONNECTING:
-                status = 'Connecting';
-                break;
-            case hClient.status.REATTACHING:
-                status = 'Reattaching';
-                break;
-            case hClient.status.REATTACHED:
-                status = 'Reattached';
-                break;
-            case hClient.status.DISCONNECTING:
-                status = 'Disconnecting';
-                break;
-            case hClient.status.DISCONNECTED:
-                status = 'Disconnected';
-                break;
-        }
+function onStatus(hStatus){
+    console.log('Received hStatus', hStatus);
+    var status,error;
 
-        switch(msg.data.errorCode){
-            case hClient.errors.NO_ERROR:
-                error = 'No Error Detected';
-                break;
-            case hClient.errors.JID_MALFORMAT:
-                error = 'JID Malformat';
-                break;
-            case hClient.errors.CONN_TIMEOUT:
-                error = 'Connection timed out';
-                break;
-            case hClient.errors.AUTH_FAILED:
-                error = 'Authentication failed';
-                break;
-            case hClient.errors.ATTACH_FAILED:
-                error = 'Attach failed';
-                break;
-            case hClient.errors.ALREADY_CONNECTED:
-                error = 'A connection is already opened';
-                break;
-            case hClient.errors.TECH_ERROR:
-                error = 'Technical Error: ';
-                error += msg.data.errorMsg;
-                break;
-            case hClient.errors.NOT_CONNECTED:
-                error = 'Not connected';
-                break;
-            case hClient.errors.CONN_PROGRESS:
-                error = 'A connection is already in progress';
-                break;
-        }
-
-        document.getElementById("status").innerHTML = JSON.stringify(status + '<br />' + error);
+    switch(hStatus.status){
+        case hClient.statuses.CONNECTED:
+            status = 'Connected';
+            break;
+        case hClient.statuses.CONNECTING:
+            status = 'Connecting';
+            break;
+        case hClient.statuses.REATTACHING:
+            status = 'Reattaching';
+            break;
+        case hClient.statuses.REATTACHED:
+            status = 'Reattached';
+            break;
+        case hClient.statuses.DISCONNECTING:
+            status = 'Disconnecting';
+            break;
+        case hClient.statuses.DISCONNECTED:
+            status = 'Disconnected';
+            break;
     }
-    else if (msg.type.toLowerCase() == 'hresult')
-        document.getElementById("fetched").innerHTML = JSON.stringify(msg.data);
-    else if (msg.type.toLowerCase() == 'hmessage')
-        document.getElementById("fetched").innerHTML = JSON.stringify(msg.data);
+
+    switch(hStatus.errorCode){
+        case hClient.errors.NO_ERROR:
+            error = 'No Error Detected';
+            break;
+        case hClient.errors.JID_MALFORMAT:
+            error = 'JID Malformat';
+            break;
+        case hClient.errors.CONN_TIMEOUT:
+            error = 'Connection timed out';
+            break;
+        case hClient.errors.AUTH_FAILED:
+            error = 'Authentication failed';
+            break;
+        case hClient.errors.ATTACH_FAILED:
+            error = 'Attach failed';
+            break;
+        case hClient.errors.ALREADY_CONNECTED:
+            error = 'A connection is already opened';
+            break;
+        case hClient.errors.TECH_ERROR:
+            error = 'Technical Error: ';
+            error += hStatus.errorMsg;
+            break;
+        case hClient.errors.NOT_CONNECTED:
+            error = 'Not connected';
+            break;
+        case hClient.errors.CONN_PROGRESS:
+            error = 'A connection is already in progress';
+            break;
+    }
+
+    document.getElementById("status").innerHTML = 'Status: ' + status + ' / ' + error;
+}
+
+function onMessage(hMessage){
+    console.log('Received hMessage', hMessage);
+    document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
 }

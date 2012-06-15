@@ -33,8 +33,7 @@ define(
 			};
 
 			HClient.prototype = {
-					connect : function(publisher, password, hCallback, hOptions){
-						this.hCallback = hCallback;
+					connect : function(publisher, password, hOptions){
 						this.publisher = publisher;
 						this.options = hOptions;
 						
@@ -42,13 +41,13 @@ define(
 						var jid = publisher.split('@');
 						this.domain = jid[1];
 						
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [{publisher: publisher, password: password, callback: String(hCallback), options:hOptions}]);
+						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [{publisher: publisher, password: password, options:hOptions}]);
 					},
 					disconnect : function(){
-						this.hCallback = null;
 						this.publisher = null;
 						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'disconnect', []);
 					},
+					
 
 					command: function(hCommand){
 						hCommand.reqid = hCommand.reqid || 'jscommand' + Math.floor(Math.random()*100001);
@@ -229,7 +228,7 @@ define(
 					},
 
 					errors: codes.errors,
-					status: codes.statuses,
+					statuses: codes.statuses,
 					hResultStatus: codes.hResultStatus
 			};
 

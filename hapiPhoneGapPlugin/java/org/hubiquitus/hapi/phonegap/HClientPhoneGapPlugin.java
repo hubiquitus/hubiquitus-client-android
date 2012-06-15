@@ -20,8 +20,8 @@ package org.hubiquitus.hapi.phonegap;
 
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
-import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
+import org.hubiquitus.hapi.client.HStatusDelegate;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
@@ -37,10 +37,10 @@ import android.util.Log;
  * @cond internal
  */
 
-public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
+public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate {
 
 	private HClient hclient = null;
-	private String jsHClientCallback = null;
+	//private String jsHClientCallback = null;
 	
 	/**
 	 * Receive actions from phonegap and dispatch them to the corresponding function
@@ -50,6 +50,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 		//First of all, create hclient instance
 		if(hclient == null)  {
 			hclient = new HClient();
+			hclient.onStatus(this);
 		}
 		
 		//do work depending on action
@@ -81,7 +82,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 	 * @param callbackid
 	 */
 	public void getSubscriptions(String action, JSONArray data, String callbackid) {
-		hclient.getSubscriptions();
+		//hclient.getSubscriptions();
 	}
 	
 	/**
@@ -108,9 +109,9 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 		}
 		
 		if (nbLastMsg < 0) {
-			hclient.getLastMessages(chid);
+			//hclient.getLastMessages(chid);
 		} else {
-			hclient.getLastMessages(chid, nbLastMsg);
+			//hclient.getLastMessages(chid, nbLastMsg);
 		}
 	}
 	
@@ -131,7 +132,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 			e.printStackTrace();
 		} 
 		
-		hclient.unsubscribe(chid);
+		//hclient.unsubscribe(chid);
 	}
 
 	/**
@@ -153,7 +154,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 			e.printStackTrace();
 		} 
 		
-		hclient.publish(msg);
+		//hclient.publish(msg);
 	}
 	
 	/**
@@ -173,7 +174,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 			e.printStackTrace();
 		} 
 		
-		hclient.subscribe(chid);
+		//hclient.subscribe(chid);
 	}
 
 	/**
@@ -195,7 +196,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 			e.printStackTrace();
 		} 
 		Log.i("Debug","Command : " + cmd);
-		hclient.command(cmd);
+		//hclient.command(cmd);
 	}
 	
 	/**
@@ -217,14 +218,12 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 	public void connect(String action, JSONArray data, String callbackid) {
 		String publisher = null;
 		String password = null;
-		String callback = null;
 		HOptions options = null;
 		try {
 			//get vars
 			JSONObject jsonObj = data.getJSONObject(0); 
 			publisher = jsonObj.getString("publisher");
 			password = jsonObj.getString("password");
-			callback = jsonObj.getString("callback");
 			JSONObject jsonOptions = (JSONObject) jsonObj.get("options");
 			options = new HOptions(jsonOptions);
 		} catch (Exception e) {
@@ -232,18 +231,44 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 		}
 		
 		//set callback
-		jsHClientCallback = callback;
-		hclient.connect(publisher, password, this, options);
+		hclient.connect(publisher, password, options);
 		//hclient.connect(publisher, password, this, new HOptions());
 	}
+
+	/**
+	 * Helper fonction, that will call a jsCallback with an argument (model used in hapi);
+	 * @param callback
+	 * @param arg
+	 */
+	private void notifyJsCallback(final String jsCallback, final String arg) {
+		if (jsCallback != null && jsCallback.length() > 0) {
+			
+			//do callback on main thread
+			this.webView.post(new Runnable() {
+
+				public void run() {
+					//send callback through javascript
+					String jsCallbackFct = jsCallback + "(" + arg + ");";
+					sendJavascript(jsCallbackFct);
+				}
+			});	
+		}
+	}
 	
-	/** HDelegate interface */
+	@Override
+	public void onStatus(HStatus status) {
+		Log.i("DEBUG", "on status " + status);
+		notifyJsCallback("hClient.onStatus", status.toJSON().toString());
+	}
+	
+	
+	
 	
 	/**
 	 * Receives HClient callbacks, convert them to JSONObject and send them throught javascript to js callback
 	 */
-	@Override
-	public void hDelegate(final String type, final HJsonObj data) {
+	//@Override
+	/*public void hDelegate(final String type, final HJsonObj data) {
 		//do callback on main thread
 		this.webView.post(new Runnable() {
 			
@@ -262,7 +287,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HDelegate {
 			}
 		});	
 		
-	}
+	}*/
 
 }
 
