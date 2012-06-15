@@ -59,7 +59,6 @@ public class HClient {
 	private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED; /* only connecting, connected, diconnecting, disconnected */
 	private HOptions options = null;
 	private HTransportOptions transportOptions = null;
-	private HDelegate callback = null;
 	private HTransport transport;
 	
 	private HStatusDelegate statusDelegate = null;
@@ -336,7 +335,7 @@ public class HClient {
 	 * @param options
 	 * @return hMessage
 	 */
-	public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOptions options) {
+	/*public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			if(chid != null && type != null && payload != null) {
@@ -381,7 +380,7 @@ public class HClient {
 			}
 		}
 		return hmessage;
-	}
+	}*/
 	
 	/**
 	 * Helper to create hconv
@@ -391,7 +390,7 @@ public class HClient {
 	 * @param options
 	 * @return hmessage
 	 */
-	public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOptions options) {
+	/*public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			if(chid != null && topic != null && participants != null) {
@@ -423,7 +422,7 @@ public class HClient {
 			}
 		}
 		return hmessage;
-	}
+	}*/
 	
 	/**
 	 * Helper to create hack
@@ -433,7 +432,7 @@ public class HClient {
 	 * @param options
 	 * @return hmessage
 	 */
-	public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOptions options) {
+	/*public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			if(chid != null && ackid != null && ack != null) {
@@ -465,7 +464,7 @@ public class HClient {
 			}
 		}
 		return hmessage;
-	}
+	}*/
 	
 	/**
 	 * Helper to create halert
@@ -474,7 +473,7 @@ public class HClient {
 	 * @param options
 	 * @return hmessage
 	 */
-	public HMessage buildAlert(String chid, String alert, HMessageOptions options) {
+	/*public HMessage buildAlert(String chid, String alert, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			if(chid != null && alert != null) {
@@ -505,7 +504,7 @@ public class HClient {
 			}
 		}
 		return hmessage;
-	}
+	}*/
 	
 	/**
 	 * Helper to create hmeasure
@@ -515,7 +514,7 @@ public class HClient {
 	 * @param options
 	 * @return hmessage
 	 */
-	public HMessage buildMeasure(String chid, String value, String unit, HMessageOptions options) {
+	/*public HMessage buildMeasure(String chid, String value, String unit, HMessageOptions options) {
 		HMessage hmessage = new HMessage();
 		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
 			if(chid != null && value != null && unit != null) {
@@ -547,7 +546,7 @@ public class HClient {
 			}
 		}
 		return hmessage;
-	}
+	}*/
 	/* HTransportCallback functions */
 
 	/**

@@ -25,7 +25,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.hubiquitus.hapi.client.HCommandDelegate;
-import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;

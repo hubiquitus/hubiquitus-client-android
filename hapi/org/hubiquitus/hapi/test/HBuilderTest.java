@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.hubiquitus.hapi.client.HClient;
-import org.hubiquitus.hapi.client.HDelegate;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HAck;
 import org.hubiquitus.hapi.hStructures.HAckValue;
