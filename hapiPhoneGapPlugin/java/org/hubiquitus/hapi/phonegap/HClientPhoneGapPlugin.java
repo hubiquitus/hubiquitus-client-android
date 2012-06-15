@@ -21,6 +21,7 @@ package org.hubiquitus.hapi.phonegap;
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
 import org.hubiquitus.hapi.client.HClient;
+import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HMessage;
@@ -37,10 +38,9 @@ import android.util.Log;
  * @cond internal
  */
 
-public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate {
+public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HMessageDelegate {
 
 	private HClient hclient = null;
-	//private String jsHClientCallback = null;
 	
 	/**
 	 * Receive actions from phonegap and dispatch them to the corresponding function
@@ -51,6 +51,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate {
 		if(hclient == null)  {
 			hclient = new HClient();
 			hclient.onStatus(this);
+			hclient.onMessage(this);
 		}
 		
 		//do work depending on action
@@ -257,8 +258,12 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate {
 	
 	@Override
 	public void onStatus(HStatus status) {
-		Log.i("DEBUG", "on status " + status);
 		notifyJsCallback("hClient.onStatus", status.toJSON().toString());
+	}
+
+	@Override
+	public void onMessage(HMessage message) {
+		notifyJsCallback("hClient.onMessage", message.toJSON().toString());		
 	}
 	
 	
