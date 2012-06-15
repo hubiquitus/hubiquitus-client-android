@@ -53,56 +53,24 @@ define(
 						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'command', [{hcommand: hCommand, callback: String(callback)}]);
 					},
 
-					subscribe : function(channel){
-						var hServer = this.options.hServer || "hnode";
-						var hCommand = {
-			                    entity: hServer + '.' + this.domain,
-			                    cmd: 'hSubscribe',
-			                    params: {chid: channel}
-			                };
-			            return this.command(hCommand);
+					subscribe : function(channel, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'subscribe', [{chid: channel, callback: String(callback)}]);
 					},
 
-					unsubscribe : function(channel){
-						var hServer = this.options.hServer || "hnode";
-						var hCommand = {
-			                    entity: hServer + '.' + this.domain,
-			                    cmd: 'hUnsubscribe',
-			                    params: {chid: channel}
-			                };
-			            return this.command(hCommand);
+					unsubscribe : function(channel, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'unsubscribe', [{chid: channel, callback: String(callback)}]);
 					},
 
-					publish : function(hMessage){
-						var hServer = this.options.hServer || "hnode";
-						var hCommand = {
-			                    entity: hServer + '.' + this.domain,
-			                    cmd: 'hPublish',
-			                    params: hMessage
-			                };
-			               return this.command(hCommand);
+					publish : function(hmessage, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'publish', [{hmessage: hmessage, callback: String(callback)}]);
 					},
 
-					getSubscriptions: function(){
-						var hServer = this.options.hServer || "hnode";
-						var hCommand = {
-			                    entity: hServer + '.' + this.domain,
-			                    cmd: 'hGetSubscriptions'
-			                };
-			            return this.command(hCommand);
+					getSubscriptions: function(callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getSubscriptions', [{callback: String(callback)}]);
 					},
 
-					getLastMessages: function(chid, quantity){
-						var hServer = this.options.hServer || "hnode";
-						var hCommand = {
-			                    entity: hServer + '.' + this.domain,
-			                    cmd: 'hGetLastMessages',
-			                    params: {
-			                        chid: chid,
-			                        nbLastMsg: quantity
-			                    }
-			                };
-			            return this.command(hCommand);
+					getLastMessages: function(chid, quantity, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getLastMessages', [{chid: chid, nbLastMsg: quantity, callback: String(callback)}]);
 					},
 
 					buildMessage: function(chid, type, payload, options){

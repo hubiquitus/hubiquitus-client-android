@@ -49,34 +49,41 @@ function disconnect(){
 function publish(){
     var chid = document.getElementById('chid').value;
     var msg = document.getElementById('hMessage').value;
-    hClient.publish(hClient.buildMessage(chid, 'string', msg, {
+    var fct = function (hresult) {onResult(hresult)};
+    /*hClient.publish(hClient.buildMessage(chid, 'string', msg, {
         transient: !!document.getElementById("hMessageTransient").checked
-    }), console.log);
+    }), fct);*/
+    hClient.publish(null, fct);
 }
 
 function subscribe(){
     var chid = document.getElementById('chid').value;
-    hClient.subscribe(chid, console.log)
+    var fct = function (hresult) {onResult(hresult)};
+    hClient.subscribe(chid, fct)
 }
 
 function unsubscribe(){
     var chid = document.getElementById('chid').value;
-    hClient.unsubscribe(chid, console.log)
+    var fct = function (hresult) {onResult(hresult)};
+    hClient.unsubscribe(chid, fct)
 }
 
 function get_messages(){
     var chid = document.getElementById('chid').value;
     var quantity = prompt('Max Messages (can be empty):');
-    hClient.getLastMessages(chid, quantity, console.log);
+    var fct = function (hresult) {onResult(hresult)};
+    hClient.getLastMessages(chid, quantity, fct);
 }
 
 function get_subscriptions(){
-    hClient.getSubscriptions(console.log);
+	var fct = function (hresult) {onResult(hresult)};
+    hClient.getSubscriptions(fct);
 }
 
 function clear_divs(){
     document.getElementById("status").innerHTML = 'Status: ';
-    document.getElementById("fetched").innerHTML = '';
+    document.getElementById("hmessage").innerHTML = '';
+    document.getElementById("resultsDiv").innerHTML = '';
 }
 
 function send_hEcho(){
@@ -208,9 +215,9 @@ function onStatus(hStatus){
 }
 
 function onResult(hresult) {
-	document.getElementById("results").innerHTML = JSON.stringify(hresult);
+	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hresult);
 }
 
 function onMessage(hMessage){
-    document.getElementById("fetched").innerHTML = JSON.stringify(hMessage);
+    document.getElementById("hmessage").innerHTML = JSON.stringify(hMessage);
 }
