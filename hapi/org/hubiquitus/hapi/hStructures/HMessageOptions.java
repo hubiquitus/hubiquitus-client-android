@@ -37,6 +37,7 @@ public class HMessageOptions {
 	private String author = null;
 	private List<HJsonObj> headers = null;
 	private Calendar published = null;
+	
 	/**
 	 * @return conversation id. NULL if undefined 
 	 */

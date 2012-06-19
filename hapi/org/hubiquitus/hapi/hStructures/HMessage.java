@@ -43,7 +43,7 @@ public class HMessage implements HJsonObj {
 	}
 	
 	public HMessage(JSONObject jsonObj) {
-		this.hmessage = jsonObj;
+		fromJSON(jsonObj);		
 	}
 	
 	/* HJsonObj interface */

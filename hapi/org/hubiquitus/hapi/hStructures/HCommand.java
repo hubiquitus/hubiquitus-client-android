@@ -50,7 +50,7 @@ public class HCommand implements HJsonObj {
 	}
 	
 	public HCommand(JSONObject jsonObj) {
-		this.hcommand = jsonObj;
+		fromJSON(jsonObj);
 	}
 	
 	/* HJsonObj interface */
