@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.hubiquitus.hapi.client.HClient;
-import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HAck;
 import org.hubiquitus.hapi.hStructures.HAckValue;
 import org.hubiquitus.hapi.hStructures.HAlert;
@@ -35,16 +34,11 @@ import org.hubiquitus.hapi.hStructures.HMeasure;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HMessagePriority;
-import org.hubiquitus.hapi.hStructures.HOptions;
-import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.util.DateISO8601;
 import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.junit.Assert;
 import org.junit.Test;
-
 import exceptions.MissingAttrException;
-
-import android.view.ViewDebug.ExportedProperty;
 
 /**
  * @cond internal
