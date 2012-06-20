@@ -335,7 +335,7 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		runOnUiThread(new Runnable() {
 
 			public void run() {
-				connectionStatusLabel.setText(status.getStatus().toString());
+				connectionStatusLabel.setText(client.status().toString());
 				outputTextArea.append("Status : " + status.getStatus() + " error : " + status.getErrorCode() + "  errorMsg : " + status.getErrorMsg() + "\n\n");
 				Timer scrollTimer = new Timer();
 				TimerTask scrollTask = new TimerTask() {

@@ -33,15 +33,15 @@ define(
 			};
 
 			HClient.prototype = {
-					connect : function(publisher, password, hOptions){
+					connect : function(publisher, password, options){
 						this.publisher = publisher;
-						this.options = hOptions;
+						this.options = options;
 						
 						//get domain
 						var jid = publisher.split('@');
 						this.domain = jid[1];
 						
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [{publisher: publisher, password: password, options:hOptions}]);
+						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [{publisher: publisher, password: password, options:options}]);
 					},
 					disconnect : function(){
 						this.publisher = null;
@@ -49,8 +49,8 @@ define(
 					},
 					
 
-					command: function(hCommand, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'command', [{hcommand: hCommand, callback: String(callback)}]);
+					command: function(cmd, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'command', [{hcommand: cmd, callback: String(callback)}]);
 					},
 
 					subscribe : function(channel, callback){
@@ -69,14 +69,18 @@ define(
 						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getSubscriptions', [{callback: String(callback)}]);
 					},
 
-					getLastMessages: function(chid, quantity, callback){
+					getLastMessages: function(chid, nbLastMsg, callback){
 						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getLastMessages', [{chid: chid, nbLastMsg: quantity, callback: String(callback)}]);
+					},
+					
+					getLastMessages: function(chid, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getLastMessages', [{chid: chid, nbLastMsg: -1, callback: String(callback)}]);
 					},
 
 					buildMessage: function(chid, type, payload, options){
 						options = options || {};
 
-						if(!chid){
+						/*if(!chid){
 							if(this.hCallback)
 								this.hCallback({
 									type : codes.types.hResult,
@@ -87,9 +91,9 @@ define(
 									}
 								});
 							return;
-						}
+						}*/
 
-						if(this._checkConnected()) 
+						//if(this._checkConnected()) 
 						return {
 							chid: chid,
 							convid: options.convid,

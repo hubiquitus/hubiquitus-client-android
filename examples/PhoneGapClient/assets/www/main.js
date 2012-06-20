@@ -50,9 +50,9 @@ function publish(){
     var chid = document.getElementById('chid').value;
     var msg = document.getElementById('hMessage').value;
     var fct = function (hresult) {onResult(hresult)};
-    /*hClient.publish(hClient.buildMessage(chid, 'string', msg, {
+    hClient.publish(hClient.buildMessage(chid, 'string', msg, {
         transient: !!document.getElementById("hMessageTransient").checked
-    }), fct);*/
+    }), fct);
     hClient.publish(null, fct);
 }
 
