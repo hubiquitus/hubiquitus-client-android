@@ -42,43 +42,20 @@ import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.junit.Assert;
 import org.junit.Test;
 
+import exceptions.MissingAttrException;
+
+import android.view.ViewDebug.ExportedProperty;
+
 /**
  * @cond internal
  */
 
-/*public class HBuilderTest {
+public class HBuilderTest {
 	
 	@Test
 	public void HMessageBuildTest() {
 		HClient hclient = new HClient();
-		
-		class TestDelegated implements HDelegate{
-			private ConnectionStatus connStatus;
-			@Override
-			public void hDelegate(String type, HJsonObj data) {
-				if(type == "hstatus") {
-					connStatus = ((HStatus) data).getStatus();
-				}
-			}			
-			public ConnectionStatus getStatus() {
-				return connStatus;
-			}
-		};
-	
-		TestDelegated callback = new TestDelegated();
-		
-		HOptions options = new HOptions();
-		hclient.connect("u1@hub.novediagroup.com", "u1", callback, options);
-		
-		while (callback.getStatus() == ConnectionStatus.CONNECTING) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
-		
+			
 		HMessageOptions hmessageOption = new HMessageOptions();
 		
 		hmessageOption.setAuthor("me");
@@ -106,13 +83,17 @@ import org.junit.Test;
 		
 		HJsonDictionnary payload = new HJsonDictionnary();
 		payload.put("test", "test");
-		HMessage hmessage = hclient.buildMessage("chid:123456789", "string", payload, hmessageOption);
+		HMessage hmessage = null;
+		try {
+			hmessage = hclient.buildMessage("chid:123456789", "string", payload, hmessageOption);
+		} catch (MissingAttrException e) {
+			Assert.fail();
+		}
 		
 		Assert.assertEquals(hmessage.getAuthor(), "me");
 		Assert.assertEquals(hmessage.getChid(), "chid:123456789");
 		Assert.assertEquals(hmessage.getConvid(), "convid:123456789");
 		Assert.assertEquals(hmessage.getMsgid(), null);
-		Assert.assertEquals(hmessage.getPublisher(), "u1@hub.novediagroup.com");
 		Assert.assertEquals(hmessage.getType(), "string");
 		Assert.assertEquals(hmessage.getHeaders().toString(), headers.toString());
 		Assert.assertEquals(hmessage.getLocation().toString(), location.toString());
@@ -127,33 +108,6 @@ import org.junit.Test;
 	@Test
 	public void HConvBuildTest() {
 		HClient hclient = new HClient();
-		
-		class TestDelegated implements HDelegate{
-			private ConnectionStatus connStatus;
-			@Override
-			public void hDelegate(String type, HJsonObj data) {
-				if(type == "hstatus") {
-					connStatus = ((HStatus) data).getStatus();
-				}
-			}
-			public ConnectionStatus getStatus() {
-				return connStatus;
-			}
-		};
-	
-		TestDelegated callback = new TestDelegated();
-		
-		HOptions options = new HOptions();
-		hclient.connect("u1@hub.novediagroup.com", "u1", callback, options);
-		
-		while (callback.getStatus() == ConnectionStatus.CONNECTING) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
 		HMessageOptions hmessageOption = new HMessageOptions();
 		
@@ -183,7 +137,12 @@ import org.junit.Test;
 		List<String> participants = new ArrayList<String>();
 		participants.add("jaimes");
 		
-		HMessage hmessage = hclient.buildConv("chid:123456789", "testeur" ,participants, hmessageOption);
+		HMessage hmessage = null;
+		try {
+			hmessage = hclient.buildConv("chid:123456789", "testeur" ,participants, hmessageOption);
+		} catch (MissingAttrException e) {
+			Assert.fail();
+		}
 		
 		HConv hconv = new HConv();
 		hconv.setTopic("testeur");
@@ -196,33 +155,6 @@ import org.junit.Test;
 	@Test
 	public void HAckBuildTest() {
 		HClient hclient = new HClient();
-		
-		class TestDelegated implements HDelegate{
-			private ConnectionStatus connStatus;
-			@Override
-			public void hDelegate(String type, HJsonObj data) {
-				if(type == "hstatus") {
-					connStatus = ((HStatus) data).getStatus();
-				}
-			}
-			public ConnectionStatus getStatus() {
-				return connStatus;
-			}
-		};
-	
-		TestDelegated callback = new TestDelegated();
-		
-		HOptions options = new HOptions();
-		hclient.connect("u1@hub.novediagroup.com", "u1", callback, options);
-		
-		while (callback.getStatus() == ConnectionStatus.CONNECTING) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
 		HMessageOptions hmessageOption = new HMessageOptions();
 		
@@ -252,7 +184,12 @@ import org.junit.Test;
 		HAckValue ackvalue = HAckValue.READ;
 		String hackid = "ackid:123456789";
 		
-		HMessage hmessage = hclient.buildAck("chid:123456789", hackid , ackvalue, hmessageOption);
+		HMessage hmessage = null;
+		try {
+			hmessage = hclient.buildAck("chid:123456789", hackid , ackvalue, hmessageOption);
+		} catch (MissingAttrException e) {
+			Assert.fail();
+		}
 		
 		HAck hack = new HAck();
 		hack.setAck(ackvalue);
@@ -265,33 +202,6 @@ import org.junit.Test;
 	@Test
 	public void HAlertBuildTest() {
 		HClient hclient = new HClient();
-		
-		class TestDelegated implements HDelegate{
-			private ConnectionStatus connStatus;
-			@Override
-			public void hDelegate(String type, HJsonObj data) {
-				if(type == "hstatus") {
-					connStatus = ((HStatus) data).getStatus();
-				}
-			}
-			public ConnectionStatus getStatus() {
-				return connStatus;
-			}
-		};
-	
-		TestDelegated callback = new TestDelegated();
-		
-		HOptions options = new HOptions();
-		hclient.connect("u1@hub.novediagroup.com", "u1", callback, options);
-		
-		while (callback.getStatus() == ConnectionStatus.CONNECTING) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
 		HMessageOptions hmessageOption = new HMessageOptions();
 		
@@ -320,7 +230,12 @@ import org.junit.Test;
 		
 		String alert = "WARNING WARNING";
 		
-		HMessage hmessage = hclient.buildAlert("chid:123456789",alert, hmessageOption);
+		HMessage hmessage = null;
+		try {
+			hmessage = hclient.buildAlert("chid:123456789",alert, hmessageOption);
+		} catch (MissingAttrException e) {
+			Assert.fail();
+		}
 		
 		HAlert halert = new HAlert();
 		halert.setAlert(alert);
@@ -332,34 +247,6 @@ import org.junit.Test;
 	@Test
 	public void HBuildMeasureTest() {
 		HClient hclient = new HClient();
-		
-		class TestDelegated implements HDelegate{
-			private ConnectionStatus connStatus;
-			@Override
-			public void hDelegate(String type, HJsonObj data) {
-				if(type == "hstatus") {
-					connStatus = ((HStatus) data).getStatus();
-				}
-			}
-			
-			public ConnectionStatus getStatus() {
-				return connStatus;
-			}
-		};
-	
-		TestDelegated callback = new TestDelegated();
-		
-		HOptions options = new HOptions();
-		hclient.connect("u1@hub.novediagroup.com", "u1", callback, options);
-		
-		while (callback.getStatus() == ConnectionStatus.CONNECTING) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		Assert.assertEquals(callback.getStatus(), ConnectionStatus.CONNECTED);
 		
 		HMessageOptions hmessageOption = new HMessageOptions();
 		
@@ -389,7 +276,12 @@ import org.junit.Test;
 		String unit = "metre";
 		String value = "100";
 		
-		HMessage hmessage = hclient.buildMeasure("chid:123456789",value,unit, hmessageOption);
+		HMessage hmessage = null;
+		try {
+			hmessage = hclient.buildMeasure("chid:123456789",value,unit, hmessageOption);
+		} catch (MissingAttrException e) {
+			Assert.fail();
+		}
 		
 		HMeasure hmeasure = new HMeasure();
 		hmeasure.setUnit(unit);
@@ -399,7 +291,7 @@ import org.junit.Test;
 		Assert.assertEquals(hmessage.getPayload().toString(),hmeasure.toString());
 	}
 }
-*/
+
 /**
  * @endcond
  */

@@ -48,6 +48,8 @@ import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.hubiquitus.hapi.util.HUtil;
 import org.json.JSONObject;
 
+import exceptions.MissingAttrException;
+
 
 /**
  * @version 0.3
@@ -276,6 +278,11 @@ public class HClient {
 		}
 				
 		message.setConvid(convid);
+		
+		if(message.getPublisher() == null) {
+			message.setPublisher(this.transportOptions.getJid().getBareJID());
+		}
+		
 		HCommand cmd = new HCommand(transportOptions.getHserverService(), "hpublish", message);
 		this.command(cmd, commandDelegate);				
 	}
@@ -334,53 +341,40 @@ public class HClient {
 	 * @param payload
 	 * @param options
 	 * @return hMessage
+	 * @throws MissingAttrException 
 	 */
-	/*public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOptions options) {
-		HMessage hmessage = new HMessage();
-		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && chid.length() > 0) {
-				hmessage.setChid(chid);
-				hmessage.setConvid(options.getConvid());
-				hmessage.setType(type);
-				if(options != null) {
-					hmessage.setPriority(options.getPriority());
-					hmessage.setRelevance(options.getRelevance());
-					hmessage.setTransient(options.getTransient());
-					hmessage.setLocation(options.getLocation());
-					hmessage.setAuthor(options.getAuthor());
-					hmessage.setHeaders(options.getHeaders());
-				}				
-				if(transportOptions != null && transportOptions.getJid() != null) {
-					hmessage.setPublisher(transportOptions.getJid().getBareJID());
-				} else {
-					hmessage.setPublisher(null);
-				}		
-				hmessage.setPayload(payload);
-			} else {
-				(new Thread(new Runnable() {
-					public void run() {
-						HResult hresult = new HResult();
-						hresult.setCmd("publish");
-						hresult.setStatus(ResultStatus.MISSING_ATTR);
-						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut : chid");
-						hresult.setResult(result);
-						callback.hDelegate("hresult", hresult);
-					}
-				})).start();
-			}
-		} else {
-			if(callback != null) {
-				(new Thread(new Runnable() {
-					public void run() {
-						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
-						callback.hDelegate("hstatus", hstatus);
-					}
-				})).start();
-			}
+	public HMessage buildMessage(String chid, String type, HJsonObj payload, HMessageOptions options) throws MissingAttrException {
+		
+		//check for required attributes
+		if (chid == null || chid.length() <= 0) {
+			throw new MissingAttrException("chid");
 		}
+		
+		//build the message
+		HMessage hmessage = new HMessage();
+
+		hmessage.setChid(chid);
+		hmessage.setType(type);
+		if(options != null) {
+			hmessage.setConvid(options.getConvid());
+			hmessage.setPriority(options.getPriority());
+			hmessage.setRelevance(options.getRelevance());
+			hmessage.setTransient(options.getTransient());
+			hmessage.setLocation(options.getLocation());
+			hmessage.setAuthor(options.getAuthor());
+			hmessage.setHeaders(options.getHeaders());
+		}				
+			
+		if(transportOptions != null && transportOptions.getJid() != null) {
+			hmessage.setPublisher(transportOptions.getJid().getBareJID());
+		} else {
+			hmessage.setPublisher(null);
+		}		
+				
+		hmessage.setPayload(payload);
+
 		return hmessage;
-	}*/
+	}
 	
 	/**
 	 * Helper to create hconv
@@ -389,40 +383,25 @@ public class HClient {
 	 * @param participants
 	 * @param options
 	 * @return hmessage
+	 * @throws MissingAttrException 
 	 */
-	/*public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOptions options) {
-		HMessage hmessage = new HMessage();
-		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null  && chid.length()>0) {
-				HConv hconv = new HConv();
-				hconv.setTopic(topic);
-				hconv.setParticipants(participants);
-				hmessage = buildMessage(chid, "hconv", hconv, options);
-			} else {
-				(new Thread(new Runnable() {
-					public void run() {
-						HResult hresult = new HResult();
-						hresult.setCmd("publish");
-						hresult.setStatus(ResultStatus.MISSING_ATTR);
-						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut : chid");
-						hresult.setResult(result);
-						callback.hDelegate("hresult", hresult);
-					}
-				})).start();
-			}
-		} else {
-			if(callback != null) {
-				(new Thread(new Runnable() {
-					public void run() {
-						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
-						callback.hDelegate("hstatus", hstatus);
-					}
-				})).start();
-			}
+	public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOptions options) throws MissingAttrException {
+		
+		//check for required attributes
+		if (chid == null || chid.length() <= 0) {
+			throw new MissingAttrException("chid");
 		}
+		
+		HMessage hmessage = new HMessage();
+		
+		HConv hconv = new HConv();
+		hconv.setTopic(topic);
+		hconv.setParticipants(participants);
+		
+		hmessage = buildMessage(chid, "hconv", hconv, options);
+
 		return hmessage;
-	}*/
+	}
 	
 	/**
 	 * Helper to create hack
@@ -431,40 +410,33 @@ public class HClient {
 	 * @param ack : mandatory
 	 * @param options
 	 * @return hmessage
+	 * @throws MissingAttrException 
 	 */
-	/*public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOptions options) {
-		HMessage hmessage = new HMessage();
-		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && chid.length()>0 && ackid != null && ackid.length()>0 && ack != null) {
-				HAck hack = new HAck();
-				hack.setAckid(ackid);
-				hack.setAck(ack);
-				hmessage = buildMessage(chid, "hack", hack, options);
-			} else {
-				(new Thread(new Runnable() {
-					public void run() {
-						HResult hresult = new HResult();
-						hresult.setCmd("publish");
-						hresult.setStatus(ResultStatus.MISSING_ATTR);
-						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut : chid, ackid or ack");
-						hresult.setResult(result);
-						callback.hDelegate("hresult", hresult);
-					}
-				})).start();
-			}
-		} else {
-			if(callback != null) {
-				(new Thread(new Runnable() {
-					public void run() {
-						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
-						callback.hDelegate("hstatus", hstatus);
-					}
-				})).start();
-			}
+	public HMessage buildAck(String chid, String ackid,HAckValue ack, HMessageOptions options) throws MissingAttrException {
+		//check for required attributes
+		if (chid == null || chid.length() <= 0) {
+			throw new MissingAttrException("chid");
 		}
+		
+		//check for required attributes
+		if (ackid == null || ackid.length() <= 0) {
+			throw new MissingAttrException("ackid");
+		}
+		
+		//check for required attributes
+		if (ack == null) {
+			throw new MissingAttrException("ack");
+		}
+		
+		HMessage hmessage = new HMessage();
+
+		HAck hack = new HAck();
+		hack.setAckid(ackid);
+		hack.setAck(ack);
+		hmessage = buildMessage(chid, "hack", hack, options);
+
 		return hmessage;
-	}*/
+	}
 	
 	/**
 	 * Helper to create halert
@@ -472,39 +444,28 @@ public class HClient {
 	 * @param alert : mandatory
 	 * @param options
 	 * @return hmessage
+	 * @throws MissingAttrException 
 	 */
-	/*public HMessage buildAlert(String chid, String alert, HMessageOptions options) {
-		HMessage hmessage = new HMessage();
-		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && chid.length()>0 && alert != null  && alert.length()>0) {
-			HAlert halert = new HAlert();
-			halert.setAlert(alert);
-			hmessage = buildMessage(chid, "halert", halert, options);
-			} else {
-				(new Thread(new Runnable() {
-					public void run() {
-						HResult hresult = new HResult();
-						hresult.setCmd("publish");
-						hresult.setStatus(ResultStatus.MISSING_ATTR);
-						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut : chid or alert");
-						hresult.setResult(result);
-						callback.hDelegate("hresult", hresult);
-					}
-				})).start();
-			}
-		} else {
-			if(callback != null) {
-				(new Thread(new Runnable() {
-					public void run() {
-						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
-						callback.hDelegate("hstatus", hstatus);
-					}
-				})).start();
-			}
+	public HMessage buildAlert(String chid, String alert, HMessageOptions options) throws MissingAttrException {
+		//check for required attributes
+		if (chid == null || chid.length() <= 0) {
+			throw new MissingAttrException("chid");
 		}
+		
+		//check for required attributes
+		if (alert == null || alert.length() <= 0) {
+			throw new MissingAttrException("chid");
+		}
+		
+		HMessage hmessage = new HMessage();
+		
+		HAlert halert = new HAlert();
+		halert.setAlert(alert);
+		
+		hmessage = buildMessage(chid, "halert", halert, options);
+	
 		return hmessage;
-	}*/
+	}
 	
 	/**
 	 * Helper to create hmeasure
@@ -513,41 +474,33 @@ public class HClient {
 	 * @param unit : mandatory
 	 * @param options
 	 * @return hmessage
+	 * @throws MissingAttrException 
 	 */
-	/*public HMessage buildMeasure(String chid, String value, String unit, HMessageOptions options) {
-		HMessage hmessage = new HMessage();
-		if(this.connectionStatus == ConnectionStatus.CONNECTED) {
-			if(chid != null && chid.length() > 0 && value != null 
-				&& value.length() > 0 && unit != null && unit.length() > 0) {
-				HMeasure hmeasure = new HMeasure();
-				hmeasure.setValue(value);
-				hmeasure.setUnit(unit);
-				hmessage = buildMessage(chid, "hmeasure", hmeasure, options);
-			} else {
-				(new Thread(new Runnable() {
-					public void run() {
-						HResult hresult = new HResult();
-						hresult.setCmd("publish");
-						hresult.setStatus(ResultStatus.MISSING_ATTR);
-						HJsonDictionnary result = new HJsonDictionnary();
-						result.put("error", "missing attribut : chid, value or unit");
-						hresult.setResult(result);
-						callback.hDelegate("hresult", hresult);
-					}
-				})).start();
-			}
-		} else {
-			if(callback != null) {
-				(new Thread(new Runnable() {
-					public void run() {
-						HStatus hstatus = new HStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Can not build a message. Not connected");
-						callback.hDelegate("hstatus", hstatus);
-					}
-				})).start();
-			}
+	public HMessage buildMeasure(String chid, String value, String unit, HMessageOptions options) throws MissingAttrException {
+		//check for required attributes
+		if (chid == null || chid.length() <= 0) {
+			throw new MissingAttrException("chid");
 		}
+				
+		//check for required attributes
+		if (value == null || value.length() <= 0) {
+			throw new MissingAttrException("value");
+		}
+				
+		//check for required attributes
+		if (unit == null || unit.length() <= 0) {
+			throw new MissingAttrException("unit");
+		}
+		
+		HMessage hmessage = new HMessage();
+		
+		HMeasure hmeasure = new HMeasure();
+		hmeasure.setValue(value);
+		hmeasure.setUnit(unit);
+		hmessage = buildMessage(chid, "hmeasure", hmeasure, options);
+	
 		return hmessage;
-	}*/
+	}
 	/* HTransportCallback functions */
 
 	/**
