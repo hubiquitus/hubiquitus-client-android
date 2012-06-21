@@ -78,124 +78,64 @@ define(
 					},
 
 					buildMessage: function(chid, type, payload, options){
-						options = options || {};
+		                options = options || {};
 
-						/*if(!chid){
-							if(this.hCallback)
-								this.hCallback({
-									type : codes.types.hResult,
-									data : {
-										cmd : 'hPublish',
-										status : codes.hResultStatus.MISSING_ATTR,
-										result : 'missing chid'
-									}
-								});
-							return;
-						}*/
+		                if(!chid)
+		                    throw new Error('missing chid');
 
-						//if(this._checkConnected()) 
-						return {
-							chid: chid,
-							convid: options.convid,
-							type: type,
-							priority: options.priority,
-							relevance: options.relevance,
-							transient: options.transient,
-							location: options.location,
-							author: options.author,
-							publisher: this.publisher,
-							headers: options.headers,
-							payload: payload
-						};
-					},
+		                return {
+		                    chid: chid,
+		                    convid: options.convid,
+		                    type: type,
+		                    priority: options.priority,
+		                    relevance: options.relevance,
+		                    transient: options.transient,
+		                    location: options.location,
+		                    author: options.author,
+		                    published: options.published,
+		                    headers: options.headers,
+		                    payload: payload
+		                };
+		            },
 
-					buildMeasure: function(chid, value, unit, options){
+		            buildMeasure: function(chid, value, unit, options){
+		                if(!value)
+		                    throw new Error('missing value');
+		                else if (!unit)
+		                    throw new Error('missing unit');
 
-						if(!value || !unit){
-							if(this.hCallback)
-								this.hCallback({
-									type : codes.types.hResult,
-									data : {
-										cmd : 'hPublish',
-										status : codes.hResultStatus.MISSING_ATTR,
-										result : 'missing value or unit'
-									}
-								});
-							return;
-						}
+		                return this.buildMessage(chid, 'hMeasure', {unit: unit, value: value}, options);
+		            },
 
-						return this.buildMessage(chid, 'hMeasure', {unit: unit, value: value}, options);
-					},
+		            buildAlert: function(chid, alert, options){
+		                if(!alert)
+		                    throw new Error('missing alert');
 
-					buildAlert: function(chid, alert, options){
-						if(!alert){
-							if(this.hCallback)
-								this.hCallback({
-									type : codes.types.hResult,
-									data : {
-										cmd : 'hPublish',
-										status : codes.hResultStatus.MISSING_ATTR,
-										result : 'missing alert'
-									}
-								});
-							return;
-						}
+		                return this.buildMessage(chid, 'hAlert', {alert: alert}, options);
+		            },
 
-						return this.buildMessage(chid, 'hAlert', {alert: alert}, options);
-					},
+		            buildAck: function(chid, ackid, ack, options){
+		                if(!ackid)
+		                    throw new Error('missing ackid');
+		                else if(!ack)
+		                    throw new Error('missing ack');
+		                else if(!/recv|read/i.test(ack))
+		                    throw new Error('ack does not match "recv" or "read"');
 
-					buildAck: function(chid, ackid, ack, options){
-						var status = null;
-						var result = null;
+		                return this.buildMessage(chid, 'hAck', {ackid: ackid, ack: ack}, options);
+		            },
 
-						if(!ackid || !ack){
-							status = codes.hResultStatus.MISSING_ATTR;
-							result = 'missing ackid or ack';
-						} else if(!/recv|read/i.test(ack)) {
-							status = codes.hResultStatus.INVALID_ATTR;
-							result = 'ack does not match "recv" or "read"';
-						}
+		            buildConv: function(chid, topic, participants, options){
+		                if(!topic)
+		                    throw new Error('missing topic');
+		                else if(!participants)
+		                    throw new Error('missing participants');
+		                else if( !(participants instanceof Array) )
+		                    throw new Error('invalid participants');
 
-						if( status != null ){
-							if(this.hCallback)
-								this.hCallback({
-									type : codes.types.hResult,
-									data : {
-										cmd : 'hPublish',
-										status: status,
-										result: result
-									}
-								});
-							return;
-						}
 
-						return this.buildMessage(chid, 'hAck', {ackid: ackid, ack: ack}, options);
-					},
-
-					buildConv: function(chid, topic, participants, options){
-
-						return this.buildMessage(chid, 'hConv', {topic: topic, participants: participants}, options);
-					},
-					
-					_checkConnected: function() {				
-						if (this._connectionStatus == codes.statuses.CONNECTED || this._connectionStatus == codes.statuses.REATTACHED) {
-							return true;
-						} else {
-							if(this.hCallback){
-			                    var currentStatus = this._connectionStatus;
-			                    var code = currentStatus == codes.statuses.DISCONNECTED ?
-			                        codes.errors.NOT_CONNECTED : codes.errors.CONN_PROGRESS;
-			                    this.hCallback({
-			                        type: codes.types.hStatus,
-			                        data : {
-			                            status: currentStatus,
-			                            errorCode: code
-			                        }
-			                    });
-			                }
-							return false;
-						}
-					},
+		                return this.buildMessage(chid, 'hConv', {topic: topic, participants: participants}, options);
+		            },
 
 					errors: codes.errors,
 					statuses: codes.statuses,

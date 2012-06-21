@@ -110,10 +110,11 @@ function build_measure(){
     var hMessage = hClient.buildMeasure(chid, value, unit, {
         transient: !!document.getElementById("hMessageTransient").checked
     });
+    var fct = function (hresult) {onResult(hresult)};
     if(hMessage)
-        console.log('Created hMessage', hMessage);
+    	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hMessage);
     if(document.getElementById("sendBuiltMessage").checked)
-        hClient.publish(hMessage, console.log);
+        hClient.publish(hMessage, fct);
 }
 
 function build_alert(){
@@ -122,10 +123,11 @@ function build_alert(){
     var hMessage = hClient.buildAlert(chid, alert, {
         transient: !!document.getElementById("hMessageTransient").checked
     });
+    var fct = function (hresult) {onResult(hresult)};
     if(hMessage)
-        console.log('Created hMessage', hMessage);
+    	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hMessage);
     if(document.getElementById("sendBuiltMessage").checked)
-        hClient.publish(hMessage, console.log);
+        hClient.publish(hMessage, fct);
 }
 
 function build_ack(){
@@ -135,10 +137,11 @@ function build_ack(){
     var hMessage = hClient.buildAck(chid, ackID, ack, {
         transient: !!document.getElementById("hMessageTransient").checked
     });
+    var fct = function (hresult) {onResult(hresult)};
     if(hMessage)
-        console.log('Created hMessage', hMessage);
+    	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hMessage);
     if(document.getElementById("sendBuiltMessage").checked)
-        hClient.publish(hMessage, console.log);
+        hClient.publish(hMessage, fct);
 }
 
 function build_conv(){
@@ -149,10 +152,11 @@ function build_conv(){
     var hMessage = hClient.buildConv(chid, topic, participants, {
         transient: !!document.getElementById("hMessageTransient").checked
     });
+    var fct = function (hresult) {onResult(hresult)};
     if(hMessage)
-        console.log('Created hMessage', hMessage);
+    	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hMessage);
     if(document.getElementById("sendBuiltMessage").checked)
-        hClient.publish(hMessage, console.log);
+        hClient.publish(hMessage, fct);
 }
 
 function onStatus(hStatus){
