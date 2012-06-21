@@ -440,8 +440,8 @@ public class HMessage implements HJsonObj {
 				payload = new HAlert(jsonPayload);
 			} else if (type.equals("hack")) {
 				payload = new HAck(jsonPayload);
-			} else if (type.equals("hconv")) {
-				payload = new HConv(jsonPayload);
+			} else if (type.equals("hconvstate")) {
+				payload = new HConvState(jsonPayload);
 			} else {
 				payload = new HJsonDictionnary(jsonPayload);
 			}

@@ -27,7 +27,7 @@ import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.hStructures.HAck;
 import org.hubiquitus.hapi.hStructures.HAckValue;
 import org.hubiquitus.hapi.hStructures.HAlert;
-import org.hubiquitus.hapi.hStructures.HConv;
+import org.hubiquitus.hapi.hStructures.HConvState;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HLocation;
 import org.hubiquitus.hapi.hStructures.HMeasure;
@@ -100,13 +100,12 @@ public class HBuilderTest {
 
 	
 	@Test
-	public void HConvBuildTest() {
+	public void HConvStateBuildTest() {
 		HClient hclient = new HClient();
 		
 		HMessageOptions hmessageOption = new HMessageOptions();
 		
 		hmessageOption.setAuthor("me");
-		hmessageOption.setConvid("convid:123456789");
 		
 		List<HJsonObj> headers = new ArrayList<HJsonObj>();
 		HJsonDictionnary header1 = new HJsonDictionnary();
@@ -128,22 +127,18 @@ public class HBuilderTest {
 		
 		hmessageOption.setTransient(false);	
 		
-		List<String> participants = new ArrayList<String>();
-		participants.add("jaimes");
-		
 		HMessage hmessage = null;
 		try {
-			hmessage = hclient.buildConv("chid:123456789", "testeur" ,participants, hmessageOption);
+			hmessage = hclient.buildConvState("test channel", "test conv id" , "test status", hmessageOption);
 		} catch (MissingAttrException e) {
 			Assert.fail();
 		}
 		
-		HConv hconv = new HConv();
-		hconv.setTopic("testeur");
-		hconv.setParticipants(participants);
+		HConvState hconvstate = new HConvState();
+		hconvstate.setStatus("test status");
 		
-		Assert.assertEquals(hmessage.getType(),"hconv");
-		Assert.assertEquals(hmessage.getPayload().toString(),hconv.toString());
+		Assert.assertEquals(hmessage.getType(),"hconvstate");
+		Assert.assertEquals(hmessage.getPayload().toString(),hconvstate.toString());
 	}
 	
 	@Test

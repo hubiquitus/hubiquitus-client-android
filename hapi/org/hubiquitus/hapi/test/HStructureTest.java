@@ -32,7 +32,7 @@ import org.hubiquitus.hapi.hStructures.HAck;
 import org.hubiquitus.hapi.hStructures.HAckValue;
 import org.hubiquitus.hapi.hStructures.HAlert;
 import org.hubiquitus.hapi.hStructures.HCommand;
-import org.hubiquitus.hapi.hStructures.HConv;
+import org.hubiquitus.hapi.hStructures.HConvState;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HLocation;
 import org.hubiquitus.hapi.hStructures.HMeasure;
@@ -219,27 +219,14 @@ public class HStructureTest {
 	
 	//HConv test
 	@Test
-	public void HConvGetTest() {
+	public void HConvStateGetTest() {
 		JSONObject jsonObj = new JSONObject();
 		try {
-			String topic = "test";
-			jsonObj.put("topic", topic);
+			String status = "test";
+			jsonObj.put("status", status);
 			
-			
-			List<String> participants = new ArrayList<String>();
-			String participant1 = "Me";
-			String participant2 = "You";
-			participants.add(participant1);
-			participants.add(participant2);
-			JSONArray participantsArray = new JSONArray();
-			for(String participant : participants) {
-				participantsArray.put(participant);
-			}
-			jsonObj.put("participants", participantsArray);
-			
-			HConv hconv = new HConv(jsonObj);
-			Assert.assertEquals(hconv.getTopic(), topic);
-			Assert.assertEquals(hconv.getParticipants(), participants);
+			HConvState hconvstate = new HConvState(jsonObj);
+			Assert.assertEquals(hconvstate.getStatus(), status);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			fail("fail");
@@ -247,29 +234,17 @@ public class HStructureTest {
 	}
 	
 	@Test
-	public void HConvSetTest() {
+	public void HConvStateSetTest() {
 		JSONObject jsonObj = new JSONObject();
 		try {
-			String topic = "test";
+			String status = "test";
 			
-			List<String> participants = new ArrayList<String>();
-			String participant1 = "Me";
-			String participant2 = "You";
-			participants.add(participant1);
-			participants.add(participant2);
-			JSONArray participantsArray = new JSONArray();
-			for(String participant : participants) {
-				participantsArray.put(participant);
-			}
+			HConvState hconvstate = new HConvState();
+			hconvstate.setStatus(status);
 			
-			HConv hconv = new HConv();
-			hconv.setTopic(topic);
-			hconv.setParticipants(participants);
+			jsonObj = hconvstate.toJSON();
 			
-			jsonObj = hconv.toJSON();
-			
-			Assert.assertEquals(jsonObj.get("topic"), topic);
-			Assert.assertEquals(jsonObj.get("participants").toString(), participantsArray.toString());
+			Assert.assertEquals(jsonObj.get("status"), status);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			fail("fail");

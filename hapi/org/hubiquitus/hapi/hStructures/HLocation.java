@@ -19,7 +19,6 @@
 
 package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.util.HJsonDictionnary;
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -20,7 +20,6 @@
 package org.hubiquitus.hapi.client;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Random;
 
 import org.hubiquitus.hapi.hStructures.ConnectionError;
@@ -29,7 +28,7 @@ import org.hubiquitus.hapi.hStructures.HAck;
 import org.hubiquitus.hapi.hStructures.HAckValue;
 import org.hubiquitus.hapi.hStructures.HAlert;
 import org.hubiquitus.hapi.hStructures.HCommand;
-import org.hubiquitus.hapi.hStructures.HConv;
+import org.hubiquitus.hapi.hStructures.HConvState;
 import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HMeasure;
 import org.hubiquitus.hapi.hStructures.HMessage;
@@ -380,26 +379,34 @@ public class HClient {
 	/**
 	 * Helper to create hconv
 	 * @param chid - channel id : mandatory
-	 * @param topic
-	 * @param participants
+	 * @param convid - conversation id : mandatory
+	 * @param status - status of the conversation
 	 * @param options
 	 * @return hmessage
 	 * @throws MissingAttrException 
 	 */
-	public HMessage buildConv(String chid, String topic, List<String> participants, HMessageOptions options) throws MissingAttrException {
+	public HMessage buildConvState(String chid, String convid, String status, HMessageOptions options) throws MissingAttrException {
 		
 		//check for required attributes
 		if (chid == null || chid.length() <= 0) {
 			throw new MissingAttrException("chid");
 		}
 		
+		if (convid == null || convid.length() <= 0) {
+			throw new MissingAttrException("convid");
+		}
+		
+		if (status == null || status.length() <= 0) {
+			throw new MissingAttrException("status");
+		}
+		
 		HMessage hmessage = new HMessage();
 		
-		HConv hconv = new HConv();
-		hconv.setTopic(topic);
-		hconv.setParticipants(participants);
+		HConvState hconvstate = new HConvState();
+		hconvstate.setStatus(status);
 		
-		hmessage = buildMessage(chid, "hconv", hconv, options);
+		hmessage = buildMessage(chid, "hconvstate", hconvstate, options);
+		hmessage.setConvid(convid);
 
 		return hmessage;
 	}
