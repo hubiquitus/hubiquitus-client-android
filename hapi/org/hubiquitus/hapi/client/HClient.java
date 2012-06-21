@@ -225,7 +225,7 @@ public class HClient {
 		} else if (cmd == null) {
 			this.notifyResultError(null, null, ResultStatus.MISSING_ATTR, "Provided cmd is null", commandDelegate);
 		} else {
-			this.notifyResultError(cmd.getReqid(), cmd.getCmd(), ResultStatus.NOT_CONNECTED, null);
+			this.notifyResultError(cmd.getReqid(), cmd.getCmd(), ResultStatus.NOT_CONNECTED, null, commandDelegate);
 		}
 	}
 	

@@ -301,7 +301,6 @@ public class HStructureTest {
 			
 			HJsonDictionnary extra = new HJsonDictionnary();
 			extra.put("test", "temp");
-			jsonObj.put("extra", extra.toJSON());
 			
 			HLocation hlocation = new HLocation(jsonObj);
 
@@ -311,7 +310,6 @@ public class HStructureTest {
 			Assert.assertEquals(hlocation.getAddress(), address);
 			Assert.assertEquals(hlocation.getCountry(), country);
 			Assert.assertEquals(hlocation.getCity(), city);
-			Assert.assertEquals(hlocation.getExtra().toString(), extra.toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			fail("fail");
@@ -341,7 +339,6 @@ public class HStructureTest {
 			hlocation.setAddress(address);
 			hlocation.setCity(city);
 			hlocation.setCountry(country);
-			hlocation.setExtra(extra);
 			hlocation.setLat(latitude);
 			hlocation.setLng(longitude);
 			hlocation.setZip(zip);
@@ -353,7 +350,6 @@ public class HStructureTest {
 			Assert.assertEquals(jsonObj.get("addr"), address);
 			Assert.assertEquals(jsonObj.get("country"), country);
 			Assert.assertEquals(jsonObj.get("city"), city);
-			Assert.assertEquals(jsonObj.get("extra").toString(), extra.toJSON().toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			fail("fail");
