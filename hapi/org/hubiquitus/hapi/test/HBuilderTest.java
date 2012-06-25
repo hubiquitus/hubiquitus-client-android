@@ -19,16 +19,12 @@
 
 package org.hubiquitus.hapi.test;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.hStructures.HAck;
 import org.hubiquitus.hapi.hStructures.HAckValue;
 import org.hubiquitus.hapi.hStructures.HAlert;
 import org.hubiquitus.hapi.hStructures.HConvState;
-import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HLocation;
 import org.hubiquitus.hapi.hStructures.HMeasure;
 import org.hubiquitus.hapi.hStructures.HMessage;
@@ -55,13 +51,9 @@ public class HBuilderTest {
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");
 		
-		List<HJsonObj> headers = new ArrayList<HJsonObj>();
-		HJsonDictionnary header1 = new HJsonDictionnary();
-		header1.put("header1", "1");
-		HJsonDictionnary header2 = new HJsonDictionnary();
-		header2.put("header2", "2");
-		headers.add(header1);
-		headers.add(header2);
+		HJsonDictionnary headers = new HJsonDictionnary();
+		headers.put("header1", "1");
+		headers.put("header2", "2");
 		hmessageOption.setHeaders(headers);		
 		
 		HLocation location = new HLocation();
@@ -107,13 +99,9 @@ public class HBuilderTest {
 		
 		hmessageOption.setAuthor("me");
 		
-		List<HJsonObj> headers = new ArrayList<HJsonObj>();
-		HJsonDictionnary header1 = new HJsonDictionnary();
-		header1.put("header1", "1");
-		HJsonDictionnary header2 = new HJsonDictionnary();
-		header2.put("header2", "2");
-		headers.add(header1);
-		headers.add(header2);
+		HJsonDictionnary headers = new HJsonDictionnary();
+		headers.put("header1", "1");
+		headers.put("header2", "2");
 		hmessageOption.setHeaders(headers);		
 		
 		HLocation location = new HLocation();
@@ -150,13 +138,9 @@ public class HBuilderTest {
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");
 		
-		List<HJsonObj> headers = new ArrayList<HJsonObj>();
-		HJsonDictionnary header1 = new HJsonDictionnary();
-		header1.put("header1", "1");
-		HJsonDictionnary header2 = new HJsonDictionnary();
-		header2.put("header2", "2");
-		headers.add(header1);
-		headers.add(header2);
+		HJsonDictionnary headers = new HJsonDictionnary();
+		headers.put("header1", "1");
+		headers.put("header2", "2");
 		hmessageOption.setHeaders(headers);		
 		
 		HLocation location = new HLocation();
@@ -197,13 +181,9 @@ public class HBuilderTest {
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");
 		
-		List<HJsonObj> headers = new ArrayList<HJsonObj>();
-		HJsonDictionnary header1 = new HJsonDictionnary();
-		header1.put("header1", "1");
-		HJsonDictionnary header2 = new HJsonDictionnary();
-		header2.put("header2", "2");
-		headers.add(header1);
-		headers.add(header2);
+		HJsonDictionnary headers = new HJsonDictionnary();
+		headers.put("header1", "1");
+		headers.put("header2", "2");
 		hmessageOption.setHeaders(headers);		
 		
 		HLocation location = new HLocation();
@@ -242,13 +222,9 @@ public class HBuilderTest {
 		hmessageOption.setAuthor("me");
 		hmessageOption.setConvid("convid:123456789");
 		
-		List<HJsonObj> headers = new ArrayList<HJsonObj>();
-		HJsonDictionnary header1 = new HJsonDictionnary();
-		header1.put("header1", "1");
-		HJsonDictionnary header2 = new HJsonDictionnary();
-		header2.put("header2", "2");
-		headers.add(header1);
-		headers.add(header2);
+		HJsonDictionnary headers = new HJsonDictionnary();
+		headers.put("header1", "1");
+		headers.put("header2", "2");
 		hmessageOption.setHeaders(headers);		
 		
 		HLocation location = new HLocation();

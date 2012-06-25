@@ -22,10 +22,7 @@ package org.hubiquitus.hapi.test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HAck;
@@ -33,7 +30,6 @@ import org.hubiquitus.hapi.hStructures.HAckValue;
 import org.hubiquitus.hapi.hStructures.HAlert;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HConvState;
-import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HLocation;
 import org.hubiquitus.hapi.hStructures.HMeasure;
 import org.hubiquitus.hapi.hStructures.HMessage;
@@ -43,7 +39,6 @@ import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.hStructures.ResultStatus;
 import org.hubiquitus.hapi.util.DateISO8601;
 import org.hubiquitus.hapi.util.HJsonDictionnary;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -95,18 +90,10 @@ public class HStructureTest {
 			
 			jsonObj.put("published", dateIso);
 
-			List<HJsonObj> headers = new ArrayList<HJsonObj>();
-			HJsonDictionnary header1 = new HJsonDictionnary();
-			header1.put("header1", "1");
-			HJsonDictionnary header2 = new HJsonDictionnary();
-			header2.put("header2", "2");
-			headers.add(header1);
-			headers.add(header2);
-			JSONArray headersArray = new JSONArray();
-			for(HJsonObj header : headers) {
-				headersArray.put(header.toJSON());
-			}
-			jsonObj.put("headers", headersArray);
+			JSONObject headers = new JSONObject();
+			headers.put("header1", "1");
+			headers.put("header2", "2");
+			jsonObj.put("headers", headers);
 			
 			JSONObject payload = new JSONObject();
 			payload.put("payload", "payload");
@@ -124,7 +111,7 @@ public class HStructureTest {
 			Assert.assertEquals(hmessage.getMsgid(), msgid);
 			Assert.assertEquals(hmessage.getPublisher(), publisher);
 			Assert.assertEquals(hmessage.getType(), type);
-			Assert.assertEquals(hmessage.getHeaders().toString(), headers.toString());
+			Assert.assertEquals(hmessage.getHeaders().toJSON().toString(), headers.toString());
 			Assert.assertEquals(hmessage.getLocation().toString(), location.toString());
 			Assert.assertEquals(hmessage.getPayload().toString(), payloadResult.toString());
 			Assert.assertEquals(hmessage.getPriority(), HMessagePriority.INFO);
@@ -166,17 +153,9 @@ public class HStructureTest {
 			
 			String publisher = "j.desousag";
 
-			List<HJsonObj> headers = new ArrayList<HJsonObj>();
-			HJsonDictionnary header1 = new HJsonDictionnary();
-			header1.put("header1", "1");
-			HJsonDictionnary header2 = new HJsonDictionnary();
-			header2.put("header2", "2");
-			headers.add(header1);
-			headers.add(header2);
-			JSONArray headersArray = new JSONArray();
-			for(HJsonObj header : headers) {
-				headersArray.put(header.toJSON());
-			}
+			HJsonDictionnary headers = new HJsonDictionnary();
+			headers.put("header1", "1");
+			headers.put("header2", "2");
 			
 			HJsonDictionnary payload = new HJsonDictionnary();
 			payload.put("payload", "payload");
@@ -204,7 +183,7 @@ public class HStructureTest {
 			Assert.assertEquals(jsonObj.get("msgid"), msgid);
 			Assert.assertEquals(jsonObj.get("publisher"), publisher);
 			Assert.assertEquals(jsonObj.get("type"), type);
-			Assert.assertEquals(jsonObj.get("headers").toString(), headersArray.toString());
+			Assert.assertEquals(jsonObj.get("headers").toString(), headers.toJSON().toString());
 			Assert.assertEquals(jsonObj.get("location").toString(), location.toString());
 			Assert.assertEquals(jsonObj.get("payload"), payload.toJSON());
 			Assert.assertEquals(jsonObj.get("priority"), priority.value());

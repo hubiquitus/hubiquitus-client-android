@@ -377,7 +377,7 @@ public class HClient {
 	}
 	
 	/**
-	 * Helper to create hconv
+	 * Helper to create hconvstate
 	 * @param chid - channel id : mandatory
 	 * @param convid - conversation id : mandatory
 	 * @param status - status of the conversation

@@ -20,13 +20,10 @@
 
 package org.hubiquitus.hapi.hStructures;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import org.hubiquitus.hapi.util.DateISO8601;
 import org.hubiquitus.hapi.util.HJsonDictionnary;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -395,30 +392,22 @@ public class HMessage implements HJsonObj {
 	 * The list of headers attached to this message.
 	 * @return Headers. NULL if undefined
 	 */
-	public List<HJsonObj> getHeaders() {
-		List<HJsonObj> headers = new ArrayList<HJsonObj>();
+	public HJsonObj getHeaders() {
+		HJsonDictionnary headers = new HJsonDictionnary();
 		try {
-			JSONArray headersArray = hmessage.getJSONArray("headers");
-			for(int i = 0; i < headersArray.length() ; i++) {
-				HJsonDictionnary header = new HJsonDictionnary(headersArray.getJSONObject(i)); 
-				headers.add(header);
-			}
+			headers.fromJSON(hmessage.getJSONObject("headers"));
 		} catch (JSONException e) {
 			headers = null;
 		}
 		return headers;
 	}
 
-	public void setHeaders(List<HJsonObj> headers) {
+	public void setHeaders(HJsonObj headers) {
 		try {
 			if(headers == null) {
 				hmessage.remove("headers");
 			} else {
-				JSONArray headersArray = new JSONArray();
-				for(HJsonObj header : headers) {
-					headersArray.put(header.toJSON());
-				}
-				hmessage.put("headers", headersArray);
+				hmessage.put("headers", headers.toJSON());
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
