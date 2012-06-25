@@ -144,12 +144,11 @@ function build_ack(){
         hClient.publish(hMessage, fct);
 }
 
-function build_conv(){
-    var topic = prompt('Topic:');
-    var participants = prompt('Participants (comma separated):');
-    participants = participants.replace(/ /g, '').split(',');
-    var chid = prompt('Channel:');
-    var hMessage = hClient.buildConv(chid, topic, participants, {
+function build_convstate(){
+    var status = prompt('status:');
+    var convid = prompt('conversation id:');
+    var chid = prompt('channel:');
+    var hMessage = hClient.buildConvState(chid, convid, status, {
         transient: !!document.getElementById("hMessageTransient").checked
     });
     var fct = function (hresult) {onResult(hresult)};

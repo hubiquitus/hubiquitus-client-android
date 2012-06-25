@@ -245,7 +245,7 @@ public class HTransportXMPP implements HTransport, ConnectionListener,PacketList
 	@Override
 	public void processPacket(Packet receivePacket) {
 		if(receivePacket.getClass().equals(Message.class)) {
-			if(receivePacket.getFrom().equalsIgnoreCase(options.getHserverService())) {
+			if(receivePacket.getFrom().matches(options.getHserverService() + ".*")) {
 				HMessageXMPP packetExtention = (HMessageXMPP)receivePacket.getExtension("hbody","");
 				if(packetExtention != null) {
 					JSONObject jsonObj = null;

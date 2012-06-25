@@ -76,7 +76,7 @@ public class HTransportOptions {
 		String nodeService = null;
 		
 		if(this.jid != null) {
-			nodeService = this.hserver + "." + this.jid.getDomain();
+			nodeService = this.hserver + "@" + this.jid.getDomain();
 		}
 		
 		return nodeService;

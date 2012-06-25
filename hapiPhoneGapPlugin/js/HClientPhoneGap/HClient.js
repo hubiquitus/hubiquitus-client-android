@@ -124,17 +124,18 @@ define(
 
 		                return this.buildMessage(chid, 'hAck', {ackid: ackid, ack: ack}, options);
 		            },
+		            
+		            buildConvState: function(chid, convid, status, options){
+		                if(!convid)
+		                    throw new Error('missing convid');
+		                else if(!status)
+		                    throw new Error('missing status');
+		                if(!options)
+		                    options = {};
 
-		            buildConv: function(chid, topic, participants, options){
-		                if(!topic)
-		                    throw new Error('missing topic');
-		                else if(!participants)
-		                    throw new Error('missing participants');
-		                else if( !(participants instanceof Array) )
-		                    throw new Error('invalid participants');
+		                options.convid = convid;
 
-
-		                return this.buildMessage(chid, 'hConv', {topic: topic, participants: participants}, options);
+		                return this.buildMessage(chid, 'hConvState', {status: status}, options);
 		            },
 
 					errors: codes.errors,
