@@ -69,11 +69,12 @@ public class JabberID {
 	 */
 	public void setJID(String jid) throws Exception {
 		if (jid != null) {
-			Pattern pattern = Pattern.compile("^(?:([^@/<>'\"]+)@)?([^@/<>'\"]+)(?:/([^<>'\"]*))?$");
+			Pattern pattern = Pattern.compile("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$");
 			Matcher matcher = pattern.matcher(jid);
-			if (matcher.find() && matcher.groupCount() >= 2 && matcher.groupCount() <= 3 && matcher.group(1) != null) {
+			if (matcher.matches() && matcher.find()) {
 				setUsername(matcher.group(1));
 				setDomain(matcher.group(2));
+				
 				if (matcher.groupCount() >= 3) {
 					setResource(matcher.group(3));
 				}
