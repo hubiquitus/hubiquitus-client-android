@@ -331,6 +331,36 @@ public class HClient {
 		this.command(cmd, commandDelegate);
 	}
 	
+	/**
+	 * Demands to the hserver the list of messages correlated by the convid value on a dedicated channel chid.
+	 * 
+	 * Nominal response : hResult where the status is 0 with an array of hMessage.
+	 * @param chid - Channel id. Mandatory
+	 * @param convid - Conversation id. Mandatory
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
+	 */
+	public void getThread(String chid, String convid, HCommandDelegate commandDelegate) {
+		HJsonDictionnary params = new HJsonDictionnary();
+		String cmdName = "hgetthread";
+		
+		//check mandatory fields
+		if (chid == null || chid.length() <= 0) {
+			notifyResultError(null, cmdName, ResultStatus.MISSING_ATTR, "Chid is missing", commandDelegate);
+			return;
+		}
+		
+		if (convid == null || convid.length() <= 0) {
+			notifyResultError(null, cmdName, ResultStatus.MISSING_ATTR, "Convid is missing", commandDelegate);
+			return;
+		}
+		
+		params.put("chid", chid);
+		params.put("convid", convid);
+		
+		HCommand cmd = new HCommand(transportOptions.getHserverService(), cmdName, params);
+		this.command(cmd, commandDelegate);
+	}
+	
 	/* Builder */
 	
 	/**

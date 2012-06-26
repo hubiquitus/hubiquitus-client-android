@@ -1,405 +1,439 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/loginLabel"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="Login" />
-
-            <EditText
-                android:id="@+id/loginText"
-                android:layout_width="wrap_content"
-                android:textSize="9dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:ems="10" >
-
-                <requestFocus />
-            </EditText>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/passwordLabel"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="password" />
-
-            <EditText
-                android:id="@+id/passwordText"
-                android:layout_width="wrap_content"
-                android:textSize="9dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textPassword" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:id="@+id/gatewaysLabel"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:text="endpoints" />
-
-                <EditText
-                    android:id="@+id/gatewaysText"
-                    android:layout_width="wrap_content"
-                    android:textSize="9dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:ems="10" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-    
-    
-     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/serverhostLabel"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="serverHost" />
-
-            <EditText
-                android:id="@+id/serverhostText"
-                android:layout_width="wrap_content"
-                android:textSize="9dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:ems="10"
-                />
-
-        </LinearLayout>
-
-    </LinearLayout>
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/loginLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="login"
+            android:padding="0dp"
+            android:textSize="10sp" />
 
-            <TextView
-                android:id="@+id/serverportLabel"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="serverPort" />
+        <EditText
+            android:id="@+id/loginText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="u1@localhost">
+    		<requestFocus />
+    	</EditText>
+    </LinearLayout>
 
-            <EditText
-                android:id="@+id/serverportText"
-                android:layout_width="wrap_content"
-                android:textSize="9dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:ems="10"
-                />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
 
-        </LinearLayout>
-     
+        <TextView
+            android:id="@+id/passwordLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="password"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/passwordText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:inputType="textPassword"
+    		android:hint="************"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/gatewaysLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="endpoints"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/gatewaysText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="http://localhost:8080, http://localhost:8081"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/serverhostLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="serverhost"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/serverhostText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="localhost"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/serverportLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="serverport"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/serverportText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="5222"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/ChannelIDLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="Channel ID"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/ChannelIDText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="channel"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/nbLastMessageLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="nbLastMessage"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/nbLastMessageText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="10"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/messageLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="messagetxt"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/messageText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="test"/>
     </LinearLayout>
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/ConvidLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="Convid"
+            android:padding="0dp"
+            android:textSize="10sp" />
 
-            <TextView
-                android:id="@+id/ChannelIDLabel"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="Channel ID" />
-
-            <EditText
-                android:id="@+id/ChannelIDText"
-                android:layout_width="wrap_content"
-                android:textSize="9dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:ems="10"
-                />
-
-        </LinearLayout>
-        
-     </LinearLayout> 
-  
-     <LinearLayout
+        <EditText
+            android:id="@+id/ConvidText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="idx34412"/>
+    </LinearLayout>
+    
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/ConvStateLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="ConvState"
+            android:padding="0dp"
+            android:textSize="10sp" />
 
-            <TextView
-                android:id="@+id/nbLastMessageLabel"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="NbLastMsg" />
-
-            <EditText
-                android:id="@+id/NbLastMessageText"
-                android:layout_width="wrap_content"
-                android:textSize="9dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:ems="10"
-                />
-
-        </LinearLayout>
-        
-     </LinearLayout>
-     
-     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/MessageLabel"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="Message" />
-
-            <EditText
-                android:id="@+id/MessageText"
-                android:layout_width="wrap_content"
-                android:textSize="9dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:ems="10"
-                />
-
-        </LinearLayout>
-
+        <EditText
+            android:id="@+id/ConvStateText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"
+    		android:hint="open"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp" >
+        android:layout_height="22dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="1dp" >
 
         <RadioGroup
             android:id="@+id/transportGroupbutton"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
-	            <RadioButton
-	                android:id="@+id/xmppButton"
-	                android:layout_width="110dp"
-	                android:layout_height="wrap_content"
-	                android:checked="true"
-	                android:text="xmpp"
-	                android:textSize="20px" />
-	
-	            <RadioButton
-	                android:id="@+id/socketButton"
-	                android:layout_width="100dp"
-	                android:layout_height="wrap_content"
-	                android:gravity="center"
-	                android:text="socketio" 
-	                android:textSize="20px"/>
-	        	
-	        	<TextView
-	        	    android:layout_marginLeft="10dp"
-                	android:id="@+id/connectionStatusLabel"
-                	android:layout_width="150dp"
-                	android:layout_height="wrap_content"
-                	android:text="DISCONNECTED" />
+            <RadioButton
+                android:id="@+id/xmppButton"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="xmpp"
+                android:textSize="10sp"
+                android:paddingLeft="20dp"
+                android:button="@drawable/button_radio" />
+
+            <RadioButton
+                android:id="@+id/socketButton"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:text="socketio"
+                android:textSize="10sp"
+                android:paddingLeft="20dp"
+                android:button="@drawable/button_radio" />
+
+            <TextView
+                android:id="@+id/connectionStatusLabel"
+                android:layout_width="150dp"
+                android:layout_height="20dp"
+                android:textSize="10sp"
+                android:text="DISCONNECTED" />
         </RadioGroup>
-        
     </LinearLayout>
-    
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp" >
+        android:layout_height="20dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="1dp" >
 
         <RadioGroup
             android:id="@+id/MessageGroupbutton"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
-	            <RadioButton
-	                android:id="@+id/transientButton"
-	                android:layout_width="110dp"
-	                android:layout_height="wrap_content"
-	                android:checked="true"
-	                android:text="Transient" 
-	                android:textSize="20px"/>
-	
-	            <RadioButton
-	                android:id="@+id/notTransienttButton"
-	                android:layout_width="130dp"
-	                android:layout_height="wrap_content"
-	                android:gravity="center"
-	                android:text="not Transient"
-	                android:textSize="20px" />
-	            
+            <RadioButton
+                android:id="@+id/transientButton"
+                android:layout_width="90dp"
+                android:layout_height="20dp"
+                android:checked="true"
+                android:text="Transient"
+                android:textSize="10sp" 
+                android:paddingLeft="20dp"
+                android:layout_marginBottom="1dp"
+                android:button="@drawable/button_radio"/>
+
+            <RadioButton
+                android:id="@+id/notTransienttButton"
+                android:layout_width="90dp"
+                android:layout_height="20dp"
+                android:text="not Transient"
+                android:textSize="10sp" 
+                android:paddingLeft="20dp"
+                android:button="@drawable/button_radio"/>
         </RadioGroup>
-        
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
+        android:layout_height="30dp">
+           
+            
             <Button
                 android:id="@+id/ConnectionButton"
-                android:textSize="10dp"
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:text="Connect" />
+                android:text="Connect"
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/DeconnectionButton"
-                android:textSize="10dp"
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:text="Disconnect" />
+                android:text="Disconnect"
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/ClearButton"
-                android:textSize="10dp"
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:text="Clear" />
-            
+                android:text="Clear"
+                android:textSize="10sp" />
+
             <Button
                 android:id="@+id/hechoButton"
-                android:textSize="10dp"
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:text="hEcho" />
+                android:text="hEcho"
+                android:textSize="10sp" />
             
-       </LinearLayout>
-
-    </LinearLayout>
-    
-     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
             <Button
                 android:id="@+id/SubscribeButton"
-                android:textSize="10dp"
                 android:layout_width="64dp"
                 android:layout_height="wrap_content"
-                android:text="Subscribe" />
+                android:text="Subscribe"
+                android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
 
             <Button
                 android:id="@+id/UnsubscribeButton"
-                android:textSize="10dp"
-                android:layout_width="64dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="Unsub" />
+                android:text="Unsub"
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/PublishButton"
-                android:textSize="10dp"
-                android:layout_width="64dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="Publish" />
-            
+                android:text="Publish"
+                android:textSize="10sp" />
+
             <Button
                 android:id="@+id/GetLastMessageButton"
-                android:textSize="10dp"
-                android:layout_width="64dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="GetLstMsg" />
-            
+                android:text="GetLstMsg"
+                android:textSize="10sp" />
+
             <Button
                 android:id="@+id/GetSubcriptionButton"
-                android:textSize="10dp"
-                android:layout_width="64dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="GetSubs" />
-       </LinearLayout>
+                android:text="GetSubs"
+                android:textSize="10sp" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
 
+            
+            <Button
+                android:id="@+id/GetThreadButton"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:text="GetThread"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/GetThreadsButton"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:text="GetThreads"
+                android:textSize="10sp" />
+            
+            <Button
+                android:id="@+id/PubConvStateButton"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:text="PubConvState"
+                android:textSize="10sp" />
     </LinearLayout>
 
-    <ScrollView 
+    <ScrollView
         android:id="@+id/scrollview"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent">
-    <TextView
-        android:id="@+id/outputView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="" />
-	</ScrollView>
-	
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <TextView
+            android:id="@+id/outputView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="" />
+    </ScrollView>
+
 </LinearLayout>

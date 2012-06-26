@@ -24,12 +24,11 @@ import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.hubiquitus.hapi.client.HCommandDelegate;
 import org.hubiquitus.hapi.client.HClient;
+import org.hubiquitus.hapi.client.HCommandDelegate;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
 import org.hubiquitus.hapi.hStructures.HCommand;
-import org.hubiquitus.hapi.hStructures.HJsonObj;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HResult;
@@ -38,7 +37,6 @@ import org.hubiquitus.hapi.util.HJsonDictionnary;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -67,6 +65,9 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 	private Button publishButton;
 	private Button getLastMessageButton;
 	private Button getSubcriptionButton;
+	private Button getThreadButton;
+	private Button getThreadsButton;
+	private Button pubConvState;
 
 	private EditText loginEditText;
 	private EditText passwordEditText;
@@ -76,6 +77,8 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 	private EditText channelIDText;
 	private EditText nbLastMessageText;
 	private EditText MessageEditText;
+	private EditText convidEditText;
+	private EditText convstateEditText;
 
 	private TextView outputTextArea;
 	private RadioGroup transportRadioGroup;
@@ -101,6 +104,9 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		initListenerPublishButton();
 		initListenerGetLastMessageButton();
 		initListenerGetSubscriptionButton();
+		initListenerGetThreadButton();
+		initListenerGetThreadButton();
+		initListenerPubConvStateButton();
 
 		client = new HClient();
 		client.onStatus(this);
@@ -118,6 +124,10 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		publishButton = (Button) findViewById(R.id.PublishButton);
 		getLastMessageButton = (Button) findViewById(R.id.GetLastMessageButton);
 		getSubcriptionButton = (Button) findViewById(R.id.GetSubcriptionButton);
+		getThreadButton = (Button) findViewById(R.id.GetThreadButton);
+		getThreadsButton = (Button) findViewById(R.id.GetThreadsButton);
+		pubConvState = (Button) findViewById(R.id.PubConvStateButton);
+
 
 		loginEditText = (EditText) findViewById(R.id.loginText);
 		passwordEditText = (EditText) findViewById(R.id.passwordText);
@@ -125,8 +135,10 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		serverportEditText = (EditText) findViewById(R.id.serverportText);
 		serverhostEditText = (EditText) findViewById(R.id.serverhostText);
 		channelIDText = (EditText) findViewById(R.id.ChannelIDText);
-		nbLastMessageText = (EditText) findViewById(R.id.NbLastMessageText);
-		MessageEditText = (EditText) findViewById(R.id.MessageText);
+		nbLastMessageText = (EditText) findViewById(R.id.nbLastMessageText);
+		MessageEditText = (EditText) findViewById(R.id.messageText);
+		convidEditText = (EditText) findViewById(R.id.ConvidText);
+		convstateEditText = (EditText) findViewById(R.id.ConvStateText);
 
 		transportRadioGroup = (RadioGroup) findViewById(R.id.transportGroupbutton);
 		messageRadioGroup = (RadioGroup) findViewById(R.id.MessageGroupbutton);
@@ -299,6 +311,60 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 			}
 		};
 		getSubcriptionButton.setOnClickListener(listener);
+	}
+	
+	public void initListenerGetThreadButton() {
+		final SimpleClientActivity outerClass = this;
+		OnClickListener listener = new OnClickListener() {
+			public void onClick(View v) {
+				String chid = channelIDText.getText().toString();
+				String convid = convidEditText.getText().toString();
+				try{
+					client.getThread(chid, convid, outerClass);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		getThreadButton.setOnClickListener(listener);
+	}
+	
+	public void initListenerGetThreadsButton() {
+		final SimpleClientActivity outerClass = this;
+		OnClickListener listener = new OnClickListener() {
+			public void onClick(View v) {
+				/*String chid = channelIDText.getText().toString();
+				try{
+					int nbLastMessage = Integer.parseInt(nbLastMessageText.getText().toString());
+					if(nbLastMessage > 0) {
+						client.getLastMessages(chid, nbLastMessage, outerClass);
+					} else {
+						client.getLastMessages(chid, outerClass);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}*/
+			}
+		};
+		getThreadsButton.setOnClickListener(listener);
+	}
+	
+	public void initListenerPubConvStateButton() {
+		final SimpleClientActivity outerClass = this;
+		OnClickListener listener = new OnClickListener() {
+			public void onClick(View v) {
+				String chid = channelIDText.getText().toString();
+				String convid = convidEditText.getText().toString();
+				String status = convstateEditText.getText().toString();
+				try{
+					HMessage pubMsg = client.buildConvState(chid, convid, status, null);
+					client.publish(pubMsg, outerClass);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		pubConvState.setOnClickListener(listener);
 	}
 	
 	public void onResult(final HResult result) {
