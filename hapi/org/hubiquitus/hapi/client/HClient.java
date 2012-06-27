@@ -361,6 +361,36 @@ public class HClient {
 		this.command(cmd, commandDelegate);
 	}
 	
+	/**
+	 * Demands to the hserver the list of convid where there is a hConvState with the status value searched on the channel chid.
+	 * 
+	 * Nominal response : hResult where the status is 0 with an array of convid.
+	 * @param chid - Channel id. Mandatory
+	 * @param status - The status searched. Mandatory
+	 * @param commandDelegate - a delegate notified when the command result is issued. Can be null
+	 */
+	public void getThreads(String chid, String status, HCommandDelegate commandDelegate) {
+		HJsonDictionnary params = new HJsonDictionnary();
+		String cmdName = "hgetthreads";
+		
+		//check mandatory fields
+		if (chid == null || chid.length() <= 0) {
+			notifyResultError(null, cmdName, ResultStatus.MISSING_ATTR, "Chid is missing", commandDelegate);
+			return;
+		}
+		
+		if (status == null || status.length() <= 0) {
+			notifyResultError(null, cmdName, ResultStatus.MISSING_ATTR, "Status is missing", commandDelegate);
+			return;
+		}
+		
+		params.put("chid", chid);
+		params.put("status", status);
+		
+		HCommand cmd = new HCommand(transportOptions.getHserverService(), cmdName, params);
+		this.command(cmd, commandDelegate);
+	}
+	
 	/* Builder */
 	
 	/**
@@ -435,7 +465,7 @@ public class HClient {
 		HConvState hconvstate = new HConvState();
 		hconvstate.setStatus(status);
 		
-		hmessage = buildMessage(chid, "hconvstate", hconvstate, options);
+		hmessage = buildMessage(chid, "hConvState", hconvstate, options);
 		hmessage.setConvid(convid);
 
 		return hmessage;
@@ -471,7 +501,7 @@ public class HClient {
 		HAck hack = new HAck();
 		hack.setAckid(ackid);
 		hack.setAck(ack);
-		hmessage = buildMessage(chid, "hack", hack, options);
+		hmessage = buildMessage(chid, "hAck", hack, options);
 
 		return hmessage;
 	}
@@ -500,7 +530,7 @@ public class HClient {
 		HAlert halert = new HAlert();
 		halert.setAlert(alert);
 		
-		hmessage = buildMessage(chid, "halert", halert, options);
+		hmessage = buildMessage(chid, "hAlert", halert, options);
 	
 		return hmessage;
 	}
@@ -535,7 +565,7 @@ public class HClient {
 		HMeasure hmeasure = new HMeasure();
 		hmeasure.setValue(value);
 		hmeasure.setUnit(unit);
-		hmessage = buildMessage(chid, "hmeasure", hmeasure, options);
+		hmessage = buildMessage(chid, "hMeasure", hmeasure, options);
 	
 		return hmessage;
 	}

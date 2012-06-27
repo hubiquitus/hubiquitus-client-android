@@ -423,13 +423,13 @@ public class HMessage implements HJsonObj {
 		try {
 			JSONObject jsonPayload = hmessage.getJSONObject("payload");
 			String type = this.getType().toLowerCase();
-			if (type.equals("hmeasure")) {
+			if (type.equalsIgnoreCase("hmeasure")) {
 				payload = new HMeasure(jsonPayload);
-			} else if (type.equals("halert")) {
+			} else if (type.equalsIgnoreCase("halert")) {
 				payload = new HAlert(jsonPayload);
-			} else if (type.equals("hack")) {
+			} else if (type.equalsIgnoreCase("hack")) {
 				payload = new HAck(jsonPayload);
-			} else if (type.equals("hconvstate")) {
+			} else if (type.equalsIgnoreCase("hconvstate")) {
 				payload = new HConvState(jsonPayload);
 			} else {
 				payload = new HJsonDictionnary(jsonPayload);

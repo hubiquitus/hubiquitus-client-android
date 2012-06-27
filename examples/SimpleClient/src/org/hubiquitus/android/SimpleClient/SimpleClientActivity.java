@@ -106,7 +106,7 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		initListenerGetLastMessageButton();
 		initListenerGetSubscriptionButton();
 		initListenerGetThreadButton();
-		initListenerGetThreadButton();
+		initListenerGetThreadsButton();
 		initListenerPubConvStateButton();
 
 		client = new HClient();
@@ -334,17 +334,13 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				/*String chid = channelIDText.getText().toString();
+				String chid = channelIDText.getText().toString();
+				String status = convstateEditText.getText().toString();
 				try{
-					int nbLastMessage = Integer.parseInt(nbLastMessageText.getText().toString());
-					if(nbLastMessage > 0) {
-						client.getLastMessages(chid, nbLastMessage, outerClass);
-					} else {
-						client.getLastMessages(chid, outerClass);
-					}
+					client.getThreads(chid, status, outerClass);
 				} catch (Exception e) {
 					e.printStackTrace();
-				}*/
+				}
 			}
 		};
 		getThreadsButton.setOnClickListener(listener);
