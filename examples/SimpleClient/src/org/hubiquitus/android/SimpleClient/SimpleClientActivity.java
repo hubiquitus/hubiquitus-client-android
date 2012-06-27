@@ -30,6 +30,7 @@ import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HMessage;
+import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
@@ -356,8 +357,17 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 				String chid = channelIDText.getText().toString();
 				String convid = convidEditText.getText().toString();
 				String status = convstateEditText.getText().toString();
+				HMessageOptions msgOptions = new HMessageOptions();
+				
+				RadioButton transientRadioBtn = (RadioButton) findViewById(messageRadioGroup.getCheckedRadioButtonId());
+				if(transientRadioBtn.getText().toString().equalsIgnoreCase("Transient")) {
+					msgOptions.setTransient(true);
+				} else {
+					msgOptions.setTransient(false);
+				}
+				
 				try{
-					HMessage pubMsg = client.buildConvState(chid, convid, status, null);
+					HMessage pubMsg = client.buildConvState(chid, convid, status, msgOptions);
 					client.publish(pubMsg, outerClass);
 				} catch (Exception e) {
 					e.printStackTrace();
