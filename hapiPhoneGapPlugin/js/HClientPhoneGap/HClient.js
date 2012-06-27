@@ -37,10 +37,6 @@ define(
 						this.publisher = publisher;
 						this.options = options;
 						
-						//get domain
-						var jid = publisher.split('@');
-						this.domain = jid[1];
-						
 						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [{publisher: publisher, password: password, options:options}]);
 					},
 					disconnect : function(){
@@ -136,6 +132,14 @@ define(
 		                options.convid = convid;
 
 		                return this.buildMessage(chid, 'hConvState', {status: status}, options);
+		            },
+		            
+		            checkJID: function(jid){
+		                return new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$").test(jid);
+		            },
+
+		            splitJID: function(jid){
+		                return jid.match(new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$")).splice(1, 3);
 		            },
 
 					errors: codes.errors,
