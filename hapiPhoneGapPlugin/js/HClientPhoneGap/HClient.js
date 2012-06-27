@@ -37,6 +37,10 @@ define(
 						this.publisher = publisher;
 						this.options = options;
 						
+						//get domain
+						var jid = this.splitJID(publisher); 
+						this.domain = jid[1];
+						
 						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [{publisher: publisher, password: password, options:options}]);
 					},
 					disconnect : function(){
