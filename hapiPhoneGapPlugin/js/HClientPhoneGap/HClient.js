@@ -72,6 +72,10 @@ define(
 					getLastMessages: function(chid, callback){
 						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getLastMessages', [{chid: chid, nbLastMsg: -1, callback: String(callback)}]);
 					},
+					
+					getThread: function(chid, convid, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThread', [{chid: chid, convid: convid, callback: String(callback)}]);
+					},
 
 					buildMessage: function(chid, type, payload, options){
 		                options = options || {};

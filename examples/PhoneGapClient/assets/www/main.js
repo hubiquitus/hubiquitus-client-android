@@ -80,6 +80,20 @@ function get_subscriptions(){
     hClient.getSubscriptions(fct);
 }
 
+function get_thread(){
+    var chid = document.getElementById('chid').value;
+    var convid = prompt('Convid:');
+    var fct = function (hresult) {onResult(hresult)};
+    hClient.getThread(chid, convid, fct);
+}
+
+function get_threads(){
+    var chid = document.getElementById('chid').value;
+    var convState = prompt('ConvState:');
+    var fct = function (hresult) {onResult(hresult)};
+    hClient.getLastMessages(chid, convState, fct);
+}
+
 function clear_divs(){
     document.getElementById("status").innerHTML = 'Status: ';
     document.getElementById("hmessage").innerHTML = '';
