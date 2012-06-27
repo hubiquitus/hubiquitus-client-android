@@ -121,69 +121,80 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00019"></a>00019 
 <a name="l00020"></a>00020 <span class="keyword">package </span>org.hubiquitus.hapi.util;
 <a name="l00021"></a>00021 
-<a name="l00022"></a>00022 <span class="keyword">import</span> org.hubiquitus.hapi.hStructures.HJsonObj;
-<a name="l00023"></a>00023 <span class="keyword">import</span> org.json.JSONObject;
-<a name="l00024"></a>00024 
-<a name="l00029"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html">00029</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html">HJsonDictionnary</a> <span class="keyword">implements</span> <a class="code" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html">HJsonObj</a>{
-<a name="l00030"></a>00030          
-<a name="l00031"></a>00031          <span class="keyword">private</span> JSONObject jsonObj;
-<a name="l00032"></a>00032 
-<a name="l00033"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#ad99239e3643df69ce5aa3511efcba409">00033</a>          <span class="keyword">public</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#ad99239e3643df69ce5aa3511efcba409">HJsonDictionnary</a>() {
-<a name="l00034"></a>00034                   jsonObj = <span class="keyword">new</span> JSONObject();
-<a name="l00035"></a>00035          }
-<a name="l00036"></a>00036          
-<a name="l00037"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a12f2b59c9bd6064406fcff570164987a">00037</a>          <span class="keyword">public</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a12f2b59c9bd6064406fcff570164987a">HJsonDictionnary</a>(JSONObject jsonObj) {
-<a name="l00038"></a>00038                   this.<a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a7a2d32369550defd3792c7ef23661bd0">fromJSON</a>(jsonObj);
-<a name="l00039"></a>00039          }
-<a name="l00040"></a>00040          
-<a name="l00041"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a84a360ee46b40afd94a9be1df300452a">00041</a>          <span class="keyword">public</span> Object <span class="keyword">get</span>(String key) {
-<a name="l00042"></a>00042                   Object value; 
-<a name="l00043"></a>00043                   <span class="keywordflow">try</span> {
-<a name="l00044"></a>00044                            value = jsonObj.get(key);
-<a name="l00045"></a>00045                   } <span class="keywordflow">catch</span> (Exception e) {
-<a name="l00046"></a>00046                            value = null;
-<a name="l00047"></a>00047                   }
-<a name="l00048"></a>00048                   <span class="keywordflow">return</span> value;
-<a name="l00049"></a>00049          }
-<a name="l00050"></a>00050          
-<a name="l00051"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a4b78159c6686310505fa37dbdc8e5c7d">00051</a>          <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a4b78159c6686310505fa37dbdc8e5c7d">put</a>(String key, Object value) {
-<a name="l00052"></a>00052                   <span class="keywordflow">try</span> {
-<a name="l00053"></a>00053                            jsonObj.put(key, value);
-<a name="l00054"></a>00054                   } <span class="keywordflow">catch</span> (Exception e) {
-<a name="l00055"></a>00055                            System.out.println(<span class="stringliteral">&quot;erreur :&quot;</span> + this.getClass());
-<a name="l00056"></a>00056                   }                 
-<a name="l00057"></a>00057          }
-<a name="l00058"></a>00058          
-<a name="l00059"></a>00059          @Override
-<a name="l00060"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a47c08fe8e6231b7c2323823ff638bbe1">00060</a>          <span class="keyword">public</span> JSONObject <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a47c08fe8e6231b7c2323823ff638bbe1">toJSON</a>() {
-<a name="l00061"></a>00061                   <span class="keywordflow">return</span> jsonObj;
-<a name="l00062"></a>00062          }
-<a name="l00063"></a>00063 
-<a name="l00064"></a>00064          @Override
-<a name="l00065"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a7a2d32369550defd3792c7ef23661bd0">00065</a>          <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a7a2d32369550defd3792c7ef23661bd0">fromJSON</a>(JSONObject jsonObj) {
-<a name="l00066"></a>00066                   this.jsonObj = jsonObj;             
-<a name="l00067"></a>00067          }
-<a name="l00068"></a>00068 
-<a name="l00069"></a>00069          @Override
-<a name="l00070"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a42189c0e0dc63e3a7a29ff983a6d6ea8">00070</a>          <span class="keyword">public</span> String <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a42189c0e0dc63e3a7a29ff983a6d6ea8">getHType</a>() {
-<a name="l00071"></a>00071                   <span class="keywordflow">return</span> <span class="stringliteral">&quot;hjsondictionnary&quot;</span>;
-<a name="l00072"></a>00072          }
-<a name="l00073"></a>00073          
-<a name="l00074"></a>00074          @Override
-<a name="l00075"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#aea2bece488fb2804d4fb769eac20e2ff">00075</a>          <span class="keyword">public</span> String <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#aea2bece488fb2804d4fb769eac20e2ff">toString</a>() {
-<a name="l00076"></a>00076                   <span class="keywordflow">return</span> <span class="stringliteral">&quot;HJsonDictionnary [jsonObj=&quot;</span> + jsonObj.toString() + <span class="stringliteral">&quot;]&quot;</span>;
-<a name="l00077"></a>00077          }
-<a name="l00078"></a>00078 
-<a name="l00079"></a>00079          @Override
-<a name="l00080"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a6a54a91320bcdecce9c6c270932cacd2">00080</a>          <span class="keyword">public</span> <span class="keywordtype">boolean</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a6a54a91320bcdecce9c6c270932cacd2">equals</a>(Object obj) {
-<a name="l00081"></a>00081                   <span class="keywordflow">return</span> jsonObj.equals(obj);
-<a name="l00082"></a>00082          }
-<a name="l00083"></a>00083          
-<a name="l00084"></a>00084          @Override
-<a name="l00085"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#aa4ecd9716bc357bc38b6b1972c953529">00085</a>          <span class="keyword">public</span> <span class="keywordtype">int</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#aa4ecd9716bc357bc38b6b1972c953529">hashCode</a>() {
-<a name="l00086"></a>00086                   <span class="keywordflow">return</span> jsonObj.hashCode();
-<a name="l00087"></a>00087          }
-<a name="l00088"></a>00088 }
+<a name="l00022"></a>00022 <span class="keyword">import</span> java.util.Calendar;
+<a name="l00023"></a>00023 
+<a name="l00024"></a>00024 <span class="keyword">import</span> org.hubiquitus.hapi.hStructures.HJsonObj;
+<a name="l00025"></a>00025 <span class="keyword">import</span> org.json.JSONArray;
+<a name="l00026"></a>00026 <span class="keyword">import</span> org.json.JSONObject;
+<a name="l00027"></a>00027 
+<a name="l00032"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html">00032</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html">HJsonDictionnary</a> <span class="keyword">implements</span> <a class="code" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html">HJsonObj</a>{
+<a name="l00033"></a>00033          
+<a name="l00034"></a>00034          <span class="keyword">private</span> JSONObject jsonObj;
+<a name="l00035"></a>00035 
+<a name="l00036"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#ad99239e3643df69ce5aa3511efcba409">00036</a>          <span class="keyword">public</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#ad99239e3643df69ce5aa3511efcba409">HJsonDictionnary</a>() {
+<a name="l00037"></a>00037                   jsonObj = <span class="keyword">new</span> JSONObject();
+<a name="l00038"></a>00038          }
+<a name="l00039"></a>00039          
+<a name="l00040"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a12f2b59c9bd6064406fcff570164987a">00040</a>          <span class="keyword">public</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a12f2b59c9bd6064406fcff570164987a">HJsonDictionnary</a>(JSONObject jsonObj) {
+<a name="l00041"></a>00041                   this.<a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a7a2d32369550defd3792c7ef23661bd0">fromJSON</a>(jsonObj);
+<a name="l00042"></a>00042          }
+<a name="l00043"></a>00043          
+<a name="l00044"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a84a360ee46b40afd94a9be1df300452a">00044</a>          <span class="keyword">public</span> Object <span class="keyword">get</span>(String key) {
+<a name="l00045"></a>00045                   Object value; 
+<a name="l00046"></a>00046                   <span class="keywordflow">try</span> {
+<a name="l00047"></a>00047                            value = jsonObj.get(key);
+<a name="l00048"></a>00048                   } <span class="keywordflow">catch</span> (Exception e) {
+<a name="l00049"></a>00049                            value = null;
+<a name="l00050"></a>00050                   }
+<a name="l00051"></a>00051                   <span class="keywordflow">return</span> value;
+<a name="l00052"></a>00052          }
+<a name="l00053"></a>00053          
+<a name="l00060"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a4b78159c6686310505fa37dbdc8e5c7d">00060</a>          <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a4b78159c6686310505fa37dbdc8e5c7d">put</a>(String key, Object value) {
+<a name="l00061"></a>00061                   <span class="keywordflow">try</span> {
+<a name="l00062"></a>00062                            <span class="keywordflow">if</span> (value instanceof <a class="code" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html">HJsonObj</a>) {
+<a name="l00063"></a>00063                                     jsonObj.put(key, ((HJsonObj)value).<a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a47c08fe8e6231b7c2323823ff638bbe1">toJSON</a>());
+<a name="l00064"></a>00064                            } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ((value instanceof JSONObject) || (value instanceof JSONArray) || 
+<a name="l00065"></a>00065                                              (value instanceof Boolean) || (value instanceof Integer) ||
+<a name="l00066"></a>00066                                              (value instanceof Double)  || (value instanceof String )) {
+<a name="l00067"></a>00067                                     jsonObj.put(key, value);
+<a name="l00068"></a>00068                            } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (value instanceof Calendar) {
+<a name="l00069"></a>00069                                     jsonObj.put(key, <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_date_i_s_o8601.html">DateISO8601</a>.<a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_date_i_s_o8601.html#a86c93445d73e350edfbeacd0496c1612">fromCalendar</a>((Calendar)value));
+<a name="l00070"></a>00070                            }
+<a name="l00071"></a>00071                   } <span class="keywordflow">catch</span> (Exception e) {
+<a name="l00072"></a>00072                            System.out.println(<span class="stringliteral">&quot;erreur :&quot;</span> + this.getClass());
+<a name="l00073"></a>00073                   }                 
+<a name="l00074"></a>00074          }
+<a name="l00075"></a>00075          
+<a name="l00076"></a>00076          @Override
+<a name="l00077"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a47c08fe8e6231b7c2323823ff638bbe1">00077</a>          <span class="keyword">public</span> JSONObject <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a47c08fe8e6231b7c2323823ff638bbe1">toJSON</a>() {
+<a name="l00078"></a>00078                   <span class="keywordflow">return</span> jsonObj;
+<a name="l00079"></a>00079          }
+<a name="l00080"></a>00080 
+<a name="l00081"></a>00081          @Override
+<a name="l00082"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a7a2d32369550defd3792c7ef23661bd0">00082</a>          <span class="keyword">public</span> <span class="keywordtype">void</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a7a2d32369550defd3792c7ef23661bd0">fromJSON</a>(JSONObject jsonObj) {
+<a name="l00083"></a>00083                   this.jsonObj = jsonObj;             
+<a name="l00084"></a>00084          }
+<a name="l00085"></a>00085 
+<a name="l00086"></a>00086          @Override
+<a name="l00087"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a42189c0e0dc63e3a7a29ff983a6d6ea8">00087</a>          <span class="keyword">public</span> String <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a42189c0e0dc63e3a7a29ff983a6d6ea8">getHType</a>() {
+<a name="l00088"></a>00088                   <span class="keywordflow">return</span> <span class="stringliteral">&quot;hjsondictionnary&quot;</span>;
+<a name="l00089"></a>00089          }
+<a name="l00090"></a>00090          
+<a name="l00091"></a>00091          @Override
+<a name="l00092"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#aea2bece488fb2804d4fb769eac20e2ff">00092</a>          <span class="keyword">public</span> String <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#aea2bece488fb2804d4fb769eac20e2ff">toString</a>() {
+<a name="l00093"></a>00093                   <span class="keywordflow">return</span> <span class="stringliteral">&quot;HJsonDictionnary [jsonObj=&quot;</span> + jsonObj.toString() + <span class="stringliteral">&quot;]&quot;</span>;
+<a name="l00094"></a>00094          }
+<a name="l00095"></a>00095 
+<a name="l00096"></a>00096          @Override
+<a name="l00097"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a6a54a91320bcdecce9c6c270932cacd2">00097</a>          <span class="keyword">public</span> <span class="keywordtype">boolean</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#a6a54a91320bcdecce9c6c270932cacd2">equals</a>(Object obj) {
+<a name="l00098"></a>00098                   <span class="keywordflow">return</span> jsonObj.equals(obj);
+<a name="l00099"></a>00099          }
+<a name="l00100"></a>00100          
+<a name="l00101"></a>00101          @Override
+<a name="l00102"></a><a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#aa4ecd9716bc357bc38b6b1972c953529">00102</a>          <span class="keyword">public</span> <span class="keywordtype">int</span> <a class="code" href="classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html#aa4ecd9716bc357bc38b6b1972c953529">hashCode</a>() {
+<a name="l00103"></a>00103                   <span class="keywordflow">return</span> jsonObj.hashCode();
+<a name="l00104"></a>00104          }
+<a name="l00105"></a>00105 }
 </pre></div></div><!-- contents -->
 </div>
 <!-- window showing the filter options -->
@@ -204,7 +215,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul>
       <li class="navelem"><a class="el" href="_h_json_dictionnary_8java.html">HJsonDictionnary.java</a>      </li>
 
-    <li class="footer">Generated on Fri Jun 8 2012 17:42:25 for Hubiquitus Android by
+    <li class="footer">Generated on Wed Jun 27 2012 11:33:07 for Hubiquitus Android by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

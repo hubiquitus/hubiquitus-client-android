@@ -5,16 +5,18 @@ var searchData=
   ['halert',['HAlert',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_alert.html',1,'org::hubiquitus::hapi::hStructures']]],
   ['hclient',['HClient',['../classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html',1,'org::hubiquitus::hapi::client']]],
   ['hcommand',['HCommand',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_command.html',1,'org::hubiquitus::hapi::hStructures']]],
-  ['hconv',['HConv',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_conv.html',1,'org::hubiquitus::hapi::hStructures']]],
-  ['hdelegate',['HDelegate',['../interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_delegate.html',1,'org::hubiquitus::hapi::client']]],
+  ['hcommanddelegate',['HCommandDelegate',['../interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html',1,'org::hubiquitus::hapi::client']]],
+  ['hconvstate',['HConvState',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_conv_state.html',1,'org::hubiquitus::hapi::hStructures']]],
   ['hjsondictionnary',['HJsonDictionnary',['../classorg_1_1hubiquitus_1_1hapi_1_1util_1_1_h_json_dictionnary.html',1,'org::hubiquitus::hapi::util']]],
   ['hjsonobj',['HJsonObj',['../interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html',1,'org::hubiquitus::hapi::hStructures']]],
   ['hlocation',['HLocation',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_location.html',1,'org::hubiquitus::hapi::hStructures']]],
   ['hmeasure',['HMeasure',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_measure.html',1,'org::hubiquitus::hapi::hStructures']]],
   ['hmessage',['HMessage',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html',1,'org::hubiquitus::hapi::hStructures']]],
+  ['hmessagedelegate',['HMessageDelegate',['../interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html',1,'org::hubiquitus::hapi::client']]],
   ['hmessageoptions',['HMessageOptions',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html',1,'org::hubiquitus::hapi::hStructures']]],
   ['hmessagepriority',['HMessagePriority',['../enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_priority.html',1,'org::hubiquitus::hapi::hStructures']]],
   ['hoptions',['HOptions',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_options.html',1,'org::hubiquitus::hapi::hStructures']]],
   ['hresult',['HResult',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_result.html',1,'org::hubiquitus::hapi::hStructures']]],
-  ['hstatus',['HStatus',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_status.html',1,'org::hubiquitus::hapi::hStructures']]]
+  ['hstatus',['HStatus',['../classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_status.html',1,'org::hubiquitus::hapi::hStructures']]],
+  ['hstatusdelegate',['HStatusDelegate',['../interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_status_delegate.html',1,'org::hubiquitus::hapi::client']]]
 ];

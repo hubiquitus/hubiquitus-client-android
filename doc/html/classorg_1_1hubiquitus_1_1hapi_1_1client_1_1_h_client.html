@@ -99,6 +99,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">org.hubiquitus.hapi.client.HClient Class Reference</div>  </div>
@@ -107,28 +108,36 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <!-- doxytag: class="org::hubiquitus::hapi::client::HClient" -->
 <p><a href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client-members.html">List of all members.</a></p>
 <table class="memberdecls">
+<tr><td colspan="2"><h2><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><b>TransportDelegate</b></td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a9b5a49ac5e1d33c137f326762c0489e3">HClient</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4a0c940d49b0c7719bee7b333586f0be">connect</a> (String publisher, String password, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_delegate.html">HDelegate</a> callback, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_options.html">HOptions</a> options)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#acbf07e2da514e088fbeb177db582ed69">connect</a> (String publisher, String password, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_options.html">HOptions</a> options)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a853bc3be1ab0d6a547ae2b1afb94fa89">disconnect</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6159d5cb64bababcb79bbaf8ec117ce8">command</a> (<a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_command.html">HCommand</a> cmd)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#adabb452472a28cbb8b98a47c667e7c6b">subscribe</a> (String chid)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aa2e073ba6e0cf8bd4e13336b4434a8e3">unsubscribe</a> (String chid)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ad70902ff2f9a1b908dc71802a12b483a">publish</a> (<a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> message)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6882cbb4ec946274f95e6acf3ffe7568">getLastMessages</a> (String chid, int nbLastMsg)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a9ef8f540f0cada21d99bb2db48e3411c">getLastMessages</a> (String chid)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a96a90e5c1d136be2520569c5c7d10ffb">getSubscriptions</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a34b296fbe225a580f18ca5ae2b08d39c">buildMessage</a> (String chid, String type, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html">HJsonObj</a> payload, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aad74735ffe6fad847165b76a01ddfa25">buildConv</a> (String chid, String topic, List&lt; String &gt; participants, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae748da4ff073bd1198ffda5ccfd7683d">buildAck</a> (String chid, String ackid, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_ack_value.html">HAckValue</a> ack, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a96d066ae0700769198b8b2982b78ebc7">buildAlert</a> (String chid, String alert, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a487332350f13015c2f0a0d6c3cbf6e2f">buildMeasure</a> (String chid, String value, String unit, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#af8f2343d575ac2fc66f5b3c87378cb4c">onStatus</a> (<a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_status_delegate.html">HStatusDelegate</a> statusDelgate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#acc680621e6f8ea625506aad101e2b929">onMessage</a> (<a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a> messageDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html">ConnectionStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a137a947019f7838baf46a9c8a11cd85d">command</a> (<a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_command.html">HCommand</a> cmd, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae1655f61bde6433fb676ee8a075f10c5">subscribe</a> (String chid, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a5d7ea1fd122631c750b607f2d4581bf3">unsubscribe</a> (String chid, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#adbca7927627d9e5812f8c8b7a159f1aa">publish</a> (<a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> message, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4703707ebb7db0e6d66dbc1acf372a93">getLastMessages</a> (String chid, int nbLastMsg, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a8db6780ce7b84513f8786492edcc3d14">getLastMessages</a> (String chid, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a9bbc649bcf44636e65c82f9cabcee14e">getSubscriptions</a> (<a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a7dee8af039e6c5363f5289720bfa148f">getThread</a> (String chid, String convid, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a219ae5be07df0535dc959a0958d8c707">getThreads</a> (String chid, String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a34b296fbe225a580f18ca5ae2b08d39c">buildMessage</a> (String chid, String type, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html">HJsonObj</a> payload, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a7a37da07236a0956ed743dab44b1d4a3">buildConvState</a> (String chid, String convid, String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae748da4ff073bd1198ffda5ccfd7683d">buildAck</a> (String chid, String ackid, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_ack_value.html">HAckValue</a> ack, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a96d066ae0700769198b8b2982b78ebc7">buildAlert</a> (String chid, String alert, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a487332350f13015c2f0a0d6c3cbf6e2f">buildMeasure</a> (String chid, String value, String unit, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><dl class="version"><dt><b>Version:</b></dt><dd>0.3 Hubiquitus client, public api </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00056">56</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00058">58</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 </div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a9b5a49ac5e1d33c137f326762c0489e3"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::HClient" ref="a9b5a49ac5e1d33c137f326762c0489e3" args="()" -->
 <div class="memitem">
@@ -144,7 +153,7 @@ Public Member Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00067">67</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00072">72</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
@@ -180,7 +189,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
@@ -188,16 +197,22 @@ Public Member Functions</h2></td></tr>
 <p>Helper to create hack </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
-    <tr><td class="paramname">ackid</td><td></td></tr>
-    <tr><td class="paramname">ack</td><td></td></tr>
+    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
+    <tr><td class="paramname">ackid</td><td>: mandatory </td></tr>
+    <tr><td class="paramname">ack</td><td>: mandatory </td></tr>
     <tr><td class="paramname">options</td><td></td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>hmessage </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00389">389</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00483">483</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
@@ -226,7 +241,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
@@ -234,24 +249,30 @@ Public Member Functions</h2></td></tr>
 <p>Helper to create halert </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
-    <tr><td class="paramname">alert</td><td></td></tr>
+    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
+    <tr><td class="paramname">alert</td><td>: mandatory </td></tr>
     <tr><td class="paramname">options</td><td></td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>hmessage </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00416">416</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00517">517</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aad74735ffe6fad847165b76a01ddfa25"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildConv" ref="aad74735ffe6fad847165b76a01ddfa25" args="(String chid, String topic, List&lt; String &gt; participants, HMessageOptions options)" -->
+<a class="anchor" id="a7a37da07236a0956ed743dab44b1d4a3"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildConvState" ref="a7a37da07236a0956ed743dab44b1d4a3" args="(String chid, String convid, String status, HMessageOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aad74735ffe6fad847165b76a01ddfa25">org.hubiquitus.hapi.client.HClient.buildConv</a> </td>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a7a37da07236a0956ed743dab44b1d4a3">org.hubiquitus.hapi.client.HClient.buildConvState</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>chid</em>, </td>
@@ -260,13 +281,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>topic</em>, </td>
+          <td class="paramname"><em>convid</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">List&lt; String &gt;&#160;</td>
-          <td class="paramname"><em>participants</em>, </td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -277,24 +298,30 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Helper to create hconv </p>
+<p>Helper to create hconvstate </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
-    <tr><td class="paramname">topic</td><td></td></tr>
-    <tr><td class="paramname">participants</td><td></td></tr>
+    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
+    <tr><td class="paramname">convid</td><td>- conversation id : mandatory </td></tr>
+    <tr><td class="paramname">status</td><td>- status of the conversation </td></tr>
     <tr><td class="paramname">options</td><td></td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>hmessage </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00361">361</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00448">448</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
@@ -329,7 +356,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
@@ -337,16 +364,22 @@ Public Member Functions</h2></td></tr>
 <p>Helper to create hmeasure </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
-    <tr><td class="paramname">value</td><td></td></tr>
-    <tr><td class="paramname">unit</td><td></td></tr>
+    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
+    <tr><td class="paramname">value</td><td>: mandatory </td></tr>
+    <tr><td class="paramname">unit</td><td>: mandatory </td></tr>
     <tr><td class="paramname">options</td><td></td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>hmessage </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00443">443</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00547">547</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
@@ -381,7 +414,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
@@ -390,7 +423,7 @@ Public Member Functions</h2></td></tr>
 <dl class="see"><dt><b>See also:</b></dt><dd>HMessage </dd></dl>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
+    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
     <tr><td class="paramname">type</td><td></td></tr>
     <tr><td class="paramname">payload</td><td></td></tr>
     <tr><td class="paramname">options</td><td></td></tr>
@@ -398,21 +431,37 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>hMessage </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00320">320</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00406">406</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a6159d5cb64bababcb79bbaf8ec117ce8"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::command" ref="a6159d5cb64bababcb79bbaf8ec117ce8" args="(HCommand cmd)" -->
+<a class="anchor" id="a137a947019f7838baf46a9c8a11cd85d"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::command" ref="a137a947019f7838baf46a9c8a11cd85d" args="(HCommand cmd, HCommandDelegate commandDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6159d5cb64bababcb79bbaf8ec117ce8">org.hubiquitus.hapi.client.HClient.command</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a137a947019f7838baf46a9c8a11cd85d">org.hubiquitus.hapi.client.HClient.command</a> </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_command.html">HCommand</a>&#160;</td>
-          <td class="paramname"><em>cmd</em></td><td>)</td>
+          <td class="paramname"><em>cmd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div>
@@ -421,21 +470,22 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">cmd</td><td>- name of the command </td></tr>
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>reqid </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00172">172</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00198">198</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4a0c940d49b0c7719bee7b333586f0be"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::connect" ref="a4a0c940d49b0c7719bee7b333586f0be" args="(String publisher, String password, HDelegate callback, HOptions options)" -->
+<a class="anchor" id="acbf07e2da514e088fbeb177db582ed69"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::connect" ref="acbf07e2da514e088fbeb177db582ed69" args="(String publisher, String password, HOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4a0c940d49b0c7719bee7b333586f0be">org.hubiquitus.hapi.client.HClient.connect</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#acbf07e2da514e088fbeb177db582ed69">org.hubiquitus.hapi.client.HClient.connect</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>publisher</em>, </td>
@@ -445,12 +495,6 @@ Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>password</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_delegate.html">HDelegate</a>&#160;</td>
-          <td class="paramname"><em>callback</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -477,7 +521,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00078">78</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00083">83</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
@@ -495,16 +539,16 @@ Public Member Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00140">140</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00143">143</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a6882cbb4ec946274f95e6acf3ffe7568"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getLastMessages" ref="a6882cbb4ec946274f95e6acf3ffe7568" args="(String chid, int nbLastMsg)" -->
+<a class="anchor" id="a4703707ebb7db0e6d66dbc1acf372a93"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getLastMessages" ref="a4703707ebb7db0e6d66dbc1acf372a93" args="(String chid, int nbLastMsg, HCommandDelegate commandDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6882cbb4ec946274f95e6acf3ffe7568">org.hubiquitus.hapi.client.HClient.getLastMessages</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4703707ebb7db0e6d66dbc1acf372a93">org.hubiquitus.hapi.client.HClient.getLastMessages</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>chid</em>, </td>
@@ -513,7 +557,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nbLastMsg</em>&#160;</td>
+          <td class="paramname"><em>nbLastMsg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -530,50 +580,63 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">chid</td><td>- channel id </td></tr>
     <tr><td class="paramname">nbLastMsg</td><td></td></tr>
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00279">279</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00302">302</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a9ef8f540f0cada21d99bb2db48e3411c"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getLastMessages" ref="a9ef8f540f0cada21d99bb2db48e3411c" args="(String chid)" -->
+<a class="anchor" id="a8db6780ce7b84513f8786492edcc3d14"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getLastMessages" ref="a8db6780ce7b84513f8786492edcc3d14" args="(String chid, HCommandDelegate commandDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6882cbb4ec946274f95e6acf3ffe7568">org.hubiquitus.hapi.client.HClient.getLastMessages</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4703707ebb7db0e6d66dbc1acf372a93">org.hubiquitus.hapi.client.HClient.getLastMessages</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em></td><td>)</td>
+          <td class="paramname"><em>chid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6882cbb4ec946274f95e6acf3ffe7568">getLastMessages(String chid, int nbLastMsg)</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd>getLastMessages(String chid, int nbLastMsg) </dd></dl>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">chid</td><td>- channel id </td></tr>
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00294">294</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00318">318</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a96a90e5c1d136be2520569c5c7d10ffb"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getSubscriptions" ref="a96a90e5c1d136be2520569c5c7d10ffb" args="()" -->
+<a class="anchor" id="a9bbc649bcf44636e65c82f9cabcee14e"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getSubscriptions" ref="a9bbc649bcf44636e65c82f9cabcee14e" args="(HCommandDelegate commandDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a96a90e5c1d136be2520569c5c7d10ffb">org.hubiquitus.hapi.client.HClient.getSubscriptions</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a9bbc649bcf44636e65c82f9cabcee14e">org.hubiquitus.hapi.client.HClient.getSubscriptions</a> </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -581,22 +644,180 @@ Public Member Functions</h2></td></tr>
 <div class="memdoc">
 <p>Demands the server a list of the publisher’s subscriptions.</p>
 <p>Nominal response : a hCallback with a hResult will be performed when the result is available with an array of channel id. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00304">304</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00329">329</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad70902ff2f9a1b908dc71802a12b483a"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::publish" ref="ad70902ff2f9a1b908dc71802a12b483a" args="(HMessage message)" -->
+<a class="anchor" id="a7dee8af039e6c5363f5289720bfa148f"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getThread" ref="a7dee8af039e6c5363f5289720bfa148f" args="(String chid, String convid, HCommandDelegate commandDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ad70902ff2f9a1b908dc71802a12b483a">org.hubiquitus.hapi.client.HClient.publish</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a7dee8af039e6c5363f5289720bfa148f">org.hubiquitus.hapi.client.HClient.getThread</a> </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>chid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>convid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Demands to the hserver the list of messages correlated by the convid value on a dedicated channel chid.</p>
+<p>Nominal response : hResult where the status is 0 with an array of hMessage. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">chid</td><td>- Channel id. Mandatory </td></tr>
+    <tr><td class="paramname">convid</td><td>- Conversation id. Mandatory </td></tr>
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00342">342</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a219ae5be07df0535dc959a0958d8c707"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getThreads" ref="a219ae5be07df0535dc959a0958d8c707" args="(String chid, String status, HCommandDelegate commandDelegate)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a219ae5be07df0535dc959a0958d8c707">org.hubiquitus.hapi.client.HClient.getThreads</a> </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>chid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Demands to the hserver the list of convid where there is a hConvState with the status value searched on the channel chid.</p>
+<p>Nominal response : hResult where the status is 0 with an array of convid. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">chid</td><td>- Channel id. Mandatory </td></tr>
+    <tr><td class="paramname">status</td><td>- The status searched. Mandatory </td></tr>
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00372">372</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acc680621e6f8ea625506aad101e2b929"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::onMessage" ref="acc680621e6f8ea625506aad101e2b929" args="(HMessageDelegate messageDelegate)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#acc680621e6f8ea625506aad101e2b929">org.hubiquitus.hapi.client.HClient.onMessage</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a>&#160;</td>
+          <td class="paramname"><em>messageDelegate</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Message delegate receive all incoming HMessage </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">messageDelegate</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00180">180</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af8f2343d575ac2fc66f5b3c87378cb4c"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::onStatus" ref="af8f2343d575ac2fc66f5b3c87378cb4c" args="(HStatusDelegate statusDelgate)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#af8f2343d575ac2fc66f5b3c87378cb4c">org.hubiquitus.hapi.client.HClient.onStatus</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_status_delegate.html">HStatusDelegate</a>&#160;</td>
+          <td class="paramname"><em>statusDelgate</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Status delegate receive all connection status events. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">statusDelgate</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00172">172</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adbca7927627d9e5812f8c8b7a159f1aa"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::publish" ref="adbca7927627d9e5812f8c8b7a159f1aa" args="(HMessage message, HCommandDelegate commandDelegate)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#adbca7927627d9e5812f8c8b7a159f1aa">org.hubiquitus.hapi.client.HClient.publish</a> </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td>
-          <td class="paramname"><em>message</em></td><td>)</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div>
@@ -605,25 +826,56 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">message</td><td></td></tr>
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>reqid </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00248">248</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00266">266</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="adabb452472a28cbb8b98a47c667e7c6b"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::subscribe" ref="adabb452472a28cbb8b98a47c667e7c6b" args="(String chid)" -->
+<a class="anchor" id="a95b95119cea50311828a7604aa8a43e8"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::status" ref="a95b95119cea50311828a7604aa8a43e8" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#adabb452472a28cbb8b98a47c667e7c6b">org.hubiquitus.hapi.client.HClient.subscribe</a> </td>
+          <td class="memname"><a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html">ConnectionStatus</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">org.hubiquitus.hapi.client.HClient.status</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Get current connection status </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd></dd></dl>
+
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00188">188</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae1655f61bde6433fb676ee8a075f10c5"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::subscribe" ref="ae1655f61bde6433fb676ee8a075f10c5" args="(String chid, HCommandDelegate commandDelegate)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae1655f61bde6433fb676ee8a075f10c5">org.hubiquitus.hapi.client.HClient.subscribe</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em></td><td>)</td>
+          <td class="paramname"><em>chid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div>
@@ -632,25 +884,36 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">chid</td><td>- channel id </td></tr>
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00223">223</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00239">239</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa2e073ba6e0cf8bd4e13336b4434a8e3"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::unsubscribe" ref="aa2e073ba6e0cf8bd4e13336b4434a8e3" args="(String chid)" -->
+<a class="anchor" id="a5d7ea1fd122631c750b607f2d4581bf3"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::unsubscribe" ref="a5d7ea1fd122631c750b607f2d4581bf3" args="(String chid, HCommandDelegate commandDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aa2e073ba6e0cf8bd4e13336b4434a8e3">org.hubiquitus.hapi.client.HClient.unsubscribe</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a5d7ea1fd122631c750b607f2d4581bf3">org.hubiquitus.hapi.client.HClient.unsubscribe</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em></td><td>)</td>
+          <td class="paramname"><em>chid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
+          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div>
@@ -659,12 +922,13 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">chid</td><td>- channel id </td></tr>
+    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00236">236</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00253">253</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
@@ -695,7 +959,7 @@ Public Member Functions</h2></td></tr>
       <li class="navelem"><a class="el" href="namespaceorg_1_1hubiquitus_1_1hapi_1_1client.html">client</a>      </li>
       <li class="navelem"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html">HClient</a>      </li>
 
-    <li class="footer">Generated on Fri Jun 8 2012 17:42:26 for Hubiquitus Android by
+    <li class="footer">Generated on Wed Jun 27 2012 11:33:08 for Hubiquitus Android by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

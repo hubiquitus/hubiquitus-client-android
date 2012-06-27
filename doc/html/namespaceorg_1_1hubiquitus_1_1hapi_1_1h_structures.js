@@ -6,7 +6,7 @@ var namespaceorg_1_1hubiquitus_1_1hapi_1_1h_structures =
     [ "HAckValue", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_ack_value.html", null ],
     [ "HAlert", "classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_alert.html", null ],
     [ "HCommand", "classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_command.html", null ],
-    [ "HConv", "classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_conv.html", null ],
+    [ "HConvState", "classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_conv_state.html", null ],
     [ "HJsonObj", "interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html", null ],
     [ "HLocation", "classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_location.html", null ],
     [ "HMeasure", "classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_measure.html", null ],

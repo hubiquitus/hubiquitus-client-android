@@ -1,5 +1,6 @@
 var namespaces =
 [
+    [ "exceptions", "namespaceexceptions.html", "namespaceexceptions" ],
     [ "org", "namespaceorg.html", null ],
     [ "org::hubiquitus", "namespaceorg_1_1hubiquitus.html", null ],
     [ "org::hubiquitus::hapi", "namespaceorg_1_1hubiquitus_1_1hapi.html", null ],
