@@ -72,6 +72,8 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			this.getSubscriptions(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("getthread")) {
 			this.getThread(action, data, callbackid);
+		} else if(action.equalsIgnoreCase("getthreads")) {
+			this.getThreads(action, data, callbackid);
 		}
 		
 		return null;
@@ -288,6 +290,47 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
 			
 			hclient.getThread(chid, convid, commandDelegate);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Bridge to HClient.getThreads
+	 * @param action
+	 * @param data
+	 * @param callbackid
+	 */
+	public void getThreads(String action, JSONArray data, String callbackid) {
+		JSONObject jsonObj = null;
+		String chid = null;
+		String convState = null;
+		String jsonCallback = null;
+		try {
+			jsonObj = data.getJSONObject(0);
+			
+			try {
+				chid = jsonObj.getString("chid");
+			} catch (Exception e) {
+			}
+			
+			try {
+				convState = jsonObj.getString("convState");
+			} catch (Exception e) {
+			}
+			
+			try {
+				jsonCallback = jsonObj.getString("callback");
+			} catch (Exception e) {
+			}
+			
+			final String cmdCallback = jsonCallback;
+			
+			//set the callback
+			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
+			
+			hclient.getThreads(chid, convState, commandDelegate);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

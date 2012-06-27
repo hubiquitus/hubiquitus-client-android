@@ -76,6 +76,10 @@ define(
 					getThread: function(chid, convid, callback){
 						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThread', [{chid: chid, convid: convid, callback: String(callback)}]);
 					},
+					
+					getThreads: function(chid, convState, callback){
+						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThreads', [{chid: chid, convState: convState, callback: String(callback)}]);
+					},
 
 					buildMessage: function(chid, type, payload, options){
 		                options = options || {};

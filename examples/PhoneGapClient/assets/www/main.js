@@ -91,7 +91,7 @@ function get_threads(){
     var chid = document.getElementById('chid').value;
     var convState = prompt('ConvState:');
     var fct = function (hresult) {onResult(hresult)};
-    hClient.getLastMessages(chid, convState, fct);
+    hClient.getThreads(chid, convState, fct);
 }
 
 function clear_divs(){
