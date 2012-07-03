@@ -104,7 +104,7 @@ public class HUtil {
 	 * @return HServer Jid
 	 */
 	public static String getHserverJid(String hserver, String domain) {
-		return hserver + "." + domain; 
+		return hserver + "@" + domain; 
 	}
 	
 }
