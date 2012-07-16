@@ -619,8 +619,8 @@ public class HClient {
 	 */
 	private void notifyStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
 		try {
-			if (this.statusDelegate != null) {
 				connectionStatus = status;
+				if (this.statusDelegate != null) {
 				
 				//create structure 
 				final HStatus hstatus = new HStatus();
