@@ -19,23 +19,38 @@
 
 package org.hubiquitus.hapi.hStructures;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.json.JSONObject;
 
 /**
- * @version 0.3
+ * @version 0.5
  * hAPI MessageOption. For more info, see Hubiquitus reference
  */
 
 public class HMessageOptions {
 	
+	private String ref = null;
 	private String convid = null;
 	private HMessagePriority priority = null;
-	private Calendar relevance = null;
-	private Boolean _transient = null;
+	private DateTime relevance = null;
+	private Integer relevanceOffset = null;
+	private Boolean persistent = null;
 	private HLocation location = null;
 	private String author = null;
-	private HJsonObj headers = null;
-	private Calendar published = null;
+	private JSONObject headers = null;
+	private DateTime published = null;
+	private Integer timeout = 0;
+	
+	/**
+	 * @return The msgid of the message refered to
+	 */
+	public String getRef() {
+		return ref;
+	}
+	
+	public void setRef(String ref){
+		this.ref = ref;
+	}
 	
 	/**
 	 * @return conversation id. NULL if undefined 
@@ -62,22 +77,35 @@ public class HMessageOptions {
 	 * Date-time until which the message is considered as relevant.
 	 * @return relevance. NULL if undefined
 	 */
-	public Calendar getRelevance() {
+	public DateTime getRelevance() {
 		return relevance;
 	}
-	public void setRelevance(Calendar relevance) {
+	public void setRelevance(DateTime relevance) {
 		this.relevance = relevance;
+	}
+	
+	
+	public Integer getRelevanceOffset() {
+		return relevanceOffset;
+	}
+	/**
+	 * You can use this option to indicate a duration in ms. 
+	 * If you use this parameter, it will override the relevance one by updating the date-time for the relevance of the hMessage.
+	 * @param relevanceOffset
+	 */
+	public void setRelevanceOffset(Integer relevanceOffset) {
+		this.relevanceOffset = relevanceOffset;
 	}
 	
 	/**
 	 * Persistent if false.
 	 * @return persist message or not. NULL if undefined
 	 */
-	public Boolean getTransient() {
-		return _transient;
+	public Boolean getPersistent() {
+		return persistent;
 	}
-	public void setTransient(Boolean _transient) {
-		this._transient = _transient;
+	public void setPersistent(Boolean persistent) {
+		this.persistent = persistent;
 	}
 	
 	/**
@@ -105,10 +133,10 @@ public class HMessageOptions {
 	 * The list of headers attached to this message.
 	 * @return Headers. NULL if undefined
 	 */
-	public HJsonObj getHeaders() {
+	public JSONObject getHeaders() {
 		return headers;
 	}
-	public void setHeaders(HJsonObj headers) {
+	public void setHeaders(JSONObject headers) {
 		this.headers = headers;
 	}
 	
@@ -116,11 +144,22 @@ public class HMessageOptions {
 	 * Date-time when the message is publish
 	 * @return relevance. NULL if undefined
 	 */
-	public Calendar getPublished() {
+	public DateTime getPublished() {
 		return published;
 	}
-	public void setPublished(Calendar published) {
+	public void setPublished(DateTime published) {
 		this.published = published;
+	}
+	
+	/**
+	 * Time (in ms) to wait for a response before hAPI sends a timeout
+	 *@return timeout. 0 if undefined.
+	 */
+	public Integer getTimeout() {
+		return timeout;
+	}
+	public void setTimeout(Integer timeout) {
+		this.timeout = timeout;
 	}
 	
 }

@@ -21,17 +21,14 @@
 package org.hubiquitus.hapi.hStructures;
 
 /**
- * @version 0.3
+ * @version 0.5
  * Enumeration of different status of connection take by the client.
  * For more information see Hubiquitus reference
  */
 
 public enum ConnectionStatus {
-	UNKNOWN(0),
 	CONNECTING(1),
 	CONNECTED(2),
-	REATTACHING(3),
-	REATTACHED(4),
 	DISCONNECTING(5),
 	DISCONNECTED(6);
 	
@@ -55,6 +52,12 @@ public enum ConnectionStatus {
 	 */
 	public static ConnectionStatus constant(int value) {
 		ConnectionStatus [] _values = ConnectionStatus.values();
-		return _values[value];
+		ConnectionStatus _value = ConnectionStatus.DISCONNECTED;
+		for (int i = 0; i < _values.length; i++) {
+			if(_values[i].value == value){
+				_value = _values[i];
+			}
+		}
+		return _value;
 	}
 }

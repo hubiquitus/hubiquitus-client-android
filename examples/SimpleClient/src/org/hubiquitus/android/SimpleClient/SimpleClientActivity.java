@@ -25,7 +25,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.hubiquitus.hapi.client.HClient;
-import org.hubiquitus.hapi.client.HCommandDelegate;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
 import org.hubiquitus.hapi.hStructures.HCommand;
@@ -34,7 +33,7 @@ import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
-import org.hubiquitus.hapi.util.HJsonDictionnary;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -47,7 +46,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class SimpleClientActivity extends Activity  implements HStatusDelegate, HMessageDelegate, HCommandDelegate{
+public class SimpleClientActivity extends Activity  implements HStatusDelegate, HMessageDelegate{
 	/** Called when the activity is first created. */
 
 	private String login;
@@ -182,10 +181,7 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 				//					+ " , serverPort : " + serverPort + " , transport : " + transport);
 
 				HOptions options = new HOptions();
-				options.setServerHost(serverHost);
-				options.setServerPort(serverPort);
 				options.setTransport(transport);
-				options.setEndpoints(endpoints);
 
 				//client.connect("admin@localhost", "", parentClass, new HOptions());
 				client.connect(login, password, options);
@@ -229,10 +225,10 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		OnClickListener listener = new OnClickListener()
 		{
 			public void onClick(View v) {
-				HJsonDictionnary params = new HJsonDictionnary();
+				JSONObject params = new JSONObject();
 				params.put("text",MessageEditText.getText().toString());
 				HCommand cmd = new HCommand("hnode.hub.novediagroup.com", "hecho", params);
-				client.command(cmd, outerClass);
+				client.send(cmd, outerClass);
 			}
 
 		};

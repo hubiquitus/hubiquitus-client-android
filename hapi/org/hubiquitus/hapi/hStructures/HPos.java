@@ -16,83 +16,87 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.exceptions.MissingAttrException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @version 0.5 
- * Describes a measure payload
- */
+public class HPos extends JSONObject {
 
-public class HMeasure extends JSONObject {
-	
-	final Logger logger = LoggerFactory.getLogger(HMeasure.class);
-
-	public HMeasure() {
+	final Logger logger = LoggerFactory.getLogger(HPos.class);
+	public HPos() {
 		super();
 	};
 
-	public HMeasure(JSONObject jsonObj) throws JSONException {
+	public HPos(JSONObject jsonObj) throws JSONException {
 		super(jsonObj.toString());
 	}
-
-
+	
 	/* Getters & Setters */
 
 	/**
-	 * Specifies the unit in which the measure is expressed, should be in
-	 * lowercase.
-	 * @return unit. NULL if undefined
+	 * The latitude . Mandatory
 	 */
-	public String getUnit() {
-		String unit;
+	public Double getLat() {
+		Double lat;
 		try {
-			unit = this.getString("unit");
+			lat = this.getDouble("lat");
 		} catch (Exception e) {
-			unit = null;
+			logger.error("messag: lat is mandatory in HPos.");
+			lat = null;
 		}
-		return unit;
+		return lat;
 	}
 
-	public void setUnit(String unit) throws MissingAttrException {
+	public void setLat(double lat) {
 		try {
-			if (unit == null || unit.length()<=0) {
-				throw new MissingAttrException("unit");
-			} else {
-				this.put("unit", unit);
-			}
+				this.put("lat", lat);
 		} catch (JSONException e) {
 			logger.warn("message: ", e);
 		}
 	}
-
+	
 	/**
-	 * Specify the value of the measure (ie : 31.2)
-	 * @return value. NULL if undefined
+	 * The longitude. Mandatory
 	 */
-	public String getValue() {
-		String value;
+	public Double getLng() {
+		Double lng;
 		try {
-			value = this.getString("value");
+			lng = this.getDouble("lng");
 		} catch (Exception e) {
-			value = null;
+			logger.error("messag: lng is mandatory in HPos.");
+			lng = null;
 		}
-		return value;
+		return lng;
 	}
 
-	public void setValue(String value) throws MissingAttrException {
+	public void setLng(double lng) {
 		try {
-			if (value == null || value.length()<=0) {
-				throw new MissingAttrException("value");
-			} else {
-				this.put("value", value);
-			}
+				this.put("lng", lng);
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+	
+	/**
+	 * The radius expressed in meters. Mandatory
+	 */
+	public Double getRadius() {
+		Double radius;
+		try {
+			radius = this.getDouble("radius");
+		} catch (Exception e) {
+			logger.error("messag: lat is mandatory in HPos.");
+			radius = null;
+		}
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		try {
+				this.put("radius", radius);
 		} catch (JSONException e) {
 			logger.warn("message: ", e);
 		}

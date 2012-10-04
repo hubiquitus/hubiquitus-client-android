@@ -20,7 +20,7 @@
 package org.hubiquitus.hapi.hStructures;
 
 /**
- * @version 0.3
+ * @version 0.5
  * Enumeration of different connection errors take by the client.
  * For more information see Hubiquitus reference
  */

@@ -18,12 +18,12 @@
  */
 
 
-package exceptions;
+package org.hubiquitus.hapi.exceptions;
 
 /**
-* @version 0.5
-* Exception to notify a missing attribute (used in builders and services with callback)
-*/
+ * @version 0.5
+ * Exception to notify a missing attribute (used in builders and services with callback)
+ */
 
 
 public class MissingAttrException extends Exception {
@@ -36,25 +36,25 @@ public class MissingAttrException extends Exception {
 	 * @param attrName  the name of the missing attribute
 	 */
 	public MissingAttrException(String attrName) {
-       super();
+        super();
 		this.attrName = attrName;
 	}
-   /**
-    * Name of the missing attribute
-    * @param attrName the name of the missing attribute
-    * @param t the cause of the error...
-    */
-   @SuppressWarnings("unused")
-   public MissingAttrException(String attrName, Throwable t) {
-       super(t);
-       this.attrName = attrName;
-   }
+    /**
+     * Name of the missing attribute
+     * @param attrName the name of the missing attribute
+     * @param t the cause of the error...
+     */
+    @SuppressWarnings("unused")
+    public MissingAttrException(String attrName, Throwable t) {
+        super(t);
+        this.attrName = attrName;
+    }
 
-   /**
-    *
-    * @return the attribute's name
-    */
-   @SuppressWarnings("unused")
+    /**
+     *
+     * @return the attribute's name
+     */
+    @SuppressWarnings("unused")
 	public String getAttrName() {
 		return attrName;
 	}

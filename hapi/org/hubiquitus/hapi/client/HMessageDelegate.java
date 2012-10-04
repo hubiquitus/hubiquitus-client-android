@@ -22,7 +22,7 @@ package org.hubiquitus.hapi.client;
 import org.hubiquitus.hapi.hStructures.HMessage;
 
 /**
- * @version 0.4
+ * @version 0.5
  * Delegate called on incoming messages
  * Events are received asynchronously and threaded
  */
@@ -31,8 +31,6 @@ public interface HMessageDelegate {
 
 	/**
 	 * Called on incoming message
-	 * @param type
-	 * @param data
 	 */
 	public void onMessage(HMessage message);
 }

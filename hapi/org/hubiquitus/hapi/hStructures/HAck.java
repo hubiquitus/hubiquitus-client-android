@@ -19,94 +19,31 @@
 
 package org.hubiquitus.hapi.hStructures;
 
+import org.hubiquitus.hapi.exceptions.MissingAttrException;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.3
- * Describes a measure payload
- * Message acknowledgements
- * acknowledgements are used to identify the participants that have received or not received, read or not read a message 
- * Note, when a hMessage contains a such kind of payload, the convid must be provided with the same value has the acknowledged hMessage.
+ * @version 0.5 
+ * hAPI allows to attach acknowledgements to each message.
+ * Acknowledgements are used to identify the participants that have received or not received, read or not read a message Note, 
+ * when a hMessage contains a such kind of payload, the convid must be provided with the same value has the acknowledged hMessage.
  */
 
-public class HAck implements HJsonObj{
+public class HAck extends JSONObject {
 
-	private JSONObject hack = new JSONObject();
-		
-	public HAck() {};
-	
-	public HAck(JSONObject jsonObj){
-		fromJSON(jsonObj);
-	}
-	
-	/* HJsonObj interface */
-	
-	public JSONObject toJSON() {
-		return hack;
-	}
-	
-	public void fromJSON(JSONObject jsonObj) {
-		if(jsonObj != null) {
-			this.hack = jsonObj; 
-		} else {
-			this.hack = new JSONObject();
-		}
-	}
-	
-	public String getHType() {
-		return "hack";
-	}
-	
-	@Override
-	public String toString() {
-		return hack.toString();
-	}
-	
-	/**
-	 * Check are made on : ackid, ack. 
-	 * @param HAck 
-	 * @return Boolean
-	 */
-	public boolean equals(HAck obj) {
-		if(obj.getAckid() != this.getAckid() || obj.getAck() != this.getAck() ) {
-			return false;
-		}
-		return true;
-	}
-	
-	@Override
-	public int hashCode() {
-		return hack.hashCode();
+	final Logger logger = LoggerFactory.getLogger(HAck.class);
+	public HAck() {
+		super();
+	};
+
+	public HAck(JSONObject jsonObj) throws JSONException {
+		super(jsonObj.toString());
 	}
 	
 	/* Getters & Setters */
-	
-	/**
-	 * Mandatory.
-	 * The “msgid” of the message to which this acknowledgment refers.
-	 * @return ackid. NULL if undefined
-	 */
-	public String getAckid() {
-		String ackid;
-		try {
-			ackid = hack.getString("ackid");
-		} catch (Exception e) {
-			ackid = null;			
-		}
-		return ackid;
-	}
-
-	public void setAckid(String ackid) {
-		try {
-			if(ackid == null) {
-				hack.remove("ackid");
-			} else {
-				hack.put("ackid", ackid);
-			}
-		} catch (JSONException e) {
-		}
-	}
 
 	/**
 	 * The status of the acknowledgement.
@@ -115,23 +52,23 @@ public class HAck implements HJsonObj{
 	public HAckValue getAck() {
 		HAckValue ack;
 		try {
-			String ackString = hack.getString("ack");
+			String ackString = this.getString("ack");
 			ack = HAckValue.constant(ackString);
 		} catch (Exception e) {
-			ack = null;			
+			ack = null;
 		}
 		return ack;
 	}
 
-	public void setAck(HAckValue ack) {
+	public void setAck(HAckValue ack) throws MissingAttrException {
 		try {
-			if(ack == null) {
-				hack.remove("ack");
+			if (ack == null) {
+				throw new MissingAttrException("ack");
 			} else {
-				hack.put("ack", ack.value());
+				this.put("ack", ack.value());
 			}
 		} catch (JSONException e) {
+			logger.warn("message: ", e);
 		}
-	}	
+	}
 }
-

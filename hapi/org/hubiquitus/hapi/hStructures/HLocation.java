@@ -21,166 +21,224 @@ package org.hubiquitus.hapi.hStructures;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.3
+ * @version 0.5 
  * This structure describe the location
  */
 
-public class HLocation implements HJsonObj{
+public class HLocation extends JSONObject {
 
-	private JSONObject hlocation = new JSONObject();
-		
-	public HLocation() {};
-	
-	public HLocation(JSONObject jsonObj){
-		fromJSON(jsonObj);
+	final Logger logger = LoggerFactory.getLogger(HLocation.class);
+
+	public HLocation() {
+		super();
+	};
+
+	public HLocation(JSONObject jsonObj) throws JSONException {
+		super(jsonObj.toString());
 	}
-	
-	/* HJsonObj interface */
-	
-	public JSONObject toJSON() {
-		return hlocation;
-	}
-	
-	public void fromJSON(JSONObject jsonObj) {
-		if(jsonObj != null) {
-			this.hlocation = jsonObj; 
-		} else {
-			this.hlocation = new JSONObject();
-		}
-	}
-	
-	public String getHType() {
-		return "hlocation";
-	}
-	
-	@Override
-	public String toString() {
-		return hlocation.toString();
-	}
-	
-	/**
-	 * Check are made on : lng, lat, zip, address, city and country. 
-	 * @param HLocation 
-	 * @return Boolean
-	 */
-	public boolean equals(HLocation obj) {
-		if(obj.getLat() != this.getLat())
-			return false;
-		if(obj.getLng() != this.getLng())
-			return false;
-		if(obj.getZip() != this.getZip())
-			return false;
-		if(obj.getAddress() != this.getAddress())
-			return false;
-		if(obj.getCity() != this.getCity())
-			return false;
-		if(obj.getCountry() != this.getCountry())
-			return false;
-		return true;
-	}
-	
-	@Override
-	public int hashCode() {
-		return hlocation.hashCode();
-	}
-	
+
 	/* Getters & Setters */
-	
 	/**
-	 * @return latitude of the location. 0 if undefined
+	 * @return hGeo which specifies the exacte longitude and latitude of the location. Null if undefined.
 	 */
-	public double getLat() {
-		double lat;
+	public HGeo getPos() {
+		HGeo pos;
 		try {
-			lat = hlocation.getDouble("lat");
+			pos = new HGeo(this.getJSONObject("pos"));
 		} catch (Exception e) {
-			lat = 0;			
+			pos = null;
 		}
-		return lat;
+		return pos;
 	}
 
-	public void setLat(double lat) {
+	public void setPos(HGeo pos) {
 		try {
-			if(lat == 0) {
-				hlocation.remove("lat");
+			if (pos == null) {
+				this.remove("pos");
 			} else {
-				hlocation.put("lat", lat);
+				this.put("pos", pos);
 			}
 		} catch (JSONException e) {
+			logger.warn("message: ", e);
 		}
 	}
 
 	/**
-	 * @return longitude of the location. 0 if undefined
-	 */
-	public double getLng() {
-		double lng;
-		try {
-			lng = hlocation.getDouble("lng");
-		} catch (Exception e) {
-			lng = 0;			
-		}
-		return lng;
-	}
-
-	public void setLng(double lng) {
-		try {
-			if(lng == 0) {
-				hlocation.remove("lng");
-			} else {
-				hlocation.put("lng", lng);
-			}
-		} catch (JSONException e) {
-		}
-	}
-	
-	/**
-	 * @return zip code of the location. NULL if undefined
+	 * @return the zip code of the location. NULL if undefined
 	 */
 	public String getZip() {
 		String zip;
 		try {
-			zip = hlocation.getString("zip");
+			zip = this.getString("zip");
 		} catch (Exception e) {
-			zip = null;			
+			zip = null;
 		}
 		return zip;
 	}
 
 	public void setZip(String zip) {
 		try {
-			if(zip == null) {
-				hlocation.remove("zip");
+			if (zip == null) {
+				this.remove("zip");
 			} else {
-				hlocation.put("zip", zip);
+				this.put("zip", zip);
 			}
 		} catch (JSONException e) {
+			logger.warn("message: ", e);
 		}
-	}
-	
-	/**
-	 * @return address of the location. NULL if undefined
-	 */
-	public String getAddress() {
-		String address;
-		try {
-			address = hlocation.getString("addr");
-		} catch (Exception e) {
-			address = null;			
-		}
-		return address;
 	}
 
-	public void setAddress(String address) {
+	/**
+	 * @return the way number of the location. NULL if undefined
+	 */
+	public String getNum() {
+		String num;
 		try {
-			if(address == null) {
-				hlocation.remove("addr");
+			num = this.getString("num");
+		} catch (Exception e) {
+			num = null;
+		}
+		return num;
+	}
+
+	public void setNum(String num) {
+		try {
+			if (num == null) {
+				this.remove("num");
 			} else {
-				hlocation.put("addr", address);
+				this.put("num", num);
 			}
 		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+
+	/**
+	 * @return the type of the way of the location. NULL if undefined
+	 */
+	public String getWayType() {
+		String wayType;
+		try {
+			wayType = this.getString("wayType");
+		} catch (Exception e) {
+			wayType = null;
+		}
+		return wayType;
+	}
+
+	public void setWayType(String wayType) {
+		try {
+			if (wayType == null) {
+				this.remove("wayType");
+			} else {
+				this.put("wayType", wayType);
+			}
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+
+	/**
+	 * @return the name of the street/way of the location. NULL if undefined
+	 */
+	public String getWay() {
+		String way;
+		try {
+			way = this.getString("way");
+		} catch (Exception e) {
+			way = null;
+		}
+		return way;
+	}
+
+	public void setWay(String way) {
+		try {
+			if (way == null) {
+				this.remove("way");
+			} else {
+				this.put("way", way);
+			}
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+
+	/**
+	 * @return the address complement of the location. NULL if undefined
+	 */
+	public String getAddr() {
+		String addr;
+		try {
+			addr = this.getString("addr");
+		} catch (Exception e) {
+			addr = null;
+		}
+		return addr;
+	}
+
+	public void setAddr(String addr) {
+		try {
+			if (addr == null) {
+				this.remove("addr");
+			} else {
+				this.put("addr", addr);
+			}
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+
+	/**
+	 * @return the floor number of the location. NULL if undefined
+	 */
+	public String getFloor() {
+		String floor;
+		try {
+			floor = this.getString("floor");
+		} catch (Exception e) {
+			floor = null;
+		}
+		return floor;
+	}
+
+	public void setFloor(String floor) {
+		try {
+			if (floor == null) {
+				this.remove("floor");
+			} else {
+				this.put("floor", floor);
+			}
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+
+	/**
+	 * @return the building’s identifier of the location. NULL if undefined
+	 */
+	public String getBuilding() {
+		String building;
+		try {
+			building = this.getString("building");
+		} catch (Exception e) {
+			building = null;
+		}
+		return building;
+	}
+
+	public void setBuilding(String building) {
+		try {
+			if (building == null) {
+				this.remove("building");
+			} else {
+				this.put("building", building);
+			}
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
 		}
 	}
 
@@ -190,45 +248,47 @@ public class HLocation implements HJsonObj{
 	public String getCity() {
 		String city;
 		try {
-			city = hlocation.getString("city");
+			city = this.getString("city");
 		} catch (Exception e) {
-			city = null;			
+			city = null;
 		}
 		return city;
 	}
 
 	public void setCity(String city) {
 		try {
-			if(city == null) {
-				hlocation.remove("city");
+			if (city == null) {
+				this.remove("city");
 			} else {
-				hlocation.put("city", city);
+				this.put("city", city);
 			}
 		} catch (JSONException e) {
+			logger.warn("message: ", e);
 		}
-	}
-	
-	/**
-	 * @return country of the location. NULL if undefined
-	 */
-	public String getCountry() {
-		String country;
-		try {
-			country = hlocation.getString("country");
-		} catch (Exception e) {
-			country = null;			
-		}
-		return country;
 	}
 
-	public void setCountry(String country) {
+	/**
+	 * @return countryCode of the location. NULL if undefined
+	 */
+	public String getCountryCode() {
+		String countryCode;
 		try {
-			if(country == null) {
-				hlocation.remove("country");
+			countryCode = this.getString("countryCode");
+		} catch (Exception e) {
+			countryCode = null;
+		}
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		try {
+			if (countryCode == null) {
+				this.remove("countryCode");
 			} else {
-				hlocation.put("country", country);
+				this.put("countryCode", countryCode);
 			}
 		} catch (JSONException e) {
+			logger.warn("message: ", e);
 		}
 	}
 }
