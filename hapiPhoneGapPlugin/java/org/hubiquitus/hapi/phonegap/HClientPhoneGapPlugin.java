@@ -4,7 +4,7 @@
  *     This file is part of Hubiquitus.
  *
  *     Hubiquitus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
+ *     it under the terms of the GNU General Public License as sended by
  *     the Free Software Foundation, either version 3 of the License, or
  *     (at your option) any later version.
  *
@@ -16,22 +16,20 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hubiquitus.hapi.phonegap;
+package java.org.hubiquitus.hapi.phonegap;
 
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
 import org.hubiquitus.hapi.client.HClient;
-import org.hubiquitus.hapi.client.HCommandDelegate;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
-import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
-import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @cond internal
@@ -39,6 +37,7 @@ import org.json.JSONObject;
 
 public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HMessageDelegate {
 
+	final Logger logger = LoggerFactory.getLogger(HClientPhoneGapPlugin.class);
 	private HClient hclient = null;
 	
 	/**
@@ -58,14 +57,12 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			this.connect(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("disconnect")) {
 			this.disconnect(action, data, callbackid);
-		} else if(action.equalsIgnoreCase("command")) {
-			this.command(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("subscribe")) {
 			this.subscribe(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("unsubscribe")) {
 			this.unsubscribe(action, data, callbackid);
-		} else if(action.equalsIgnoreCase("publish")) {
-			this.publish(action, data, callbackid);
+		} else if(action.equalsIgnoreCase("send")) {
+			this.send(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("getlastmessages")) {
 			this.getLastMessages(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("getsubscriptions")) {
@@ -96,13 +93,13 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			} catch (Exception e) {
 			}
 			
-			final String cmdCallback = jsonCallback;
+			final String msgCallback = jsonCallback;
 			
 			//set the callback
-			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
-			hclient.getSubscriptions(commandDelegate);
-		} catch (JSONException e) {
-			e.printStackTrace();
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
+			hclient.getSubscriptions(messageDelegate);
+		} catch (Exception e) {
+			logger.error("message: ",e);
 		}
 	}
 	
@@ -114,14 +111,14 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 */
 	public void getLastMessages(String action, JSONArray data, String callbackid) {
 		JSONObject jsonObj = null;
-		String chid = null;
+		String actor = null;
 		int nbLastMsg = -1;
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
 			
 			try {
-				chid = jsonObj.getString("chid");
+				actor = jsonObj.getString("actor");
 			} catch (Exception e) {
 			}
 			
@@ -135,19 +132,18 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			} catch (Exception e) {
 			}
 			
-			final String cmdCallback = jsonCallback;
+			final String msgCallback = jsonCallback;
 			
 			//set the callback
-			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
 			
 			if (nbLastMsg < 0) {
-				hclient.getLastMessages(chid, commandDelegate);
+				hclient.getLastMessages(actor, messageDelegate);
 			} else {
-				hclient.getLastMessages(chid, nbLastMsg, commandDelegate);
+				hclient.getLastMessages(actor, nbLastMsg, messageDelegate);
 			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("message: ",e);
 		}
 	}
 	
@@ -159,12 +155,12 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 */
 	public void unsubscribe(String action, JSONArray data, String callbackid) {
 		JSONObject jsonObj = null;
-		String chid = null;
+		String actor = null;
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
 			try {
-				chid = jsonObj.getString("chid");
+				actor = jsonObj.getString("actor");
 			} catch (Exception e) {
 			}
 			
@@ -173,25 +169,24 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			} catch (Exception e) {
 			}
 			
-			final String cmdCallback = jsonCallback;
+			final String msgCallback = jsonCallback;
 			
 			//set the callback
-			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
-			hclient.unsubscribe(chid, commandDelegate);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
+			hclient.unsubscribe(actor, messageDelegate);
+		} catch (Exception e) {
+			logger.error("message: ",e);
 		} 
 	}
 
 	/**
-	 * Bridge to HClient.publish
+	 * Bridge to HClient.send
 	 * Convert json message to hmessage
 	 * @param action
 	 * @param data
 	 * @param callbackid
 	 */
-	public void publish(String action, JSONArray data, String callbackid) {
+	public void send(String action, JSONArray data, String callbackid) {
 		JSONObject jsonObj = null;
 		JSONObject jsonMsg = null;
 		String jsonCallback = null;
@@ -210,13 +205,13 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			} catch (Exception e) {
 			}
 			
-			final String cmdCallback = jsonCallback;
+			final String msgCallback = jsonCallback;
 			//set the callback
-			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
 			
-			hclient.publish(msg, commandDelegate);
-		} catch (JSONException e) {
-			e.printStackTrace();
+			hclient.send(msg, messageDelegate);
+		} catch (Exception e) {
+			logger.error("message: ",e);
 		}
 	}
 	
@@ -228,13 +223,13 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 */
 	public void subscribe(String action, JSONArray data, String callbackid) {
 		JSONObject jsonObj = null;
-		String chid = null;
+		String actor = null;
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
 			
 			try {
-				chid = jsonObj.getString("chid");
+				actor = jsonObj.getString("actor");
 			} catch (Exception e) {
 			}
 			
@@ -243,15 +238,14 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			} catch (Exception e) {
 			}
 			
-			final String cmdCallback = jsonCallback;
+			final String msgCallback = jsonCallback;
 			
 			//set the callback
-			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
 			
-			hclient.subscribe(chid, commandDelegate);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			hclient.subscribe(actor, messageDelegate);
+		} catch (Exception e) {
+			logger.error("message: ",e);
 		}
 	}
 	
@@ -263,14 +257,14 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 */
 	public void getThread(String action, JSONArray data, String callbackid) {
 		JSONObject jsonObj = null;
-		String chid = null;
+		String actor = null;
 		String convid = null;
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
 			
 			try {
-				chid = jsonObj.getString("chid");
+				actor = jsonObj.getString("actor");
 			} catch (Exception e) {
 			}
 			
@@ -284,15 +278,14 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			} catch (Exception e) {
 			}
 			
-			final String cmdCallback = jsonCallback;
+			final String msgCallback = jsonCallback;
 			
 			//set the callback
-			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
 			
-			hclient.getThread(chid, convid, commandDelegate);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			hclient.getThread(actor, convid, messageDelegate);
+		} catch (Exception e) {
+			logger.error("message: ",e);
 		}
 	}
 	
@@ -304,14 +297,14 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 */
 	public void getThreads(String action, JSONArray data, String callbackid) {
 		JSONObject jsonObj = null;
-		String chid = null;
+		String actor = null;
 		String convState = null;
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
 			
 			try {
-				chid = jsonObj.getString("chid");
+				actor = jsonObj.getString("actor");
 			} catch (Exception e) {
 			}
 			
@@ -325,55 +318,18 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			} catch (Exception e) {
 			}
 			
-			final String cmdCallback = jsonCallback;
+			final String msgCallback = jsonCallback;
 			
 			//set the callback
-			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
 			
-			hclient.getThreads(chid, convState, commandDelegate);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			hclient.getThreads(actor, convState, messageDelegate);
+		} catch (Exception e) {
+			logger.error("message: ",e);
 		}
 	}
 
-	/**
-	 * Bridge to HClient.command
-	 * @param action
-	 * @param data
-	 * @param callbackid
-	 */
-	public void command(String action, JSONArray data, String callbackid) {
-		JSONObject jsonObj = null;
-		JSONObject jsonCmd = null;
-		HCommand cmd = null;
-		String jsonCallback = null;
-		try {
-			jsonObj = data.getJSONObject(0);
-			
-			try {
-				jsonCmd = jsonObj.getJSONObject("hcommand");
-			}  catch (Exception e) {
-			}
-			
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
-			
-			final String cmdCallback = jsonCallback;
-			
-			cmd = new HCommand(jsonCmd);
-			
-			//set the callback
-			HCommandDelegate commandDelegate = new CommandsDelegate(cmdCallback);
-			
-			hclient.command(cmd, commandDelegate);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-	}
+	
 	
 	/**
 	 * Bridge to HClient.disconnect
@@ -403,7 +359,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			JSONObject jsonOptions = (JSONObject) jsonObj.get("options");
 			options = new HOptions(jsonOptions);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("message: ",e);
 		}
 		
 		//set callback
@@ -433,34 +389,33 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	
 	@Override
 	public void onStatus(HStatus status) {
-		notifyJsCallback("hClient.onStatus", status.toJSON().toString());
+		notifyJsCallback("hClient.onStatus", status.toString());
 	}
 
 	@Override
 	public void onMessage(HMessage message) {
-		notifyJsCallback("hClient.onMessage", message.toJSON().toString());		
+		notifyJsCallback("hClient.onMessage", message.toString());		
 	}
 	
 	/**
-	 * Command delegate for all js commands. call the right js callback
+	 * Message delegate for all js messages. call the right js callback
 	 *
 	 */
-	private class CommandsDelegate implements HCommandDelegate {
+	private class MessageDelegate implements HMessageDelegate {
 
-		private String cmdCallback = null;
+		private String msgCallback = null;
 		
 		/**
 		 * Init with js callback function
-		 * @param cmdCallback
+		 * @param msgCallback
 		 */
-		public CommandsDelegate(String cmdCallback) {
-			this.cmdCallback = cmdCallback;
+		public MessageDelegate(String msgCallback) {
+			this.msgCallback = msgCallback;
 		}
 		
 		@Override
-		public void onResult(HResult result) {
-			notifyJsCallback("var tmpcallback = " + this.cmdCallback + "; tmpcallback", result.toJSON().toString());	
-			
+		public void onMessage(HMessage message) {
+			notifyJsCallback("var tmpcallback = " + this.msgCallback + "; tmpcallback", message.toString());	
 		}
 		
 	}

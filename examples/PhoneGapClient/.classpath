@@ -7,5 +7,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="/home/hnode/MyGithub/hubiquitus-android/examples/SimpleClient/libs/joda-time-2.1.jar"/>
+	<classpathentry kind="lib" path="/home/hnode/MyGithub/hubiquitus-android/examples/SimpleClient/libs/slf4j-android-1.6.1-RC1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
