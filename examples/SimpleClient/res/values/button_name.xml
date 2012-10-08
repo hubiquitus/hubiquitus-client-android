@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="clear">Clear</string>
+    <string name="send">Send</string>
+    <string name="sub">Subscribe</string>
+    <string name="unsub">Unsubscribe</string>
+    <string name="getlstmsg">GetLstMsg</string>
+    <string name="getsubs">GetSubs</string>
+    <string name="getthread">GetThread</string>
+    <string name="getthreads">GetThreads</string>
+    <string name="setfilter">SetFilter</string>
+    <string name="pubconvsta">PubConvSta</string>
+    <string name="persistent">Persistent</string>
+    <string name="not_persistent">Not persistent</string>
+    <string name="socketio">socketio</string>
+    <string name="getrelevantmsg">GetRelevantMsg</string>
+    
+</resources>
