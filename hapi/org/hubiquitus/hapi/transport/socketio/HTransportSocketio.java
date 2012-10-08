@@ -54,6 +54,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	private Timer timeoutTimer = null;
 	private Timer autoReconnectTimer = new Timer();
 	private ReconnectTask autoReconnectTask = null;
+	private int reconnectTime = 3; // try to reconnect at most 3 times.
 	
 	private class ReconnectTask extends TimerTask{
 
@@ -102,7 +103,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				
 				socketio = null;
 			}
-		}, 10000);
+		}, 30000);
 		
 		//init socketio component
 		try {
@@ -283,7 +284,8 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			timeoutTimer = null;
 		}
 		updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, errorMsg);
-		this.reconnect();
+		if(reconnectTime > 0)
+			this.reconnect();
 	}
 
 
@@ -306,12 +308,13 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 * Called in onError. try to reconnect in 5s. if socketio can't connect, it will be called every 5s. 
 	 */
 	public void reconnect(){
-		updateStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Lost connection, try to reconnect in 5s.");
+		updateStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Lost connection, try to reconnect in " + 5*(4 - reconnectTime) + "s");
 		if(autoReconnectTask != null){
 			autoReconnectTask.cancel();
 		}
 		autoReconnectTask = new ReconnectTask();
-		autoReconnectTimer.schedule(autoReconnectTask, 5000);
+		autoReconnectTimer.schedule(autoReconnectTask, 5000*(4-reconnectTime));
+		reconnectTime--;
 	}
 		
 }
