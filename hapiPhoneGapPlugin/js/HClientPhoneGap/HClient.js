@@ -80,6 +80,14 @@ define(
 						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThreads', [{actor: actor, convState: convState, callback: String(callback)}]);
 					},
 
+                    getRelevantMessage: function(actor, callback){
+                        cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getRelevantMessage', [{actor: actor, callback: String(callback)}]);
+                    },
+
+                    setFilter: function(filter, callback){
+                        cordova.exec(null, null, 'HClientPhoneGapPlugin', 'setFilter', [{filter: filter, callback: String(callback)}]);
+                    },
+
 					buildMessage: function(actor, type, payload, options){
 		                options = options || {};
 
