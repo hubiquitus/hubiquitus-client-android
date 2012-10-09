@@ -23,6 +23,7 @@ import org.apache.cordova.api.PluginResult;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
+import org.hubiquitus.hapi.hStructures.HCondition;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
@@ -70,6 +71,10 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		} else if(action.equalsIgnoreCase("getthread")) {
 			this.getThread(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("getthreads")) {
+			this.getThreads(action, data, callbackid);
+		} else if(action.equalsIgnoreCase("getrelevantmessage")) {
+			this.getThreads(action, data, callbackid);
+		} else if(action.equalsIgnoreCase("setfilter")) {
 			this.getThreads(action, data, callbackid);
 		}
 		
@@ -328,8 +333,64 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			logger.error("message: ",e);
 		}
 	}
-
 	
+	/**
+	 * Bridge to HClient.getRelevantMessage
+	 * @param action
+	 * @param data
+	 * @param callbackid
+	 */
+	public void getRelecantMessage(String action, JSONArray data, String callbackid){
+		JSONObject jsonObj = null;
+		String actor = null;
+		String jsonCallback = null;
+		try {
+			jsonObj = data.getJSONObject(0);
+			try {
+				actor = jsonObj.getString("actor");
+			} catch (Exception e) {
+			}
+			try {
+				jsonCallback = jsonObj.getString("callback");
+			} catch (Exception e) {
+			}
+			final String msgCallback = jsonCallback;
+			//set the callback
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
+			hclient.getRelevantMessages(actor, messageDelegate);
+		} catch (Exception e) {
+			logger.error("message: ",e);
+		}
+	}
+	
+	/**
+	 * Bridge to HClient.setFilter
+	 * @param action
+	 * @param data
+	 * @param callbackid
+	 */
+	public void setFilter(String action, JSONArray data, String callbackid){
+		JSONObject jsonObj = null;
+		HCondition filter = null;
+		String jsonCallback = null;
+		try {
+			jsonObj = data.getJSONObject(0);
+			try {
+				filter = new HCondition(jsonObj.getJSONObject("filter"));
+			} catch (Exception e) {
+			}
+			try {
+				jsonCallback = jsonObj.getString("callback");
+			} catch (Exception e) {
+			}
+			final String msgCallback = jsonCallback;
+			//set the callback
+			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
+			hclient.setFilter(filter, messageDelegate);
+		} catch (Exception e) {
+			logger.error("message: ",e);
+		}
+	}
 	
 	/**
 	 * Bridge to HClient.disconnect
@@ -368,7 +429,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	}
 
 	/**
-	 * Helper fonction, that will call a jsCallback with an argument (model used in hapi);
+	 * Helper function, that will call a jsCallback with an argument (model used in hapi);
 	 * @param callback
 	 * @param arg
 	 */
