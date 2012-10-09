@@ -33,10 +33,15 @@ import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions;
+import org.hubiquitus.hapi.util.MyApplication;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 /**
  * @cond internal
@@ -54,7 +59,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	private Timer timeoutTimer = null;
 	private Timer autoReconnectTimer = new Timer();
 	private ReconnectTask autoReconnectTask = null;
-	private int reconnectTime = 3; // try to reconnect at most 3 times.
 	
 	private class ReconnectTask extends TimerTask{
 
@@ -78,7 +82,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 * @param callback - see HTransportCallback for more informations
 	 * @param options - transport options
 	 */
-	public void connect(HTransportDelegate callback, HTransportOptions options){	
+	public void connect(HTransportDelegate callback, HTransportOptions options){
 		this.connectionStatus = ConnectionStatus.CONNECTING;
 		
 		this.callback = callback;
@@ -284,7 +288,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			timeoutTimer = null;
 		}
 		updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, errorMsg);
-		if(reconnectTime > 0)
+		if(checkConn(MyApplication.getAppContext()))
 			this.reconnect();
 	}
 
@@ -308,13 +312,32 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 * Called in onError. try to reconnect in 5s. if socketio can't connect, it will be called every 5s. 
 	 */
 	public void reconnect(){
-		updateStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Lost connection, try to reconnect in " + 5*(4 - reconnectTime) + "s");
+		updateStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Lost connection, try to reconnect in 5 s");
 		if(autoReconnectTask != null){
 			autoReconnectTask.cancel();
 		}
 		autoReconnectTask = new ReconnectTask();
-		autoReconnectTimer.schedule(autoReconnectTask, 5000*(4-reconnectTime));
-		reconnectTime--;
+		autoReconnectTimer.schedule(autoReconnectTask, 5000);
+	}
+	
+	//check the connectivity of the device
+	public static boolean checkConn(Context ctx){
+		ConnectivityManager conMgr = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if(conMgr == null){
+			return false;
+		}else{
+			NetworkInfo i = conMgr.getActiveNetworkInfo();
+			if(i==null){
+				return false;
+			}
+			if(!i.isConnected()){
+				return false;
+			}
+			if(!i.isAvailable()){
+				return false;
+			}
+			return true;
+		}
 	}
 		
 }
