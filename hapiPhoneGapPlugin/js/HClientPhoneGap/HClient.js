@@ -99,12 +99,14 @@ define(
 		                    convid: options.convid,
 		                    type: type,
 		                    priority: options.priority,
-		                    relevance: options.relevance,
-		                    transient: options.transient,
+                            ref : options.ref,
+		                    relevance: options.relevance,//todo add relevanceOffset
+		                    persistent: options.persistent,
 		                    location: options.location,
 		                    author: options.author,
 		                    published: options.published,
 		                    headers: options.headers,
+                            timeout: options.timeout,
 		                    payload: payload
 		                };
 		            },
@@ -125,15 +127,18 @@ define(
 		                return this.buildMessage(actor, 'hAlert', {alert: alert}, options);
 		            },
 
-		            buildAck: function(actor, ackid, ack, options){
-		                if(!ackid)
-		                    throw new Error('missing ackid');
+		            buildAck: function(actor, ref, ack, options){
+		                if(!ref)
+		                    throw new Error('missing ref');
 		                else if(!ack)
 		                    throw new Error('missing ack');
 		                else if(!/recv|read/i.test(ack))
 		                    throw new Error('ack does not match "recv" or "read"');
+                        if(!options)
+                            options = {};
+                        options.ref = ref;
 
-		                return this.buildMessage(actor, 'hAck', {ackid: ackid, ack: ack}, options);
+		                return this.buildMessage(actor, 'hAck', {ack: ack}, options);
 		            },
 		            
 		            buildConvState: function(actor, convid, status, options){
@@ -148,6 +153,28 @@ define(
 
 		                return this.buildMessage(actor, 'hConvState', {status: status}, options);
 		            },
+
+                    buildCommand: function(actor, cmd, params, options){
+                        if(!actor)
+                            throw new Error('missing actor');
+                        else if(!cmd)
+                            throw new Error('missing cmd');
+
+                        return this.buildMessage(actor, 'hCommand', {cmd: cmd, params: params}, options);
+                    },
+
+                    buildResult: function(actor, ref, status, result, options){
+                        if(!actor)
+                            throw new Error('missing actor');
+                        else if(!ref)
+                            throw new Error('missing ref');
+                        else if(!status)
+                            throw new Error('missing status');
+                        if(!options)
+                            options = {};
+                        options.ref = ref;
+                        return this.buildMessage(actor, 'hResult', {status: status, result: result}, options);
+                    },
 		            
 		            checkJID: function(jid){
 		                return new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$").test(jid);
