@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 /**
  * @cond internal
- * @version 0.3
+ * @version 0.5
  * Interface abstracting transport layer
  */
 

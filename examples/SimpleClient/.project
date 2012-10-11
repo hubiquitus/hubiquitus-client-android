@@ -35,7 +35,7 @@
 		<link>
 			<name>hapi</name>
 			<type>2</type>
-			<location>/home/nadim/Desktop/work/permanent/hubiquitus/hubiquitus-android/hapi</location>
+			<locationURI>PARENT-2-PROJECT_LOC/hapi</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

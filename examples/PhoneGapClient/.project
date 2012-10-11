@@ -34,12 +34,12 @@
 		<link>
 			<name>hapi</name>
 			<type>2</type>
-			<location>/home/nadim/Desktop/work/permanent/hubiquitus/hubiquitus-android/hapi</location>
+			<location>/home/hnode/MyGithub/hubiquitus-android/hapi</location>
 		</link>
 		<link>
 			<name>hapiPhoneGapPlugin</name>
 			<type>2</type>
-			<location>/home/nadim/Desktop/work/permanent/hubiquitus/hubiquitus-android/hapiPhoneGapPlugin/java</location>
+			<location>/home/hnode/MyGithub/hubiquitus-android/hapiPhoneGapPlugin</location>
 		</link>
 	</linkedResources>
 </projectDescription>

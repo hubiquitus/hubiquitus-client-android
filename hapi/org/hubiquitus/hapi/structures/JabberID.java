@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * @cond internal
- * @version 0.3
+ * @version 0.5
  *  JabberID contain the different part of the jid and some method to use it 
  *  A JabberID should look like : my_user@domain/resource
  */

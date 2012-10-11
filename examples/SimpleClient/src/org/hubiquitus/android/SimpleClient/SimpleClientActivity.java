@@ -19,22 +19,24 @@
 
 package org.hubiquitus.android.SimpleClient;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.hubiquitus.hapi.client.HClient;
-import org.hubiquitus.hapi.client.HCommandDelegate;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
-import org.hubiquitus.hapi.hStructures.HCommand;
+import org.hubiquitus.hapi.exceptions.MissingAttrException;
+import org.hubiquitus.hapi.hStructures.HArrayOfValue;
+import org.hubiquitus.hapi.hStructures.HCondition;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HOptions;
-import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
-import org.hubiquitus.hapi.util.HJsonDictionnary;
+import org.hubiquitus.hapi.hStructures.OperandNames;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -47,37 +49,38 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class SimpleClientActivity extends Activity  implements HStatusDelegate, HMessageDelegate, HCommandDelegate{
+public class SimpleClientActivity extends Activity  implements HStatusDelegate, HMessageDelegate{
 	/** Called when the activity is first created. */
 
+	final Logger logger = LoggerFactory.getLogger(SimpleClientActivity.class );
 	private String login;
 	private String password;
 	private String gateways;
-	private String serverHost;
-	private String serverPort;
-	private String transport;
+	private String transport = "socketio";
 
 	private Button connectionButton;
 	private Button deconnectionButton;
 	private Button clearButton;
-	private Button hechoButton;
 	private Button subscribeButton;
 	private Button unsubscribeButton;
-	private Button publishButton;
+	private Button sendButton;
 	private Button getLastMessageButton;
 	private Button getSubcriptionButton;
 	private Button getThreadButton;
 	private Button getThreadsButton;
 	private Button pubConvState;
+	private Button setFilterButton;
+	private Button exitButton;
+	private Button getRelevantMsgButton;
 
 	private EditText loginEditText;
 	private EditText passwordEditText;
 	private EditText gatewaysEditText;
-	private EditText serverportEditText;
-	private EditText serverhostEditText;
 	private EditText channelIDText;
+	private EditText timeOutText;
 	private EditText nbLastMessageText;
 	private EditText MessageEditText;
+	private EditText relevantOffsetEditText;
 	private EditText convidEditText;
 	private EditText convstateEditText;
 
@@ -99,15 +102,17 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		initListenerBoutonConnection();
 		initListenerBoutonDeconnection();
 		initListenerBoutonClear();
-		initListenerhechoButton();
 		initListenerSubscribeButton();
 		initListenerUnsubscribeButton();
-		initListenerPublishButton();
+		initListenerSendButton();
 		initListenerGetLastMessageButton();
 		initListenerGetSubscriptionButton();
 		initListenerGetThreadButton();
 		initListenerGetThreadsButton();
 		initListenerPubConvStateButton();
+		initListenerSetFilterButton();
+		initListenerGetRelevantMsgButton();
+		initListenerExitButton();
 
 		client = new HClient();
 		client.onStatus(this);
@@ -119,24 +124,26 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		connectionButton = (Button) findViewById(R.id.ConnectionButton);
 		deconnectionButton = (Button) findViewById(R.id.DeconnectionButton);
 		clearButton = (Button) findViewById(R.id.ClearButton);
-		hechoButton = (Button) findViewById(R.id.hechoButton);
 		subscribeButton = (Button) findViewById(R.id.SubscribeButton);
 		unsubscribeButton = (Button) findViewById(R.id.UnsubscribeButton);
-		publishButton = (Button) findViewById(R.id.PublishButton);
+		sendButton = (Button) findViewById(R.id.SendButton);
 		getLastMessageButton = (Button) findViewById(R.id.GetLastMessageButton);
 		getSubcriptionButton = (Button) findViewById(R.id.GetSubcriptionButton);
 		getThreadButton = (Button) findViewById(R.id.GetThreadButton);
 		getThreadsButton = (Button) findViewById(R.id.GetThreadsButton);
 		pubConvState = (Button) findViewById(R.id.PubConvStateButton);
+		setFilterButton = (Button) findViewById(R.id.SetFilterButton);
+		getRelevantMsgButton = (Button) findViewById(R.id.GetRelevantMsgButton);
+		exitButton = (Button) findViewById(R.id.ExitButton);
 
 
 		loginEditText = (EditText) findViewById(R.id.loginText);
 		passwordEditText = (EditText) findViewById(R.id.passwordText);
 		gatewaysEditText = (EditText) findViewById(R.id.gatewaysText); 
-		serverportEditText = (EditText) findViewById(R.id.serverportText);
-		serverhostEditText = (EditText) findViewById(R.id.serverhostText);
 		channelIDText = (EditText) findViewById(R.id.ChannelIDText);
+		timeOutText = (EditText) findViewById(R.id.timeOutText);
 		nbLastMessageText = (EditText) findViewById(R.id.nbLastMessageText);
+		relevantOffsetEditText = (EditText) findViewById(R.id.relevantOffsetText);
 		MessageEditText = (EditText) findViewById(R.id.messageText);
 		convidEditText = (EditText) findViewById(R.id.ConvidText);
 		convstateEditText = (EditText) findViewById(R.id.ConvStateText);
@@ -149,11 +156,9 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 
 		loginEditText.setText("");
 		passwordEditText.setText("");
-		serverhostEditText.setText("");
 		channelIDText.setText("");
 		gatewaysEditText.setText("");
 		MessageEditText.setText("");		
-
 	}
 
 
@@ -165,29 +170,20 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 				login = loginEditText.getText().toString();
 				password = passwordEditText.getText().toString();
 				gateways = gatewaysEditText.getText().toString();
-				serverHost = serverhostEditText.getText().toString();
-				serverPort = serverportEditText.getText().toString();
 
-				String[] endpointsArray = gateways.split(";");
-				ArrayList<String> endpoints = new ArrayList<String>();
-				for (int i = 0; i < endpointsArray.length; i++) {
-					endpoints.add(endpointsArray[i]);
-				}
-
+				
+				JSONArray endpoints = new JSONArray();
+				endpoints.put(gateways);
 				RadioButton temp = (RadioButton) findViewById(transportRadioGroup.getCheckedRadioButtonId());
 				transport = temp.getText().toString();
 
-				//outputTextArea.append("login : " + login + " , password : " + password 
-				//					+ " , gateways : " + gateways + " , serverHost : " + serverHost 
-				//					+ " , serverPort : " + serverPort + " , transport : " + transport);
-
+			
 				HOptions options = new HOptions();
-				options.setServerHost(serverHost);
-				options.setServerPort(serverPort);
+				options.setTransport("socketio");
+				options.setEndpoints(endpoints);
+				options.setTimeout(3000);
 				options.setTransport(transport);
 				options.setEndpoints(endpoints);
-
-				//client.connect("admin@localhost", "", parentClass, new HOptions());
 				client.connect(login, password, options);
 			}
 		};
@@ -223,27 +219,16 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		clearButton.setOnClickListener(listener);
 
 	}
-
-	public void initListenerhechoButton() {
-		final SimpleClientActivity outerClass = this;
-		OnClickListener listener = new OnClickListener()
-		{
-			public void onClick(View v) {
-				HJsonDictionnary params = new HJsonDictionnary();
-				params.put("text",MessageEditText.getText().toString());
-				HCommand cmd = new HCommand("hnode.hub.novediagroup.com", "hecho", params);
-				client.command(cmd, outerClass);
-			}
-
-		};
-		hechoButton.setOnClickListener(listener);
-	}
 	
 	public void initListenerSubscribeButton() {
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				client.subscribe(channelIDText.getText().toString(), outerClass);
+				try {
+					client.subscribe(channelIDText.getText().toString(), outerClass);
+				} catch (MissingAttrException e) {
+					logger.error("message: ", e);
+				}
 			}
 		};
 		subscribeButton.setOnClickListener(listener);
@@ -253,51 +238,79 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				client.unsubscribe(channelIDText.getText().toString(), outerClass);
+				try {
+					client.unsubscribe(channelIDText.getText().toString(), outerClass);
+				} catch (MissingAttrException e) {
+					logger.error("message: ",e);
+				}
 			}
 		};
 		unsubscribeButton.setOnClickListener(listener);
 	}
 	
-	public void initListenerPublishButton() {
+	public void initListenerSendButton() {
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				HMessage message = new HMessage();
-				message.setPublisher(loginEditText.getText().toString());
-				message.setChid(channelIDText.getText().toString());
-				message.setPublished(new GregorianCalendar());
-				message.setType("obj");
-				RadioButton temp = (RadioButton) findViewById(messageRadioGroup.getCheckedRadioButtonId());
-				if(temp.getText().toString().equalsIgnoreCase("Transient")) {
-					message.setTransient(true);
-				} else {
-					message.setTransient(false);
+				JSONObject payload = new JSONObject();
+				HMessage message = null;
+				HMessageOptions option = new HMessageOptions();
+				try {
+					option.setRelevanceOffset(Integer.parseInt(relevantOffsetEditText.getText().toString()));
+				} catch (Exception e) {
+					logger.info("NO RELEVANT OFFSET!!");
 				}
-
-				HJsonDictionnary payload = new HJsonDictionnary();
-				payload.put("text",MessageEditText.getText().toString());
+				try {
+					payload.put("text",MessageEditText.getText().toString());
+					message = client.buildMessage(channelIDText.getText().toString(), "obj", payload, option);
+				} catch (Exception e) {
+					logger.error("message: ",e);
+				}
+				RadioButton temp = (RadioButton) findViewById(messageRadioGroup.getCheckedRadioButtonId());
+				try{
+					if(temp.getText().toString().equalsIgnoreCase("Persistent")) {
+						message.setPersistent(true);
+					} else {
+						message.setPersistent(false);
+					}
+				}catch(Exception e){
+					logger.error("message: ",e);
+				}
+				int timeout = 0;
+				try {
+					timeout = Integer.parseInt(timeOutText.getText().toString());
+				} catch (Exception e) {
+					timeout = 0;
+				}
+				if(timeout > 0){
+					message.setTimeout(timeout);
+				}
 				message.setPayload(payload);
-				client.publish(message, outerClass);
+				client.send(message, outerClass);
 			}
 		};
-		publishButton.setOnClickListener(listener);
+		sendButton.setOnClickListener(listener);
 	}
 	
 	public void initListenerGetLastMessageButton() {
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				String chid = channelIDText.getText().toString();
+				String actor = channelIDText.getText().toString();
+				int nbLastMessage = 0;
 				try{
-					int nbLastMessage = Integer.parseInt(nbLastMessageText.getText().toString());
+					try {
+						nbLastMessage = Integer.parseInt(nbLastMessageText.getText().toString());
+					} catch (Exception e) {
+						nbLastMessage = 0;
+					}
 					if(nbLastMessage > 0) {
-						client.getLastMessages(chid, nbLastMessage, outerClass);
+						client.getLastMessages(actor, nbLastMessage, outerClass);
 					} else {
-						client.getLastMessages(chid, outerClass);
+						client.getLastMessages(actor, outerClass);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("message: ",e);
 				}
 			}
 		};
@@ -308,7 +321,11 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				client.getSubscriptions(outerClass);
+				try {
+					client.getSubscriptions(outerClass);
+				} catch (MissingAttrException e) {
+					logger.error("message : ", e);
+				}
 			}
 		};
 		getSubcriptionButton.setOnClickListener(listener);
@@ -318,12 +335,12 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				String chid = channelIDText.getText().toString();
+				String actor = channelIDText.getText().toString();
 				String convid = convidEditText.getText().toString();
 				try{
-					client.getThread(chid, convid, outerClass);
+					client.getThread(actor, convid, outerClass);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("message: ",e);
 				}
 			}
 		};
@@ -334,12 +351,12 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				String chid = channelIDText.getText().toString();
+				String actor = channelIDText.getText().toString();
 				String status = convstateEditText.getText().toString();
 				try{
-					client.getThreads(chid, status, outerClass);
+					client.getThreads(actor, status, outerClass);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("message: ", e);
 				}
 			}
 		};
@@ -350,58 +367,75 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
-				String chid = channelIDText.getText().toString();
+				String actor = channelIDText.getText().toString();
 				String convid = convidEditText.getText().toString();
 				String status = convstateEditText.getText().toString();
 				HMessageOptions msgOptions = new HMessageOptions();
 				
-				RadioButton transientRadioBtn = (RadioButton) findViewById(messageRadioGroup.getCheckedRadioButtonId());
-				if(transientRadioBtn.getText().toString().equalsIgnoreCase("Transient")) {
-					msgOptions.setTransient(true);
+				RadioButton persistentRadioBtn = (RadioButton) findViewById(messageRadioGroup.getCheckedRadioButtonId());
+				if(persistentRadioBtn.getText().toString().equalsIgnoreCase("Persistent")) {
+					msgOptions.setPersistent(true);
 				} else {
-					msgOptions.setTransient(false);
+					msgOptions.setPersistent(false);
 				}
 				
 				try{
-					HMessage pubMsg = client.buildConvState(chid, convid, status, msgOptions);
-					client.publish(pubMsg, outerClass);
+					HMessage pubMsg = client.buildConvState(actor, convid, status, msgOptions);
+					client.send(pubMsg, outerClass);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("message: ", e);
 				}
 			}
 		};
 		pubConvState.setOnClickListener(listener);
 	}
 	
-	public void onResult(final HResult result) {
-		runOnUiThread(new Runnable() {
-
-			public void run() {
-				if(true) {
-					outputTextArea.append("HResult : " + result + "\n\n");
-					Timer scrollTimer = new Timer();
-					TimerTask scrollTask = new TimerTask() {
-	
-						@Override
-						public void run() {
-							runOnUiThread(new Runnable() {
-	
-								public void run() {
-									outputScroller.smoothScrollTo(0, outputTextArea.getBottom());
-	
-								}
-							});
-	
-						}
-					};
-	
-					scrollTimer.schedule(scrollTask, 10);
+	public void initListenerSetFilterButton() {
+		final SimpleClientActivity outerClass = this;
+		OnClickListener listener = new OnClickListener() {
+			public void onClick(View v) {
+				 HCondition filter = new HCondition();
+				 HArrayOfValue values = new HArrayOfValue();
+				 values.setName("publisher");
+				 JSONArray jsonArray = new JSONArray();
+				 jsonArray.put("u1@localhost");
+				 values.setValues(jsonArray);
+				 filter.setValueArray(OperandNames.IN, values);
+				 try {
+					client.setFilter(filter, outerClass);
+				} catch (MissingAttrException e) {
+					logger.error("message: ",e);
 				}
 			}
-		});	
-
+		};
+		setFilterButton.setOnClickListener(listener);
 	}
-
+	
+	public void initListenerGetRelevantMsgButton() {
+		final SimpleClientActivity outerClass = this;
+		OnClickListener listener = new OnClickListener() {
+			public void onClick(View v) {
+				String actor = channelIDText.getText().toString();
+			
+				try{
+					client.getRelevantMessages(actor, outerClass);
+				} catch (Exception e) {
+					logger.error("message: ", e);
+				}
+			}
+		};
+		getRelevantMsgButton.setOnClickListener(listener);
+	}
+	
+	public void initListenerExitButton(){
+		OnClickListener listener = new OnClickListener() {
+			public void onClick(View v) {
+				finish();
+			}
+		};
+		exitButton.setOnClickListener(listener);
+	}
+	
 	@Override
 	public void onStatus(final HStatus status) {
 		runOnUiThread(new Runnable() {
@@ -433,7 +467,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 	@Override
 	public void onMessage(final HMessage message) {
 		runOnUiThread(new Runnable() {
-
 			public void run() {
 				outputTextArea.append("HMessage : " + message + "\n\n");
 				Timer scrollTimer = new Timer();

@@ -21,13 +21,12 @@
 package org.hubiquitus.hapi.hStructures;
 
 /**
- * @version 0.3
+ * @version 0.5
  * Enumeration of different message acknoledgements state.
  * For more information see Hubiquitus reference
  */
 
 public enum HAckValue {
-	UNKNOWN(""),
 	RECV("recv"),
 	READ("read");
 	
@@ -51,7 +50,7 @@ public enum HAckValue {
 	 */
 	public static HAckValue constant(String value) {
 		HAckValue [] _values = HAckValue.values();
-		HAckValue _value = HAckValue.UNKNOWN;
+		HAckValue _value = HAckValue.READ;
 		for (int i = 0; i < _values.length; i++) {
 			if (_values[i].value.equals(value)) {
 				_value = _values[i];

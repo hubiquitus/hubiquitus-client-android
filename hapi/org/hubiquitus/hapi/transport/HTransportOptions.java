@@ -23,15 +23,13 @@ import org.hubiquitus.hapi.structures.JabberID;
 
 /** 
  * @cond internal
- * @version 0.3
+ * @version 0.5
  * options used for transport layers
  */
 
 public class HTransportOptions {
 	private JabberID jid = null;
 	private String password = null;
-	private String serverHost = null;
-	private int serverPort = 0;
 	private String endpointHost = null;
 	private int endpointPort = 0;
 	private String endpointPath = null;
@@ -112,33 +110,6 @@ public class HTransportOptions {
 	}
 
 
-	/**
-	 * @return server host (ie : localhost)
-	 */
-	public String getServerHost() {
-		return serverHost;
-	}
-
-
-	public void setServerHost(String serverHost) {
-		if (serverHost == null || serverHost.equals("")) {
-			this.serverHost = null;
-		} else {
-			this.serverHost = serverHost;
-		}
-	}
-
-	/** 
-	 * @return server port (ie : 5222 for xmpp)
-	 */
-	public int getServerPort() {
-		return serverPort;
-	}
-
-
-	public void setServerPort(int serverPort) {
-		this.serverPort = serverPort;
-	}
 
 
 	/**
@@ -189,7 +160,6 @@ public class HTransportOptions {
 	@Override
 	public String toString() {
 		return "HTransportOptions [jid=" + jid + ", password=" + password
-				+ ", serverHost=" + serverHost + ", serverPort=" + serverPort
 				+ ", endpointHost=" + endpointHost + ", endpointPort="
 				+ endpointPort + ", endpointPath=" + endpointPath + ", hNode="
 				+ hserver + "]";
@@ -208,9 +178,6 @@ public class HTransportOptions {
 		result = prime * result + ((jid == null) ? 0 : jid.hashCode());
 		result = prime * result
 				+ ((password == null) ? 0 : password.hashCode());
-		result = prime * result
-				+ ((serverHost == null) ? 0 : serverHost.hashCode());
-		result = prime * result + serverPort;
 		return result;
 	}
 
@@ -249,13 +216,6 @@ public class HTransportOptions {
 			if (other.password != null)
 				return false;
 		} else if (!password.equals(other.password))
-			return false;
-		if (serverHost == null) {
-			if (other.serverHost != null)
-				return false;
-		} else if (!serverHost.equals(other.serverHost))
-			return false;
-		if (serverPort != other.serverPort)
 			return false;
 		return true;
 	}

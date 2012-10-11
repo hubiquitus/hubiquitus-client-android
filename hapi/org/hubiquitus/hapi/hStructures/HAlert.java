@@ -19,81 +19,58 @@
 
 package org.hubiquitus.hapi.hStructures;
 
+import org.hubiquitus.hapi.exceptions.MissingAttrException;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.3
+ * @version 0.5 
  * Alert message payload
  */
 
-public class HAlert implements HJsonObj{
+public class HAlert extends JSONObject {
 
-	private JSONObject halert = new JSONObject();
-		
-	public HAlert() {};
-	
-	public HAlert(JSONObject jsonObj){
-		fromJSON(jsonObj);
+	final Logger logger = LoggerFactory.getLogger(HAlert.class);
+
+	public HAlert() {
+		super();
+	};
+
+	public HAlert(JSONObject jsonObj) throws JSONException {
+		super(jsonObj.toString());
 	}
-	
-	/* HJsonObj interface */
-	
-	public JSONObject toJSON() {
-		return halert;
-	}
-	
-	public void fromJSON(JSONObject jsonObj) {
-		if(jsonObj != null) {
-			this.halert = jsonObj; 
-		} else {
-			this.halert = new JSONObject();
-		}
-	}
-	
-	public String getHType() {
-		return "halert";
-	}
-	
-	@Override
-	public String toString() {
-		return halert.toString();
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		return halert.equals(obj);
-	}
-	
-	@Override
-	public int hashCode() {
-		return halert.hashCode();
-	}
-	
+
+
+
 	/* Getters & Setters */
-	
+
 	/**
-	 * The message provided by the author to describe the alert. 
+	 * The message provided by the author to describe the alert. (Eg : Power
+	 * Failure)
 	 * @return alert message. NULL if undefined
 	 */
 	public String getAlert() {
 		String alert;
 		try {
-			alert = halert.getString("alert");
+			alert = this.getString("alert");
 		} catch (Exception e) {
-			alert = null;			
+			alert = null;
 		}
 		return alert;
 	}
 
-	public void setAlert(String alert) {
+	public void setAlert(String alert) throws MissingAttrException {
 		try {
-			if(alert == null) {
-				halert.remove("alert");
+			if (alert == null || alert.length()<=0) {
+				throw new MissingAttrException("alert");
 			} else {
-				halert.put("alert", alert);
+				this.put("alert", alert);
 			}
 		} catch (JSONException e) {
+			logger.warn("message: ", e);
 		}
 	}
+
 }

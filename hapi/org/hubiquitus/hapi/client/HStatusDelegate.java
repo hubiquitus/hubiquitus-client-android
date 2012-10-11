@@ -22,7 +22,7 @@ package org.hubiquitus.hapi.client;
 import org.hubiquitus.hapi.hStructures.HStatus;
 
 /**
- * @version 0.4
+ * @version 0.5
  * Delegate receiving connection status update events
  * Events are received asynchronously and threaded
  */
@@ -31,8 +31,6 @@ public interface HStatusDelegate {
 	
 	/**
 	 * Called on connection status updates
-	 * @param type
-	 * @param data
 	 */
 	public void onStatus(HStatus status);
 }

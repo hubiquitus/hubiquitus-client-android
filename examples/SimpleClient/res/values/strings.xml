@@ -3,5 +3,11 @@
 
     <string name="hello">Hello World, SimpleClientActivity!</string>
     <string name="app_name">SimpleClient</string>
+    <string name="login">u1@localhost</string>
+    <string name="pwd">u1</string>
+    <string name="channelID">#test@localhost</string>
+    <string name="endPoint">http://10.0.2.2:8080</string>
+    <string name="messageText">Hello, I am a test message!</string>
+    <string name="exit">Exit</string>
 
 </resources>

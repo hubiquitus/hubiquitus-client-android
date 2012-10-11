@@ -26,7 +26,8 @@
     		android:padding="0dp"
     		android:background="#F7F7F7"
     		android:textSize="10sp"
-    		android:hint="u1@localhost">
+    		android:inputType="text"
+    		android:hint="@string/login">
     		<requestFocus />
     	</EditText>
     </LinearLayout>
@@ -53,7 +54,7 @@
     		android:background="#F7F7F7"
     		android:textSize="10sp"
     		android:inputType="textPassword"
-    		android:hint="************"/>
+    		android:hint="@string/pwd"/>
     </LinearLayout>
 
     <LinearLayout
@@ -77,56 +78,12 @@
     		android:padding="0dp"
     		android:background="#F7F7F7"
     		android:textSize="10sp"
-    		android:hint="http://localhost:8080, http://localhost:8081"/>
+    		android:inputType="text"
+    		android:hint="@string/endPoint"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="1dp">
-
-        <TextView
-            android:id="@+id/serverhostLabel"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:text="serverhost"
-            android:padding="0dp"
-            android:textSize="10sp" />
-
-        <EditText
-            android:id="@+id/serverhostText"
-            android:layout_width="fill_parent" 
-    		android:layout_height="wrap_content" 
-    		android:padding="0dp"
-    		android:background="#F7F7F7"
-    		android:textSize="10sp"
-    		android:hint="localhost"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="1dp">
-
-        <TextView
-            android:id="@+id/serverportLabel"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:text="serverport"
-            android:padding="0dp"
-            android:textSize="10sp" />
-
-        <EditText
-            android:id="@+id/serverportText"
-            android:layout_width="fill_parent" 
-    		android:layout_height="wrap_content" 
-    		android:padding="0dp"
-    		android:background="#F7F7F7"
-    		android:textSize="10sp"
-    		android:hint="5222"/>
-    </LinearLayout>
+   
+    
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -149,7 +106,32 @@
     		android:padding="0dp"
     		android:background="#F7F7F7"
     		android:textSize="10sp"
-    		android:hint="channel"/>
+    		android:inputType="text"
+    		android:hint="@string/channelID"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/timeOutLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="timeOut"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/timeOutText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content"
+    		android:inputType="number" 
+    		android:padding="0dp"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -169,11 +151,11 @@
         <EditText
             android:id="@+id/nbLastMessageText"
             android:layout_width="fill_parent" 
-    		android:layout_height="wrap_content" 
+    		android:layout_height="wrap_content"
+    		android:inputType="number" 
     		android:padding="0dp"
     		android:background="#F7F7F7"
-    		android:textSize="10sp"
-    		android:hint="10"/>
+    		android:textSize="10sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -196,8 +178,31 @@
     		android:layout_height="wrap_content" 
     		android:padding="0dp"
     		android:background="#F7F7F7"
-    		android:textSize="10sp"
-    		android:hint="test"/>
+    		android:textSize="10sp"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/relevantOffsetLabel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="relevantOffset"
+            android:padding="0dp"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/relevantOffsetText"
+            android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+    		android:padding="0dp"
+    		android:inputType="number"
+    		android:background="#F7F7F7"
+    		android:textSize="10sp"/>
     </LinearLayout>
     
     <LinearLayout
@@ -220,8 +225,7 @@
     		android:layout_height="wrap_content" 
     		android:padding="0dp"
     		android:background="#F7F7F7"
-    		android:textSize="10sp"
-    		android:hint="idx34412"/>
+    		android:textSize="10sp"/>
     </LinearLayout>
     
     <LinearLayout
@@ -244,8 +248,7 @@
     		android:layout_height="wrap_content" 
     		android:padding="0dp"
     		android:background="#F7F7F7"
-    		android:textSize="10sp"
-    		android:hint="open"/>
+    		android:textSize="10sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -261,22 +264,13 @@
             android:orientation="horizontal" >
 
             <RadioButton
-                android:id="@+id/xmppButton"
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="xmpp"
-                android:textSize="10sp"
-                android:paddingLeft="20dp"
-                android:button="@drawable/button_radio" />
-
-            <RadioButton
                 android:id="@+id/socketButton"
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
-                android:text="socketio"
+                android:text="@string/socketio"
                 android:textSize="10sp"
                 android:paddingLeft="20dp"
+                android:checked="true"
                 android:button="@drawable/button_radio" />
 
             <TextView
@@ -301,21 +295,21 @@
             android:orientation="horizontal" >
 
             <RadioButton
-                android:id="@+id/transientButton"
+                android:id="@+id/persistentButton"
                 android:layout_width="90dp"
                 android:layout_height="20dp"
-                android:checked="true"
-                android:text="Transient"
+                android:text="@string/persistent"
                 android:textSize="10sp" 
                 android:paddingLeft="20dp"
                 android:layout_marginBottom="1dp"
                 android:button="@drawable/button_radio"/>
 
             <RadioButton
-                android:id="@+id/notTransienttButton"
+                android:id="@+id/notPersistentButton"
+                android:checked="true"
                 android:layout_width="90dp"
                 android:layout_height="20dp"
-                android:text="not Transient"
+                android:text="@string/not_persistent"
                 android:textSize="10sp" 
                 android:paddingLeft="20dp"
                 android:button="@drawable/button_radio"/>
@@ -329,37 +323,30 @@
             
             <Button
                 android:id="@+id/ConnectionButton"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Connect"
+                android:text="@string/connect"
                 android:textSize="10sp" />
 
             <Button
                 android:id="@+id/DeconnectionButton"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Disconnect"
+                android:text="@string/disconnect"
                 android:textSize="10sp" />
 
             <Button
                 android:id="@+id/ClearButton"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Clear"
+                android:text="@string/clear"
                 android:textSize="10sp" />
-
-            <Button
-                android:id="@+id/hechoButton"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:text="hEcho"
-                android:textSize="10sp" />
-            
+                        
             <Button
                 android:id="@+id/SubscribeButton"
-                android:layout_width="64dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Subscribe"
+                android:text="@string/sub"
                 android:textSize="10sp" />
 
     </LinearLayout>
@@ -370,31 +357,38 @@
 
             <Button
                 android:id="@+id/UnsubscribeButton"
-                android:layout_width="70dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Unsub"
+                android:text="@string/unsub"
                 android:textSize="10sp" />
 
             <Button
-                android:id="@+id/PublishButton"
-                android:layout_width="70dp"
+                android:id="@+id/SendButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Publish"
+                android:text="@string/send"
                 android:textSize="10sp" />
 
             <Button
                 android:id="@+id/GetLastMessageButton"
-                android:layout_width="70dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GetLstMsg"
+                android:text="@string/getlstmsg"
                 android:textSize="10sp" />
 
             <Button
                 android:id="@+id/GetSubcriptionButton"
-                android:layout_width="70dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GetSubs"
+                android:text="@string/getsubs"
                 android:textSize="10sp" />
+            <Button
+                android:id="@+id/GetRelevantMsgButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/getrelevantmsg"
+                android:textSize="10sp" />
+            
     </LinearLayout>
     
     <LinearLayout
@@ -404,23 +398,35 @@
             
             <Button
                 android:id="@+id/GetThreadButton"
-                android:layout_width="75dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GetThread"
+                android:text="@string/getthread"
                 android:textSize="10sp" />
 
             <Button
                 android:id="@+id/GetThreadsButton"
-                android:layout_width="75dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GetThreads"
+                android:text="@string/getthreads"
                 android:textSize="10sp" />
             
             <Button
                 android:id="@+id/PubConvStateButton"
-                android:layout_width="75dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PubConvState"
+                android:text="@string/pubconvsta"
+                android:textSize="10sp" />
+             <Button
+                android:id="@+id/SetFilterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setfilter"
+                android:textSize="10sp" />
+             <Button
+                android:id="@+id/ExitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/exit"
                 android:textSize="10sp" />
     </LinearLayout>
 
@@ -432,7 +438,7 @@
         <TextView
             android:id="@+id/outputView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="" />
     </ScrollView>
 

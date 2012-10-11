@@ -17,130 +17,33 @@
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.util.HJsonDictionnary;
+import org.hubiquitus.hapi.exceptions.MissingAttrException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author j.desousag
- * @version 0.3
+ * @version 0.5 
  * hAPI result. For more info, see Hubiquitus reference
  */
 
-public class HResult implements HJsonObj {
-	
-	private JSONObject hresult = new JSONObject();
-		
-	public HResult() {	}
-	
-	public HResult(String reqid, String cmd, HJsonObj result) {
-		setReqid(reqid);
-		setCmd(cmd);
-		setResult(result);
+public class HResult extends JSONObject {
+
+	final Logger logger = LoggerFactory.getLogger(HResult.class);
+
+	public HResult() {super();
 	}
-	
-	public HResult(JSONObject jsonObj) {
-		this.fromJSON(jsonObj);
+
+	public HResult(JSONObject jsonObj) throws JSONException {
+		super(jsonObj.toString());
 	}
-	
-	/* HJsonObj interface */
-	
-	public JSONObject toJSON() {
-		return this.hresult;
-	}
-	
-	public String getHType() {
-		return "hresult";
-	}
-	
-	public void fromJSON(JSONObject jsonObj) {
-		if( jsonObj != null) {
-			this.hresult = jsonObj;
-		} else {
-			this.hresult = new JSONObject();
-		}
-	}
-	
-	@Override
-	public String toString() {
-		return hresult.toString();
-	}
-	
-	/**
-	 * Check are made on : cmd, reqid and status. 
-	 * @param HResult 
-	 * @return Boolean
-	 */
-	public boolean equals(HResult obj) {
-		if(obj.getCmd() != this.getCmd()) 
-			return false;
-		if(obj.getReqid() != this.getReqid())
-			return false;
-		if(obj.getStatus().value() != this.getStatus().value())
-			return false;
-		return true;
-	}
-	
-	@Override
-	public int hashCode() {
-		return hresult.hashCode();
-	}
-	
+
+
 	/* Getters & Setters */
-	
-	/**
-	 * Mandatory.
-	 * @return command. NULL if undefined
-	 */
-	public String getCmd() {
-		String cmd;
-		try {
-			cmd = hresult.getString("cmd");
-		} catch (JSONException e) {
-			cmd = null;
-		}
-		return cmd;
-	}
-
-	public void setCmd(String cmd) {
-		try {
-			if(cmd == null) {
-				hresult.remove("cmd");
-			} else {
-				hresult.put("cmd", cmd);
-			}
-		} catch (JSONException e) {
-		}
-	}
-
-	/**
-	 * Mandatory. Filled by the hApi
-	 * @return reqid. NULL if undefined
-	 */
-	public String getReqid() {
-		String reqid;
-		try {
-			reqid = hresult.getString("reqid");
-		} catch (JSONException e) {
-			reqid = null;
-		}
-		return reqid;
-	}
-
-	public void setReqid(String reqid) {
-		try {
-			if(reqid == null) {
-				hresult.remove("reqid");
-			} else {
-				hresult.put("reqid", reqid);
-			}
-		} catch (JSONException e) {
-		}
-	}
 
 	/**
 	 * Mandatory. Execution status.
@@ -149,34 +52,33 @@ public class HResult implements HJsonObj {
 	public ResultStatus getStatus() {
 		ResultStatus reqid;
 		try {
-			reqid = ResultStatus.constant(hresult.getInt("status"));
+			reqid = ResultStatus.constant(this.getInt("status"));
 		} catch (Exception e1) {
 			reqid = null;
 		}
 		return reqid;
 	}
 
-	public void setStatus(ResultStatus status) {
+	public void setStatus(ResultStatus status) throws MissingAttrException {
 		try {
-			if(status == null) {
-				hresult.remove("status");
+			if (status == null) {
+				throw new MissingAttrException("status");
 			} else {
-				hresult.put("status", status.value());
+				this.put("status", status.value());
 			}
 		} catch (JSONException e) {
+			logger.error("message: ", e);
 		}
 	}
 
 	/**
-	 * Only if result type is a JsonObject
-	 * @see getResultString()
-	 * @see getResultArray()
-	 * @return result of a command operation or a subscriptions operation. 
+	 * if we don't know the result type.
+	 * @return result of a command operation or a subscriptions operation.
 	 */
-	public HJsonObj getResult() {
-		HJsonObj result;
+	public Object getResult() {
+		Object result;
 		try {
-			result = new HJsonDictionnary(hresult.getJSONObject("result"));
+			result = this.get("result");
 		} catch (JSONException e) {
 			result = null;
 		}
@@ -184,43 +86,172 @@ public class HResult implements HJsonObj {
 	}
 	
 	/**
-	 * Only if result type is a String
-	 * @return result of a command operation or a subscriptions operation. 
+	 * if result type is a JSONObject
+	 * @return result of a command operation or a subscriptions operation.
 	 */
-	public String getResultString() {
-		String result;
+	public JSONObject getResultAsJSONObject() {
+		JSONObject result;
 		try {
-			result = hresult.getString("result");
+			result = this.getJSONObject("result");
 		} catch (JSONException e) {
 			result = null;
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Only if result type is a JsonArray
-	 * @return result of a command operation or a subscriptions operation. 
+	 * if result type is a JSONArray
 	 */
-	public JSONArray getResultArray() {
+	public JSONArray getResultAsJSONArray() {
 		JSONArray result;
 		try {
-			result = hresult.getJSONArray("result");
+			result = this.getJSONArray("result");
 		} catch (JSONException e) {
 			result = null;
 		}
 		return result;
 	}
 
-	public void setResult(HJsonObj result) {
+	/**
+	 * if result type is a String
+	 * @return result of a command operation or a subscriptions operation.
+	 */
+	public String getResultAsString() {
+		String result;
 		try {
-			if(result == null) {
-				hresult.remove("result");
-			} else {
-				hresult.put("result", result.toJSON());
-			}
+			result = this.getString("result");
 		} catch (JSONException e) {
+			result = null;
 		}
+		return result;
+	}
+
+	/**
+	 * if result type is Boolean
+	 */
+	public Boolean getResultAsBoolean() {
+		Boolean result;
+		try {
+			result = this.getBoolean("result");
+		} catch (JSONException e) {
+			result = null;
+		}
+		return result;
+	}
+
+	/**
+	 * if result type is Integer
+	 */
+	public Integer getResultAsInt() {
+		Integer result;
+		try {
+			result = this.getInt("result");
+		} catch (JSONException e) {
+			result = null;
+		}
+		return result;
+	}
+
+	/**
+	 * if result type is Double
+	 */
+	public Double getResultAsDouble() {
+		Double result;
+		try {
+			result = this.getDouble("result");
+		} catch (JSONException e) {
+			result = null;
+		}
+		return result;
 	}
 
 	
+	/**
+	 * The result type could be JSONObject, JSONArray, String, Boolean, Number.
+	 * @param result
+	 */
+	public void setResult(Object result) {
+		try {
+			if (result == null) {
+				this.remove("result");
+			} else {
+				this.put("result", result);
+			}
+		} catch (JSONException e) {
+			logger.error("message: ", e);
+		}
+	}
+	
+	public void setResult(JSONObject result) {
+		try {
+			if (result == null) {
+				this.remove("result");
+			} else {
+				this.put("result", result);
+			}
+		} catch (JSONException e) {
+			logger.error("message: ", e);
+		}
+	}
+	
+	public void setResult(JSONArray result) {
+		try {
+			if (result == null) {
+				this.remove("result");
+			} else {
+				this.put("result", result);
+			}
+		} catch (JSONException e) {
+			logger.error("message: ", e);
+		}
+	}
+	
+	public void setResult(String result) {
+		try {
+			if (result == null) {
+				this.remove("result");
+			} else {
+				this.put("result", result);
+			}
+		} catch (JSONException e) {
+			logger.error("message: ", e);
+		}
+	}
+	
+	public void setResult(Boolean result) {
+		try {
+			if (result == null) {
+				this.remove("result");
+			} else {
+				this.put("result", result);
+			}
+		} catch (JSONException e) {
+			logger.error("message: ", e);
+		}
+	}
+	
+	public void setResult(Integer result) {
+		try {
+			if (result == null) {
+				this.remove("result");
+			} else {
+				this.put("result", result);
+			}
+		} catch (JSONException e) {
+			logger.error("message: ", e);
+		}
+	}
+	
+	public void setResult(Double result) {
+		try {
+			if (result == null) {
+				this.remove("result");
+			} else {
+				this.put("result", result);
+			}
+		} catch (JSONException e) {
+			logger.error("message: ", e);
+		}
+	}
+
 }

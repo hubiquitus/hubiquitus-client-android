@@ -32,22 +32,43 @@ import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
-import org.hubiquitus.hapi.transport.HTransportOptions; 
+import org.hubiquitus.hapi.transport.HTransportOptions;
+import org.joda.time.DateTime;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @cond internal
- * @version 0.3
+ * @version 0.5
  * HTransportSocketIO is the socketio transport layer of the hubiquitus hAPI client
  */
 
 public class HTransportSocketio implements HTransport, IOCallback {
 
+	final Logger logger = LoggerFactory.getLogger(HTransportSocketio.class);
 	private HTransportDelegate callback = null;
 	private HTransportOptions options = null;
 	private SocketIO socketio = null;
 	private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
 	private Timer timeoutTimer = null;
+	private Timer autoReconnectTimer = new Timer();
+	private ReconnectTask autoReconnectTask = null;
+	private int reconnectTime = 3; // try to reconnect at most 3 times.
+	
+	private class ReconnectTask extends TimerTask{
+
+		@Override
+		public void run() {
+			try {
+				connect(callback, options);
+			} catch (Exception e) {
+				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
+			}
+			
+		}
+		
+	}
 	
 	public HTransportSocketio() {
 	};	
@@ -82,7 +103,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				
 				socketio = null;
 			}
-		}, 10000);
+		}, 30000);
 		
 		//init socketio component
 		try {
@@ -125,11 +146,13 @@ public class HTransportSocketio implements HTransport, IOCallback {
 
 	/**
 	 * Disconnect from server 
-	 * @param callback
-	 * @param options
 	 */
 	public void disconnect() {
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
+		if(autoReconnectTask != null){
+			autoReconnectTask.cancel();
+			autoReconnectTask = null;
+		}
 		try {
 			socketio.disconnect();
 		} catch (Exception e) {
@@ -162,19 +185,18 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		return endpointAdress;
 	}
 
-	@Override
 	public void sendObject(JSONObject object) {
 		if( connectionStatus == ConnectionStatus.CONNECTED) {
-			socketio.emit("hCommand",object);
+			socketio.emit("hMessage",object);
 		} else {
-			System.out.println("Not connected");
+			logger.warn("message: Not connected");
 		}		
 	}
 	
 	/* Socket io  delegate callback*/
 	public void on(String type, IOAcknowledge arg1, Object... arg2) {
 		//switch for type
-		if (type.equals("hStatus") && arg2 != null && arg2[0].getClass() == JSONObject.class) {
+		if (type.equalsIgnoreCase("hStatus") && arg2 != null && arg2[0].getClass() == JSONObject.class) {
 			JSONObject data = (JSONObject)arg2[0];
 			try {
 				HStatus status = new HStatus(data);
@@ -193,7 +215,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				socketio.disconnect();
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 			}
-		} else {
+		} else if (type.equalsIgnoreCase("hMessage") && arg2 != null && arg2[0].getClass() == JSONObject.class){
 			JSONObject data = (JSONObject)arg2[0];
 			try {
 				if (timeoutTimer != null) {
@@ -210,22 +232,17 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 	}
 	
-	@Override
 	public void onConnect() {
 		//try to log in once connected
 		String publisher = options.getJid().getFullJID();
 		String password = options.getPassword();
-		String serverHost = options.getServerHost();
-		int serverPort = options.getServerPort();
 		
 		//prepare data to be sent
 		JSONObject data = new JSONObject();
 		try {
 			data.put("publisher", publisher);
 			data.put("password", password);
-			data.put("serverHost", serverHost);
-			data.put("serverPort", serverPort);
-
+            data.put("sent", DateTime.now());
 			//send the event
 			socketio.emit("hConnect", data);
 		} catch (Exception e) {
@@ -240,13 +257,11 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 	}
 
-	@Override
 	public void onDisconnect() {
 		if (timeoutTimer != null) {
 			timeoutTimer.cancel();
 			timeoutTimer = null;
 		}
-		
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
 //			while(socketio.isConnected()) {
 //				socketio.disconnect();
@@ -255,7 +270,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}
 	}
 
-	@Override
 	public void onError(SocketIOException arg0) {
 		if (socketio != null && socketio.isConnected()) {
 			socketio.disconnect();
@@ -270,24 +284,39 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			timeoutTimer = null;
 		}
 		updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, errorMsg);
+		if(reconnectTime > 0)
+			this.reconnect();
 	}
 
-	@Override
+
 	public void onMessage(String arg0, IOAcknowledge arg1) {
-		System.out.println("socketio" + arg0);
+		logger.info("socketio" + arg0);
 	}
 
-	@Override
+
 	public void onMessage(JSONObject arg0, IOAcknowledge arg1) {
-		System.out.println("socketio" + arg0.toString());
+		logger.info("socketio" + arg0.toString());
 	}
 
-	@Override
 	public String toString() {
 		return "HTransportSocketio [callback=" + callback + ", options="
 				+ options + ", socketio=" + socketio + ", connectionStatus="
 				+ connectionStatus + ", timeoutTimer=" + timeoutTimer + "]";
 	}
+	
+	/**
+	 * Called in onError. try to reconnect in 5s. if socketio can't connect, it will be called every 5s. 
+	 */
+	public void reconnect(){
+		updateStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Lost connection, try to reconnect in " + 5*(4 - reconnectTime) + "s");
+		if(autoReconnectTask != null){
+			autoReconnectTask.cancel();
+		}
+		autoReconnectTask = new ReconnectTask();
+		autoReconnectTimer.schedule(autoReconnectTask, 5000*(4-reconnectTime));
+		reconnectTime--;
+	}
+		
 }
 
 /**

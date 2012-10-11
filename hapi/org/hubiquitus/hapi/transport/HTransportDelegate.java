@@ -25,7 +25,7 @@ import org.json.JSONObject;
 
 /**
  * @cond internal
- * @version 0.3
+ * @version 0.5
  * Transport layer delegate to notify events
  */
 

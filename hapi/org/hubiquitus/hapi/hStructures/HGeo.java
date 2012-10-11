@@ -16,60 +16,80 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hubiquitus.hapi.hStructures;
 
-import org.hubiquitus.hapi.exceptions.MissingAttrException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.5 
- * This kind of payload is used to describe the status of a thread of correlated messages identified by its convid. 
- * Multiple hConvStates with the same convid can be published into a channel, specifying the evolution of the state of the thread during time.
+ *  @version v0.5
+ *  Specifies the exact longitude and latitude of the location
  */
+public class HGeo extends JSONObject {
 
-public class HConvState extends JSONObject {
+	final Logger logger = LoggerFactory.getLogger(HGeo.class);
 
-	final Logger logger = LoggerFactory.getLogger(HConvState.class);
-
-	public HConvState() {
-		super();
-	};
-
-	public HConvState(JSONObject jsonObj) throws JSONException {
+	public HGeo(JSONObject jsonObj) throws JSONException{
 		super(jsonObj.toString());
 	}
-
-	/* Getters & Setters */
-
-	/**
-	 * The status of the thread
-	 * 
-	 * @return topic description. NULL if undefined
-	 */
-	public String getStatus() {
-		String status;
-		try {
-			status = this.getString("status");
-		} catch (Exception e) {
-			status = null;
-		}
-		return status;
+	
+	//ac lat and lng is mandatory
+	public HGeo(double lng, double lat) {
+		super();
+		setLng(lng);
+		setLat(lat);
 	}
 
-	public void setStatus(String status) throws MissingAttrException {
+	/* Setter & Getter */
+/**
+ * @return Longitude of the location. Null if undefined.
+ */
+	public double getLng() {
+		double lng;
 		try {
-			if (status == null || status.length()<=0) {
-				throw new MissingAttrException("status");
-			} else {
-				this.put("status", status);
-			}
+			lng = this.getDouble("lng");
+		} catch (Exception e) {
+			lng = 0;
+		}
+		return lng;
+	}
+
+	/**
+	 * Set the longitude of the location.
+	 * @param lng
+	 */
+	public void setLng(double lng) {
+		try {
+			this.put("lng", lng);
 		} catch (JSONException e) {
 			logger.warn("message: ", e);
 		}
 	}
 
+	/**
+	 * @return Latitude of the location. Null if undefined.
+	 */
+	public double getLat() {
+		double lat;
+		try {
+			lat = this.getDouble("lat");
+		} catch (Exception e) {
+			lat = 0;
+		}
+		return lat;
+	}
+
+	/**
+	 * Set the latitude of the location.
+	 * @param lat
+	 */
+	public void setLat(double lat) {
+		try {
+			this.put("lat", lat);
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
 }
