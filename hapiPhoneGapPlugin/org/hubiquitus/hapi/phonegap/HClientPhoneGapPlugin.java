@@ -403,6 +403,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		hclient.disconnect();
 	}
 	
+	
 	/**
 	 * bridge to HClient.connect
 	 * @param action
@@ -449,8 +450,25 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		}
 	}
 	
+	/**
+	 * Help to update the connection state in js.
+	 * @param status
+	 */
+	private void notifyJsUpdateConnState(final HStatus status){
+		if(status != null){
+			this.webView.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					sendJavascript("window.plugins.hClient._connectionStatus=" + status.getStatus().value());
+				}
+			});
+		}
+	}
+	
 	@Override
 	public void onStatus(HStatus status) {
+		notifyJsUpdateConnState(status);
 		notifyJsCallback("window.plugins.hClient.onStatus", status.toString());
 	}
 

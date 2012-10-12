@@ -188,7 +188,6 @@ function build_convstate(){
 }
 
 function onStatus(hStatus){
-    console.log('Received hStatus', hStatus);
     var status,error;
 
     switch(hStatus.status){
