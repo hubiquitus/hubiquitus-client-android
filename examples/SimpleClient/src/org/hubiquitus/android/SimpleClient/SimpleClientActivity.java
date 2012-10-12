@@ -154,10 +154,10 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		outputScroller = (ScrollView)findViewById(R.id.scrollview);
 		connectionStatusLabel = (TextView)findViewById(R.id.connectionStatusLabel);
 
-		loginEditText.setText("");
-		passwordEditText.setText("");
-		channelIDText.setText("");
-		gatewaysEditText.setText("");
+		loginEditText.setText("u1@localhost");
+		passwordEditText.setText("u1");
+		channelIDText.setText("#test@localhost");
+		gatewaysEditText.setText("http://10.0.2.2:8080");
 		MessageEditText.setText("");		
 	}
 

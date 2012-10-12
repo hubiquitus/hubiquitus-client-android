@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 public abstract class CheckConnectivity{
 	protected boolean hasConnectivity = false;
@@ -17,7 +16,6 @@ public abstract class CheckConnectivity{
 	final Logger logger = LoggerFactory.getLogger(CheckConnectivity.class);
 	
 	public CheckConnectivity(){
-		logger.info(">>>>>>> CheckConnectivity");
 		registerReceivers();
 	}
 	
@@ -27,20 +25,13 @@ public abstract class CheckConnectivity{
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        	logger.info(">>>>>>> BroadcastReceiver onReceive");
             boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-            String reason = intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
-            boolean isFailover = intent.getBooleanExtra(ConnectivityManager.EXTRA_IS_FAILOVER, false);
-            
-            NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-            NetworkInfo otherNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
-                
+               
             if(noConnectivity){
             	hasConnectivity = false;
             }else{
             	hasConnectivity = true;
             }
-            logger.info("<<<<<<<< BroadcastReceiver onReceive with hasConnectivity = " + hasConnectivity);
         }
     };
     

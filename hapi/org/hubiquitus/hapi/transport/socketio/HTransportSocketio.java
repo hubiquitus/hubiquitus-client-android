@@ -19,13 +19,13 @@
 
 package org.hubiquitus.hapi.transport.socketio;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
@@ -34,15 +34,10 @@ import org.hubiquitus.hapi.transport.CheckConnectivity;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions;
-import org.hubiquitus.hapi.util.MyApplication;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 /**
  * @cond internal
@@ -319,29 +314,7 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 		}
 		autoReconnectTask = new ReconnectTask();
 		autoReconnectTimer.schedule(autoReconnectTask, 5000);
-	}
-	
-//	//check the connectivity of the device
-//	public static boolean checkConn(Context ctx){
-//		
-//		ConnectivityManager conMgr = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-//		if(conMgr == null){
-//			return false;
-//		}else{
-//			NetworkInfo i = conMgr.getActiveNetworkInfo();
-//			if(i==null){
-//				return false;
-//			}
-//			if(!i.isConnected()){
-//				return false;
-//			}
-//			if(!i.isAvailable()){
-//				return false;
-//			}
-//			return true;
-//		}
-//	}
-		
+	}	
 }
 
 /**
