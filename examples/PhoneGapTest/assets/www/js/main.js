@@ -55,7 +55,6 @@ function send(){
         timeout:document.getElementById('timeout').value,
         relevanceOffset:document.getElementById('relevanceoffset').value
     }
-    console.log('---> options: ' + JSON.stringify(msgOptions));
     window.plugins.hClient.send(window.plugins.hClient.buildMessage(actor, 'string', msg, msgOptions), cb);
 }
 
