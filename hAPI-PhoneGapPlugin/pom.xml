@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.hubiquitus.android</groupId>
+  <artifactId>hAPI-PhoneGapPlugin</artifactId>
+  <version>0.5.0</version>
+  <!-- packaging>jar</packaging>
+
+  <name>hAPI-PhoneGapPlugin</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties-->
+
+    
+  <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <optimize>true</optimize>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.cordova</groupId>
+		<artifactId>phonegap</artifactId>
+        <version>0.0.0</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/../external-libs/cordova-2.1.0.jar</systemPath>
+    </dependency>
+	
+	 <dependency>
+    	<groupId>org.json.jar</groupId>
+		<artifactId>json-lib</artifactId>
+        <version>0.0.0</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/../external-libs/json-org.jar</systemPath>
+    </dependency>
+    	<dependency>
+	<groupId>com.google.android</groupId>
+	<artifactId>android</artifactId>
+	<version>2.2.1</version>
+</dependency>
+
+ <dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-android</artifactId>
+	<version>1.6.1-RC1</version>
+</dependency>
+    <dependency>
+     <groupId>org.hubiquitus.android</groupId>
+  	 <artifactId>hAPI-android</artifactId>
+ 	 <version>0.5.0</version>
+ 	</dependency>
+  </dependencies>
+</project>
