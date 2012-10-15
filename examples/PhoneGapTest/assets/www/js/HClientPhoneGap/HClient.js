@@ -208,7 +208,7 @@ define(
                     throw new Error('missing actor');
                 else if (!ref)
                     throw new Error('missing ref');
-                else if (!status)
+                else if (status == null)
                     throw new Error('missing status');
                 if (!options)
                     options = {};

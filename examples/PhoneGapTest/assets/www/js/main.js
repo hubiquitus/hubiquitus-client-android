@@ -131,6 +131,27 @@ function clear_divs(){
 }
 
 
+function build_test(){
+    console.log('-------build test-------');
+    var options = {
+        relevance: new Date(),
+        relevanceOffset: '120000',
+        ref: 'msgidref123'
+    }
+    console.log('build_measure: ');
+    console.log('-----> ' + JSON.stringify(window.plugins.hClient.buildMeasure('u1@test', 'value123','unit123',options)));
+    console.log('build_alert: ');
+    console.log('-----> ' + JSON.stringify(window.plugins.hClient.buildAlert('u1@test','alert123',options)));
+    console.log('build_ack: ');
+    console.log('-----> ' + JSON.stringify(window.plugins.hClient.buildAck('u1@test','ref123','read',options)));
+    console.log('build_convstate: ');
+    console.log('-----> ' + JSON.stringify(window.plugins.hClient.buildConvState('u1@test','convid123','status123',options)));
+    console.log('build_command: ');
+    console.log('-----> ' + JSON.stringify(window.plugins.hClient.buildCommand('u1@test','cmd123',{params:'params123'},options)));
+    console.log('build_result: ');
+    console.log('-----> ' + JSON.stringify(window.plugins.hClient.buildResult('u1@test', 'ref123', 0, {result:'result123'},options)));
+}
+
 
 function build_measure(){
     var value = prompt('Value:');
@@ -143,7 +164,7 @@ function build_measure(){
     if(hMessage)
     	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hMessage);
     if(document.getElementById("sendBuiltMessage").checked)
-        window.plugins.hClient.publish(hMessage, fct);
+        window.plugins.hClient.send(hMessage, fct);
 }
 
 function build_alert(){
@@ -156,7 +177,7 @@ function build_alert(){
     if(hMessage)
     	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hMessage);
     if(document.getElementById("sendBuiltMessage").checked)
-        window.plugins.hClient.publish(hMessage, fct);
+        window.plugins.hClient.send(hMessage, fct);
 }
 
 function build_ack(){
@@ -170,7 +191,7 @@ function build_ack(){
     if(hMessage)
     	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hMessage);
     if(document.getElementById("sendBuiltMessage").checked)
-        window.plugins.hClient.publish(hMessage, fct);
+        window.plugins.hClient.send(hMessage, fct);
 }
 
 function build_convstate(){
@@ -184,7 +205,7 @@ function build_convstate(){
     if(hMessage)
     	document.getElementById("resultsDiv").innerHTML = JSON.stringify(hMessage);
     if(document.getElementById("sendBuiltMessage").checked)
-        window.plugins.hClient.publish(hMessage, fct);
+        window.plugins.hClient.send(hMessage, fct);
 }
 
 function onStatus(hStatus){
