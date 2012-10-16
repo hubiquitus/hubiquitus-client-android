@@ -22,9 +22,13 @@ Coming soon (with first stable release)
     git clone git://github.com/hubiquitus/hubiquitus-android.git
     
 #### 2) Import examples
-You will find two examples (one native and another with PhoneGap) under examples.
-You can import them as projects under eclipse.
-Update classpath to point to android libs and hapi/hapiPhoneGapPlugins directories
+For android: 
+You will find hAPI-android-v0.5.0.jar in the hAPI-android/target.
+You can import the file jar directly to your project.
+For android PhoneGap:
+1. Copy the directory hapiPhoneGapPlusin to your project. Add the link source to the directory.
+2. Copy the directory examples/PhoneGapTest/assets/www/js/HClientPhoneGap to yourproject/assets/www/
+
 
 #### 3) config AndroidManifest.xml
 Add "android:name="org.hubiquitus.hapi.util.MyApplication" in "Application".
