@@ -4,7 +4,6 @@ Currently allows to do pubsub with an xmpp server. More information on [hubiquit
 
 ## Third party libraries
 This project currently relies on
-* ASmack : Smack xmpp library adapted for Android. Using this [fork](https://github.com/Flowdalic/asmack) 
 * Socket.io-java-client : Socket io. Using this [fork](https://github.com/Gottox/socket.io-java-client)
 * PhoneGap : PhoneGap for android. See [here](http://phonegap.com/) for more informations
 
@@ -26,6 +25,9 @@ Coming soon (with first stable release)
 You will find two examples (one native and another with PhoneGap) under examples.
 You can import them as projects under eclipse.
 Update classpath to point to android libs and hapi/hapiPhoneGapPlugins directories
+
+#### 3) config AndroidManifest.xml
+Add "android:name="org.hubiquitus.hapi.util.MyApplication" in "<Application>".
 
 ## Licensing
 Copyright (c) Novedia Group 2012.
