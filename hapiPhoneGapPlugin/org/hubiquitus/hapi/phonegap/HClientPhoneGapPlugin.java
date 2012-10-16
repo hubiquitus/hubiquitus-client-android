@@ -73,7 +73,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		} else if(action.equalsIgnoreCase("getthreads")) {
 			this.getThreads(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("getrelevantmessage")) {
-			this.getRelecantMessage(action, data, callbackid);
+			this.getRelevantMessage(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("setfilter")) {
 			this.setFilter(action, data, callbackid);
 		}
@@ -340,7 +340,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 * @param data
 	 * @param callbackid
 	 */
-	public void getRelecantMessage(String action, JSONArray data, String callbackid){
+	public void getRelevantMessage(String action, JSONArray data, String callbackid){
 		JSONObject jsonObj = null;
 		String actor = null;
 		String jsonCallback = null;
