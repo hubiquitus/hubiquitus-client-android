@@ -27,7 +27,7 @@ You can import them as projects under eclipse.
 Update classpath to point to android libs and hapi/hapiPhoneGapPlugins directories
 
 #### 3) config AndroidManifest.xml
-Add "android:name="org.hubiquitus.hapi.util.MyApplication" in "<Application>".
+Add "android:name="org.hubiquitus.hapi.util.MyApplication" in "Application".
 
 ## Licensing
 Copyright (c) Novedia Group 2012.
