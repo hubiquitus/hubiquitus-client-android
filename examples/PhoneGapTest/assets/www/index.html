@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="utf-8">
+
+<!-- Imports necessary for hAPI -->
+<script type="text/javascript" src='js/libs/cordova-2.1.0.js'></script>
+<!--script type="text/javascript" src='../../../../hapiPhoneGapPlugin/HClientPhoneGap/'></script-->
+<script data-main="js/HClientPhoneGap/HClient.js"
+	src='js/HClientPhoneGap/require.js'></script>
+<script type="text/javascript" src='js/main.js'></script>
+<!-- Your script -->
+
+
+</head>
+
+<body style="font-size: 12px;" padding= 0; margin= 0; text-align=center >
+	<form style="padding: 0; margin: 0;">
+		Login: <input type="text" id="username" value="u1@localhost" /><br />
+		Password: <input type="password" id="password" value="u1" /><br />
+		Channel ID: <input type="text" id="actor" value="#test@localhost" /><br />
+        NbLastMsg: <input type="number" id="nblastmsg" value=5 /><br />
+		Message: <input type="text" id="message" value="hello all!!" /><br />
+        ConvID: <input type="text" id="convid" value="convid123" /><br/>
+        ConvStatus: <input type="text" id="convstatus" value="status123"/><br/>
+        RelevanceOffset: <input type="number" id="relevanceoffset"/><br/>
+        Timeout: <input type="number" id="timeout"/><br/>
+	</form>
+
+	<form style="padding: 0; margin: 0;">
+		<input type="radio" name="transport" value="socketio" checked/>Socket.IO <br />
+
+		Endpoint: <input type="text" id="endpoint" value="http://10.0.2.2:8080" /><br />
+	</form>
+
+	<h4 style="padding: 0; margin: 0; text-align: center;">Controls</h4>
+	<button type="button" onclick="connect()" style="padding: 0; margin: 0;">Connect</button>
+	<button type="button" onclick="disconnect()" style="padding: 0; margin: 0;">Disconnect</button>
+	<button type="button" onclick="send()" style="padding: 0; margin: 0;">Send</button>
+	<button type="button" onclick="subscribe()" style="padding: 0; margin: 0">Subscribe</button>
+	<button type="button" onclick="unsubscribe()" style="padding: 0; margin: 0;">Unsubscribe</button>
+	<button type="button" onclick="get_messages()" style="padding: 0; margin: 0;">Get Messages</button>
+    <button type="button" onclick="get_relevant_message()" style="padding: 0;margin: 0;">GetRelMsg</button>
+    <button type="button" onclick="pub_convstate()" style="padding: 0;margin: 0;">PubConvState</button>
+	<button type="button" onclick="get_subscriptions()" style="padding: 0; margin: 0;">Get Subscriptions</button>
+	<button type="button" onclick="get_thread()" style="padding: 0; margin: 0;">Get Thread</button>
+	<button type="button" onclick="get_threads()" style="padding: 0; margin: 0;">Get Threads</button>
+    <button type="button" onclick="set_filter()" style="padding: 0;margin: 0;">SetFilter</button>
+	<button type="button" onclick="build_test()" style="padding: 0; margin: 0;">BuilderTest</button>
+	<button type="button" onclick="build_alert()" style="padding: 0; margin: 0;">Build Alert</button>
+	<button type="button" onclick="build_convstate()" style="padding: 0; margin: 0;">Build Convstate</button>
+	<button type="button" onclick="build_ack()" style="padding: 0; margin: 0;">Build ack</button>
+	<button type="button" onclick="clear_divs()" style="padding: 0; margin: 0;">Clear</button>
+	<br />
+
+	<input type="checkbox" id="hMessagePersistent" /> Persistent
+	<br />
+
+	<div style="">
+		<div id="statusTitle">Status : </div>
+		<div id="status"></div>
+		<div id="messagetitle">onMessages : </div>
+		<div id="hMessage"></div>
+        <div id="callbacktitle">callback : </div>
+        <div id="callback"></div>
+
+	</div>
+	</div>
+</body>
+
+</html>
