@@ -46,6 +46,7 @@ import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportManager;
 import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketio;
+import org.hubiquitus.hapi.util.ErrorMsg;
 import org.hubiquitus.hapi.util.HUtil;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -172,7 +173,7 @@ public class HClient {
 			notifyStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
 			transportManager.disconnect();
 		} else if (connectInProgress) {
-			notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, "Can't disconnect while a connection is in progress");
+			notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, ErrorMsg.disconnWhileConnecting);
 		} else {
 			notifyStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
 		}
@@ -215,15 +216,15 @@ public class HClient {
 	 */
 	public void send(final HMessage message, final HMessageDelegate messageDelegate) {
 		if (this.connectionStatus != ConnectionStatus.CONNECTED) {
-			notifyResultError(message.getMsgid(), ResultStatus.NOT_CONNECTED, "Not conncected.", messageDelegate);
+			notifyResultError(message.getMsgid(), ResultStatus.NOT_CONNECTED, ErrorMsg.notConn, messageDelegate);
 			return;
 		}
 		if (message == null) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Provided message is null", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.nullMessage, messageDelegate);
 			return;
 		}
 		if (message.getActor() == null) {
-			notifyResultError(message.getMsgid(), ResultStatus.MISSING_ATTR, "Actor not found in message", messageDelegate);
+			notifyResultError(message.getMsgid(), ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
 		message.setSent(new DateTime());
@@ -240,7 +241,7 @@ public class HClient {
 
 					@Override
 					public void run() {
-						notifyResultError(message.getMsgid(), ResultStatus.EXEC_TIMEOUT, "The response of message is time out!", null);
+						notifyResultError(message.getMsgid(), ResultStatus.EXEC_TIMEOUT, ErrorMsg.timeout, null);
 						messagesDelegates.remove(message.getMsgid());
 					}
 				}, message.getTimeout());
@@ -366,12 +367,12 @@ public class HClient {
 
 		// check mandatory fields
 		if (actor == null || actor.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Actor is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
 
 		if (convid == null || convid.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Convid is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingConvid, messageDelegate);
 			return;
 		}
 
@@ -402,12 +403,12 @@ public class HClient {
 		JSONObject params = new JSONObject();
 		// check mandatory fields
 		if (actor == null || actor.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Actor is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
 
 		if (status == null || status.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Status is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingStatus, messageDelegate);
 			return;
 		}
 
@@ -435,7 +436,7 @@ public class HClient {
 		}
 		// check mandatory fields
 		if (actor == null || actor.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "actor is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
 
