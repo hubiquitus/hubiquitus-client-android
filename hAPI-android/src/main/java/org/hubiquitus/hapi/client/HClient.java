@@ -43,6 +43,7 @@ import org.hubiquitus.hapi.hStructures.ResultStatus;
 import org.hubiquitus.hapi.structures.JabberID;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
+import org.hubiquitus.hapi.transport.HTransportManager;
 import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketio;
 import org.hubiquitus.hapi.util.HUtil;
@@ -68,7 +69,8 @@ public class HClient {
 	@SuppressWarnings("unused")
 	private HOptions options = null;
 	private HTransportOptions transportOptions = null;
-	private HTransport transport;
+	//private HTransport transport;
+	private HTransportManager transportManager = new HTransportManager();
 
 	private HStatusDelegate statusDelegate = null;
 	private HMessageDelegate messageDelegate = null;
@@ -81,6 +83,7 @@ public class HClient {
 
     public HClient() {
 		transportOptions = new HTransportOptions();
+		
 	}
 
 
@@ -128,17 +131,14 @@ public class HClient {
 
 			// choose transport layer
 			if (options.getTransport().equals("socketio")) {
-				/*
-				 * if (this.transport != null) { //check if other transport mode
-				 * connect this.transport.disconnect(); }
-				 */
-				if (this.transport == null || (this.transport.getClass() != HTransportSocketio.class)) {
-					this.transport = new HTransportSocketio();
-				}
-				this.transport.connect(transportDelegate, this.transportOptions);
+				this.transportManager.setTransport(new HTransportSocketio());
 			} else {
-				// for the future transports.
+			// for the future transports.
 			}
+			//set the callback and transport options in transport manager.
+			this.transportManager.setCallback(transportDelegate);
+			this.transportManager.setOptions(transportOptions);
+			this.transportManager.connect();
 		} else {
 			if (connInProgress) {
 				notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, null);
@@ -170,7 +170,7 @@ public class HClient {
 
 		if (shouldDisconnect) {
 			notifyStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
-			transport.disconnect();
+			transportManager.disconnect();
 		} else if (connectInProgress) {
 			notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, "Can't disconnect while a connection is in progress");
 		} else {
@@ -251,7 +251,7 @@ public class HClient {
 			}
 		}
 		try {
-			transport.sendObject(message);
+			transportManager.sendObject(message);
 		} catch (Exception e) {
 			logger.error("message: ", e);
 		}

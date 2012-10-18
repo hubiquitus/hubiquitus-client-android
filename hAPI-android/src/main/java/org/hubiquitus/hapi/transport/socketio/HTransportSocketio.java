@@ -30,7 +30,6 @@ import java.util.TimerTask;
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HStatus;
-import org.hubiquitus.hapi.transport.CheckConnectivity;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions;
@@ -45,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * HTransportSocketIO is the socketio transport layer of the hubiquitus hAPI client
  */
 
-public class HTransportSocketio extends CheckConnectivity implements HTransport, IOCallback {
+public class HTransportSocketio implements HTransport, IOCallback {
 
 	final Logger logger = LoggerFactory.getLogger(HTransportSocketio.class);
 	private HTransportDelegate callback = null;
@@ -53,23 +52,7 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 	private SocketIO socketio = null;
 	private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
 	private Timer timeoutTimer = null;
-	private Timer autoReconnectTimer = new Timer();
-	private ReconnectTask autoReconnectTask = null;
-	
-	private class ReconnectTask extends TimerTask{
 
-		@Override
-		public void run() {
-			try {
-				connect(callback, options);
-			} catch (Exception e) {
-				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
-			}
-			
-		}
-		
-	}
-	
 	public HTransportSocketio() {
 	};	
 	
@@ -149,10 +132,7 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 	 */
 	public void disconnect() {
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
-		if(autoReconnectTask != null){
-			autoReconnectTask.cancel();
-			autoReconnectTask = null;
-		}
+		
 		try {
 			socketio.disconnect();
 		} catch (Exception e) {
@@ -271,6 +251,10 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 	}
 
 	public void onError(SocketIOException arg0) {
+		if (timeoutTimer != null) {
+			timeoutTimer.cancel();
+			timeoutTimer = null;
+		}
 		if (socketio != null && socketio.isConnected()) {
 			socketio.disconnect();
 		}
@@ -279,13 +263,7 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 		if (arg0 != null) {
 			errorMsg = arg0.getMessage();
 		}
-		if (timeoutTimer != null) {
-			timeoutTimer.cancel();
-			timeoutTimer = null;
-		}
 		updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, errorMsg);
-		if(hasConnectivity)
-			this.reconnect();
 	}
 
 
@@ -303,18 +281,7 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 				+ options + ", socketio=" + socketio + ", connectionStatus="
 				+ connectionStatus + ", timeoutTimer=" + timeoutTimer + "]";
 	}
-	
-	/**
-	 * Called in onError. try to reconnect in 5s. if socketio can't connect, it will be called every 5s. 
-	 */
-	public void reconnect(){
-		updateStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Lost connection, try to reconnect in 5 s");
-		if(autoReconnectTask != null){
-			autoReconnectTask.cancel();
-		}
-		autoReconnectTask = new ReconnectTask();
-		autoReconnectTimer.schedule(autoReconnectTask, 5000);
-	}	
+
 }
 
 /**

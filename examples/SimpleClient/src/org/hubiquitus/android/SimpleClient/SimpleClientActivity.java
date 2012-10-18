@@ -164,7 +164,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 
 
 	public void initListenerBoutonConnection() {
-		final SimpleClientActivity parentClass = this;
 		OnClickListener listener = new OnClickListener()
 		{
 			public void onClick(View v) {
