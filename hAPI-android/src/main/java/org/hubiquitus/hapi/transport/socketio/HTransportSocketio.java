@@ -186,7 +186,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				}
 				updateStatus(status.getStatus(), status.getErrorCode(), status.getErrorMsg());
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("message: ", e);
 				
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
