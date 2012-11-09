@@ -55,6 +55,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.util.Log;
+
 /**
  * @version 0.5 Hubiquitus client, public API
  */
@@ -168,7 +170,6 @@ public class HClient {
 				connectInProgress = true;
 			}
 		}
-
 		if (shouldDisconnect) {
 			notifyStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
 			transportManager.disconnect();
@@ -176,6 +177,7 @@ public class HClient {
 			notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, ErrorMsg.disconnWhileConnecting);
 		} else {
 			notifyStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
+			transportManager.disconnect();
 		}
 
 	}
@@ -775,6 +777,7 @@ public class HClient {
 
 		this.transportOptions.setJid(jid);
 		this.transportOptions.setPassword(password);
+		this.transportOptions.setAuthCB(options.getAuthCB());
 
 		// by default we user server host rather than publish host if defined
 
@@ -860,7 +863,7 @@ public class HClient {
                 arun.delegate2Use = this.messagesDelegates.get(HUtil.getApiRef(message.getRef()));
             }
             // 2 - if the ref can not provide a delegate, we try the parameter sent
-            if (messageDelegate != null) {
+            else if (messageDelegate != null) {
                 arun.delegate2Use = messageDelegate;
             } else {
                 // in other cases we try the default delegate message

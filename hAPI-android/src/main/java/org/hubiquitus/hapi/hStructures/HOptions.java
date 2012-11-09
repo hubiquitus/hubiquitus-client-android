@@ -19,6 +19,7 @@
 
 package org.hubiquitus.hapi.hStructures;
 
+import org.hubiquitus.hapi.transport.socketio.HAuthCallback;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,15 @@ import org.slf4j.LoggerFactory;
 public class HOptions extends JSONObject {
 	
 	final Logger logger = LoggerFactory.getLogger(HOptions.class);
+	private HAuthCallback authCB = null;
+
+	public HAuthCallback getAuthCB() {
+		return authCB;
+	}
+
+	public void setAuthCB(HAuthCallback authCB) {
+		this.authCB = authCB;
+	}
 
 	public HOptions() {
 		super();

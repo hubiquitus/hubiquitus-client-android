@@ -1,5 +1,8 @@
 package org.hubiquitus.hapi.transport;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.util.ErrorMsg;
@@ -33,12 +36,11 @@ public class HTransportManager {
 			if(error == ConnectionError.TECH_ERROR){//when tech error issues, reconnect.
 				if(callback != null)
 					callback.onStatus(status, error, errorMsg + ". " + ErrorMsg.reconnIn5s);
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e1) {
-					logger.info("Message: ",e1);
-				}
-				tryToConnectDisconnect();
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						logger.error("Message : " + e);
+					}
 			}else{
 				if(callback != null)
 					callback.onStatus(status, error, errorMsg);

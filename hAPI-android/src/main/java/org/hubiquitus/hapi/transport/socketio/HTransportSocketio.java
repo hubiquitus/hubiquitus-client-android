@@ -40,8 +40,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @cond internal
- * @version 0.5
- * HTransportSocketIO is the socketio transport layer of the hubiquitus hAPI client
+ * @version 0.5 HTransportSocketIO is the socketio transport layer of the
+ *          hubiquitus hAPI client
  */
 
 public class HTransportSocketio implements HTransport, IOCallback {
@@ -52,45 +52,53 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	private SocketIO socketio = null;
 	private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
 	private Timer timeoutTimer = null;
+	private HAuthCallback authCB = null;
+	private ConnectedCallbackClass connectedCB = new ConnectedCallbackClass();
 
 	public HTransportSocketio() {
-	};	
-	
+	};
+
 	/**
 	 * connect to a socket io hnode gateway
-	 * @param callback - see HTransportCallback for more informations
-	 * @param options - transport options
+	 * 
+	 * @param callback
+	 *            - see HTransportCallback for more informations
+	 * @param options
+	 *            - transport options
 	 */
-	public void connect(HTransportDelegate callback, HTransportOptions options){
+	public void connect(HTransportDelegate callback, HTransportOptions options) {
 		this.connectionStatus = ConnectionStatus.CONNECTING;
-		
+
 		this.callback = callback;
 		this.options = options;
-		
+
+		authCB = options.getAuthCB();
+
 		String endpointHost = options.getEndpointHost();
 		int endpointPort = options.getEndpointPort();
 		String endpointPath = options.getEndpointPath();
-		
+
 		String endpointAdress = toEndpointAdress(endpointHost, endpointPort, endpointPath);
-		//add a timer to make sure it doesn't go over timeout
+		// add a timer to make sure it doesn't go over timeout
 		timeoutTimer = new Timer();
-		//set timer task to add a connection timeout
-	    timeoutTimer.schedule(new TimerTask() {
-			
+		// set timer task to add a connection timeout
+		timeoutTimer.schedule(new TimerTask() {
+
 			@Override
 			public void run() {
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.CONN_TIMEOUT, null);
-				if(socketio.isConnected()) {
+				if (socketio != null && socketio.isConnected()) {
 					socketio.disconnect();
 				}
-				
+
 				socketio = null;
 			}
 		}, 30000);
-		
-		//init socketio component
+
+		// init socketio component
 		try {
 			socketio = new SocketIO();
+			socketio.connect(endpointAdress, this);
 		} catch (Exception e) {
 			if (timeoutTimer != null) {
 				timeoutTimer.cancel();
@@ -99,24 +107,17 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 			socketio = null;
 		}
-		
-		//connect
-		try {
-			socketio.connect(endpointAdress, this);
-		} catch (Exception e) {
-			if (timeoutTimer != null) {
-				timeoutTimer.cancel();
-				timeoutTimer = null;
-			}
-			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
-		}
 	}
-	
+
 	/**
 	 * change current status and notify delegate through callback
-	 * @param status - connection status
-	 * @param error - error code
-	 * @param errorMsg - a low level description of the error
+	 * 
+	 * @param status
+	 *            - connection status
+	 * @param error
+	 *            - error code
+	 * @param errorMsg
+	 *            - a low level description of the error
 	 */
 	public void updateStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
 		this.connectionStatus = status;
@@ -128,22 +129,23 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	}
 
 	/**
-	 * Disconnect from server 
+	 * Disconnect from server
 	 */
 	public void disconnect() {
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
-		
+
 		try {
 			socketio.disconnect();
 		} catch (Exception e) {
 		}
-		
+
 	}
-	
+
 	/* helper functions */
-	
+
 	/**
-	 * make an endpoint adress from endpoints components (ie http://host:port/path)
+	 * make an endpoint adress from endpoints components (ie
+	 * http://host:port/path)
 	 */
 	public String toEndpointAdress(String endpointHost, int endpointPort, String endpointPath) {
 		String endpointAdress = "";
@@ -151,43 +153,42 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		if (endpointHost != null) {
 			endpointAdress += endpointHost;
 		}
-		
+
 		if (endpointPort != 0) {
 			endpointAdress += ":" + endpointPort;
 		}
-		
-		//endpointAdress += "/";
-		
-		if(endpointPath != null) {
+
+		if (endpointPath != null) {
 			endpointAdress += endpointPath;
 		}
-		
+
 		return endpointAdress;
 	}
 
 	public void sendObject(JSONObject object) {
-		if( connectionStatus == ConnectionStatus.CONNECTED) {
-			socketio.emit("hMessage",object);
+		if (connectionStatus == ConnectionStatus.CONNECTED) {
+			socketio.emit("hMessage", object);
 		} else {
 			logger.warn("message: Not connected");
-		}		
+		}
 	}
-	
-	/* Socket io  delegate callback*/
+
+	/* Socket io delegate callback */
 	public void on(String type, IOAcknowledge arg1, Object... arg2) {
-		//switch for type
+		// switch for type
 		if (type.equalsIgnoreCase("hStatus") && arg2 != null && arg2[0].getClass() == JSONObject.class) {
-			JSONObject data = (JSONObject)arg2[0];
+			JSONObject data = (JSONObject) arg2[0];
 			try {
 				HStatus status = new HStatus(data);
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
 				}
-				updateStatus(status.getStatus(), status.getErrorCode(), status.getErrorMsg());
+				updateStatus(status.getStatus(), status.getErrorCode(),
+						status.getErrorMsg());
 			} catch (Exception e) {
 				logger.error("message: ", e);
-				
+
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
@@ -195,8 +196,8 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				socketio.disconnect();
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 			}
-		} else if (type.equalsIgnoreCase("hMessage") && arg2 != null && arg2[0].getClass() == JSONObject.class){
-			JSONObject data = (JSONObject)arg2[0];
+		} else if (type.equalsIgnoreCase("hMessage") && arg2 != null && arg2[0].getClass() == JSONObject.class) {
+			JSONObject data = (JSONObject) arg2[0];
 			try {
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
@@ -211,29 +212,39 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			}
 		}
 	}
-	
+
+	private class ConnectedCallbackClass implements ConnectedCallback {
+		@Override
+		public void connect(String username, String password) {
+			// prepare data to be sent
+			JSONObject data = new JSONObject();
+			try {
+				data.put("publisher", username);
+				data.put("password", password);
+				data.put("sent", DateTime.now());
+				// send the event
+				socketio.emit("hConnect", data);
+			} catch (Exception e) {
+				if (socketio != null) {
+					socketio.disconnect();
+				}
+				if (timeoutTimer != null) {
+					timeoutTimer.cancel();
+					timeoutTimer = null;
+				}
+				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
+			}
+		}
+
+	}
+
 	public void onConnect() {
-		//try to log in once connected
-		String publisher = options.getJid().getFullJID();
-		String password = options.getPassword();
-		
-		//prepare data to be sent
-		JSONObject data = new JSONObject();
-		try {
-			data.put("publisher", publisher);
-			data.put("password", password);
-            data.put("sent", DateTime.now());
-			//send the event
-			socketio.emit("hConnect", data);
-		} catch (Exception e) {
-			if(socketio != null) {
-				socketio.disconnect();
-			}
-			if (timeoutTimer != null) {
-				timeoutTimer.cancel();
-				timeoutTimer = null;
-			}
-			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
+		if(authCB != null){
+			authCB.authCb(options.getJid().getFullJID(), connectedCB);
+			logger.info("-****************************-*-*-*-*-*");
+		}
+		else{
+			connectedCB.connect(options.getJid().getFullJID(), options.getPassword());
 		}
 	}
 
@@ -243,9 +254,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			timeoutTimer = null;
 		}
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
-//			while(socketio.isConnected()) {
-//				socketio.disconnect();
-//			}
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NO_ERROR, null);
 		}
 	}
@@ -266,11 +274,9 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, errorMsg);
 	}
 
-
 	public void onMessage(String arg0, IOAcknowledge arg1) {
 		logger.info("socketio" + arg0);
 	}
-
 
 	public void onMessage(JSONObject arg0, IOAcknowledge arg1) {
 		logger.info("socketio" + arg0.toString());

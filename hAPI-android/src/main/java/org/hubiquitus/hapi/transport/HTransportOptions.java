@@ -20,6 +20,7 @@
 package org.hubiquitus.hapi.transport;
 
 import org.hubiquitus.hapi.structures.JabberID;
+import org.hubiquitus.hapi.transport.socketio.HAuthCallback;
 
 /** 
  * @cond internal
@@ -34,7 +35,9 @@ public class HTransportOptions {
 	private int endpointPort = 0;
 	private String endpointPath = null;
 	private String hserver = "hnode";
+	private HAuthCallback authCB = null;
 	
+
 	public HTransportOptions() {
 		super();
 	}
@@ -155,6 +158,16 @@ public class HTransportOptions {
 	public void setHserver(String hserver) {
 		this.hserver = hserver;
 	}
+	
+
+	public HAuthCallback getAuthCB() {
+		return authCB;
+	}
+
+	public void setAuthCB(HAuthCallback authCB) {
+		this.authCB = authCB;
+	}
+	
 	/* overrides */
 	
 	@Override
