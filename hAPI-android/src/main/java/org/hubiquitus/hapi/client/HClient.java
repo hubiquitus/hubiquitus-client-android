@@ -851,20 +851,22 @@ public class HClient {
          */
         private void notifyMessage(final HMessage message, HMessageDelegate messageDelegate) {
             MyRunnable arun = new MyRunnable();
-
+            String apiRef = HUtil.getApiRef(message.getRef());
             // 1 we search the delegate with the ref if any
             if (!this.messagesDelegates.isEmpty() && message.getRef() != null && this.messagesDelegates.containsKey(HUtil.getApiRef(message.getRef()))) {
-                if (this.timeoutHashtable.containsKey(HUtil.getApiRef(message.getRef()))) {
-                    Timer timeout = timeoutHashtable.get(HUtil.getApiRef(message.getRef()));
+                if (this.timeoutHashtable.containsKey(apiRef)) {
+                    Timer timeout = timeoutHashtable.get(apiRef);
+                    timeoutHashtable.remove(apiRef);
                     if (timeout != null) {
                         timeout.cancel();
                     }
                 }
                 arun.delegate2Use = this.messagesDelegates.get(HUtil.getApiRef(message.getRef()));
+                messagesDelegates.remove(apiRef);
             }
             // 2 - if the ref can not provide a delegate, we try the parameter sent
             else if (messageDelegate != null) {
-                arun.delegate2Use = messageDelegate;
+            	arun.delegate2Use = messageDelegate;
             } else {
                 // in other cases we try the default delegate message
                 arun.delegate2Use = this.messageDelegate;

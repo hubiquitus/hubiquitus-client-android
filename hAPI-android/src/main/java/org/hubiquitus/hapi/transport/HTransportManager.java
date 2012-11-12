@@ -1,8 +1,5 @@
 package org.hubiquitus.hapi.transport;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.util.ErrorMsg;
@@ -88,11 +85,13 @@ public class HTransportManager {
 		logger.debug(">> tryToConnectDisconnect : shouldConnect = " + shouldConnect + " status = " + connStatus.toString());
 		
 		if (hasConnectivity){
-			if(shouldConnect && connStatus != ConnectionStatus.CONNECTED){
+			if(shouldConnect && connStatus != ConnectionStatus.CONNECTED && connStatus != ConnectionStatus.CONNECTING){
 			logger.debug(">> tryToConnectDisconnect : transport.connect ...");
+			connStatus = ConnectionStatus.CONNECTING;
 			transport.connect(innerCallback, options);
-		}else if(!shouldConnect && connStatus != ConnectionStatus.DISCONNECTED){
+		}else if(!shouldConnect && connStatus != ConnectionStatus.DISCONNECTED && connStatus != ConnectionStatus.DISCONNECTING){
 			logger.debug(">> tryToConnectDisconnect : transport.disconnect ...");
+			connStatus = ConnectionStatus.DISCONNECTING;
 			transport.disconnect();
 		}else if(shouldConnect && connStatus == ConnectionStatus.CONNECTED){
 			logger.debug(">> tryToConnectDisconnect : already connected, I do nothing...");

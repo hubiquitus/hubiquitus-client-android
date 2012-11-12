@@ -54,6 +54,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	private Timer timeoutTimer = null;
 	private HAuthCallback authCB = null;
 	private ConnectedCallbackClass connectedCB = new ConnectedCallbackClass();
+	private boolean shouldConnect = false;
 
 	public HTransportSocketio() {
 	};
@@ -67,6 +68,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 *            - transport options
 	 */
 	public void connect(HTransportDelegate callback, HTransportOptions options) {
+		shouldConnect = true;
 		this.connectionStatus = ConnectionStatus.CONNECTING;
 
 		this.callback = callback;
@@ -132,6 +134,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	 * Disconnect from server
 	 */
 	public void disconnect() {
+		shouldConnect = false;
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
 
 		try {
@@ -239,12 +242,13 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	}
 
 	public void onConnect() {
-		if(authCB != null){
-			authCB.authCb(options.getJid().getFullJID(), connectedCB);
-			logger.info("-****************************-*-*-*-*-*");
-		}
-		else{
-			connectedCB.connect(options.getJid().getFullJID(), options.getPassword());
+		if(shouldConnect){
+			if(authCB != null){
+				authCB.authCb(options.getJid().getFullJID(), connectedCB);
+			}
+			else{
+				connectedCB.connect(options.getJid().getFullJID(), options.getPassword());
+			}
 		}
 	}
 
@@ -253,6 +257,8 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			timeoutTimer.cancel();
 			timeoutTimer = null;
 		}
+		if(socketio != null)
+			socketio = null;
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NO_ERROR, null);
 		}
