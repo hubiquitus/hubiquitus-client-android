@@ -35,6 +35,7 @@ public class HTransportManager {
 					callback.onStatus(status, error, errorMsg + ". " + ErrorMsg.reconnIn5s);
 					try {
 						Thread.sleep(5000);
+						tryToConnectDisconnect();
 					} catch (InterruptedException e) {
 						logger.error("Message : " + e);
 					}
