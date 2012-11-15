@@ -28,19 +28,23 @@ function connect(){
         if(transports[i].checked)
             transport = transports[i].value;
 
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+
+   // var acb = function(username, cb){authCb(username, cb)};
     var hOptions = {
         transport: transport,
         endpoints: endpoints,
         timeout: 3000
     };
 
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
 
     window.plugins.hClient.onMessage = onMessage;
     window.plugins.hClient.onStatus = onStatus;
     window.plugins.hClient.connect(username, password, hOptions);
 }
+
+
 
 function disconnect(){
     window.plugins.hClient.disconnect();
@@ -210,7 +214,6 @@ function build_convstate(){
 
 function onStatus(hStatus){
     var status,error;
-
     switch(hStatus.status){
         case window.plugins.hClient.statuses.CONNECTED:
             status = 'Connected';
@@ -266,4 +269,11 @@ function callback(hMessage){
 
 function onMessage(hMessage){
     document.getElementById("hMessage").innerHTML = "Message : " + JSON.stringify(hMessage);
+}
+
+function authCb(username, cb){
+    console.log('authCb in JS called!');
+    // do something
+    var password = 'u1'
+    cb(username, password );
 }

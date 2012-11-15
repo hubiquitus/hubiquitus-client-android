@@ -45,7 +45,13 @@ define(
                 this.domain = jid[1];
 
                 return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [
-                    {publisher:publisher, password:password, options:options}
+                    {publisher:publisher, password:password, options:options, authCB:String(options.authCb) }
+                ]);
+            },
+            login:function(publisher, password){ //only used to log in with username and password after authentication callback
+
+                return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'login', [
+                    {publisher: publisher, password:password}
                 ]);
             },
             disconnect:function () {
