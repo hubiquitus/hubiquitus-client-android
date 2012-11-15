@@ -34,6 +34,8 @@ import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.hStructures.OperandNames;
+import org.hubiquitus.hapi.transport.socketio.ConnectedCallback;
+import org.hubiquitus.hapi.transport.socketio.HAuthCallback;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -41,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -159,9 +162,25 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		passwordEditText.setText("u1");
 		channelIDText.setText("#test@localhost");
 		gatewaysEditText.setText("http://10.0.2.2:8080");
+		
 		MessageEditText.setText("");		
 	}
-
+	
+	class ACB implements HAuthCallback{
+		
+		private String login;
+		private String password;
+		
+		public ACB(String l, String p){
+			this.login = l;
+			this.password = p;
+		}
+		@Override
+		public void authCb(String username, ConnectedCallback connectedCB) {
+			connectedCB.connect(login, password);
+		}
+		
+	}
 
 	public void initListenerBoutonConnection() {
 		OnClickListener listener = new OnClickListener()
@@ -184,6 +203,7 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 				options.setTimeout(3000);
 				options.setTransport(transport);
 				options.setEndpoints(endpoints);
+//				options.setAuthCB(new ACB(login, password));
 				client.connect(login, password, options);
 			}
 		};
@@ -286,10 +306,27 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 					message.setTimeout(timeout);
 				}
 				message.setPayload(payload);
-				client.send(message, outerClass);
+				try {
+					message = client.buildCommand("hnode@localhost", "hgetsubscriptions", null, null);
+				} catch (MissingAttrException e) {
+					e.printStackTrace();
+				}
+				message.setTimeout(3000);
+				client.send(message, new HMDelegate());
 			}
 		};
 		sendButton.setOnClickListener(listener);
+	}
+	
+	class HMDelegate implements HMessageDelegate{
+
+		@Override
+		public void onMessage(HMessage message) {
+			logger.info("-------HMDelegate -----");
+			Log.e("HMDelegate", message.toString());
+			
+		}
+		
 	}
 	
 	public void initListenerGetLastMessageButton() {
