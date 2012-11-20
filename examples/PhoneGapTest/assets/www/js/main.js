@@ -279,8 +279,7 @@ function onMessage(hMessage){
 }
 
 function authCb(username, cb){
-    console.log('authCb in JS called!');
     // do something
-    var password = 'u1'
+    var password = '******'
     cb(username, password );
 }

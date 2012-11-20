@@ -28,7 +28,7 @@
 
   <groupId>org.hubiquitus.android</groupId>
   <artifactId>hAPI-PhoneGapPlugin</artifactId>
-  <version>0.5.0</version>
+  <version>0.5.3</version>
   <!-- packaging>jar</packaging>
 
   <name>hAPI-PhoneGapPlugin</name>

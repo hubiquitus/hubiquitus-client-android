@@ -112,18 +112,18 @@ public class HTransportManager {
 		
 		if (hasConnectivity){
 			if(shouldConnect && connStatus != ConnectionStatus.CONNECTED && connStatus != ConnectionStatus.CONNECTING){
-			logger.debug(">> tryToConnectDisconnect : transport.connect ...");
-			connStatus = ConnectionStatus.CONNECTING;
-			transport.connect(innerCallback, options);
-		}else if(!shouldConnect && connStatus != ConnectionStatus.DISCONNECTED && connStatus != ConnectionStatus.DISCONNECTING){
-			logger.debug(">> tryToConnectDisconnect : transport.disconnect ...");
-			connStatus = ConnectionStatus.DISCONNECTING;
-			transport.disconnect();
-		}else if(shouldConnect && connStatus == ConnectionStatus.CONNECTED){
-			logger.debug(">> tryToConnectDisconnect : already connected, I do nothing...");
-		}else if(!shouldConnect && connStatus == ConnectionStatus.DISCONNECTED){
-			logger.debug(">> tryToConnectDisconnect : already disconnected, I do nothing...");
-		}
+				logger.debug(">> tryToConnectDisconnect : transport.connect ...");
+				connStatus = ConnectionStatus.CONNECTING;
+				transport.connect(innerCallback, options);
+			}else if(!shouldConnect && connStatus != ConnectionStatus.DISCONNECTED && connStatus != ConnectionStatus.DISCONNECTING){
+				logger.debug(">> tryToConnectDisconnect : transport.disconnect ...");
+				connStatus = ConnectionStatus.DISCONNECTING;
+				transport.disconnect();
+			}else if(shouldConnect && connStatus == ConnectionStatus.CONNECTED){
+				logger.debug(">> tryToConnectDisconnect : already connected, I do nothing...");
+			}else if(!shouldConnect && connStatus == ConnectionStatus.DISCONNECTED){
+				logger.debug(">> tryToConnectDisconnect : already disconnected, I do nothing...");
+			}
 		}else{
 			innerCallback.onStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, ErrorMsg.noConnectivity);
 		}
