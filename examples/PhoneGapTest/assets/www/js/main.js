@@ -42,7 +42,7 @@ function connect(){
         transport: transport,
         endpoints: endpoints,
         timeout: 3000,
-        authCB:acb
+        authCb:acb
     };
 
 
@@ -281,5 +281,5 @@ function onMessage(hMessage){
 function authCb(username, cb){
     // do something
     var password = '******'
-    cb(username, password );
+    cb(username, 'u1' );
 }
