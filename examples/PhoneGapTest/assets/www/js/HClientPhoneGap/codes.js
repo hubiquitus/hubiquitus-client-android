@@ -41,7 +41,6 @@ define(
             JID_MALFORMAT: 1,
             CONN_TIMEOUT: 2,
             AUTH_FAILED: 3,
-            ATTACH_FAILED: 4,
             ALREADY_CONNECTED: 5,
             TECH_ERROR : 6,
             NOT_CONNECTED : 7,
