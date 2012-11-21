@@ -36,7 +36,6 @@ public enum ConnectionError {
 	JID_MALFORMAT(1),
 	CONN_TIMEOUT(2),
 	AUTH_FAILED(3),
-	ATTACH_FAILED(4),
 	ALREADY_CONNECTED(5),
 	TECH_ERROR(6),
 	NOT_CONNECTED(7),
@@ -62,7 +61,12 @@ public enum ConnectionError {
 	 */
 	public static ConnectionError constant(int value) {
 		ConnectionError [] _values = ConnectionError.values();
-		return _values[value];
+		ConnectionError _value = ConnectionError.NO_ERROR;
+		for (int i = 0; i < _values.length; i++) {
+			if(_values[i].value == value)
+				_value = _values[i];
+		}
+		return _value;
 	}
 	
 }

@@ -249,9 +249,6 @@ function onStatus(hStatus){
         case window.plugins.hClient.errors.AUTH_FAILED:
             error = 'Authentication failed';
             break;
-        case window.plugins.hClient.errors.ATTACH_FAILED:
-            error = 'Attach failed';
-            break;
         case window.plugins.hClient.errors.ALREADY_CONNECTED:
             error = 'A connection is already opened';
             break;
