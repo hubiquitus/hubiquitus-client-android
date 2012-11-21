@@ -104,10 +104,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		try {
 			jsonObj = data.getJSONObject(0);
 			
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			
@@ -133,20 +130,9 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		try {
 			jsonObj = data.getJSONObject(0);
 			
-			try {
-				actor = jsonObj.getString("actor");
-			} catch (Exception e) {
-			}
-			
-			try {
-				nbLastMsg = jsonObj.getInt("nbLastMsg");
-			} catch (Exception e) {
-			}
-			
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+			actor = jsonObj.getString("actor");
+			nbLastMsg = jsonObj.getInt("nbLastMsg");
+			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			
@@ -175,15 +161,9 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
-			try {
-				actor = jsonObj.getString("actor");
-			} catch (Exception e) {
-			}
-			
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+				
+			actor = jsonObj.getString("actor");
+			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			
@@ -209,17 +189,10 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		HMessage msg = null;
 		try {
 			jsonObj = data.getJSONObject(0);
-			try {
-				jsonMsg = jsonObj.getJSONObject("hmessage");
-			} catch (Exception e) {
-			}
+			jsonMsg = jsonObj.getJSONObject("hmessage");
 			
 			msg = new HMessage(jsonMsg);
-			
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			//set the callback
@@ -244,15 +217,8 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		try {
 			jsonObj = data.getJSONObject(0);
 			
-			try {
-				actor = jsonObj.getString("actor");
-			} catch (Exception e) {
-			}
-			
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+			actor = jsonObj.getString("actor");
+			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			
@@ -279,20 +245,9 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		try {
 			jsonObj = data.getJSONObject(0);
 			
-			try {
-				actor = jsonObj.getString("actor");
-			} catch (Exception e) {
-			}
-			
-			try {
-				convid = jsonObj.getString("convid");
-			} catch (Exception e) {
-			}
-			
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+			actor = jsonObj.getString("actor");
+			convid = jsonObj.getString("convid");
+			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			
@@ -319,20 +274,9 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		try {
 			jsonObj = data.getJSONObject(0);
 			
-			try {
-				actor = jsonObj.getString("actor");
-			} catch (Exception e) {
-			}
-			
-			try {
-				convState = jsonObj.getString("convState");
-			} catch (Exception e) {
-			}
-			
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+			actor = jsonObj.getString("actor");
+			convState = jsonObj.getString("convState");
+			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			
@@ -357,14 +301,8 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
-			try {
-				actor = jsonObj.getString("actor");
-			} catch (Exception e) {
-			}
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+			actor = jsonObj.getString("actor");
+			jsonCallback = jsonObj.getString("callback");
 			final String msgCallback = jsonCallback;
 			//set the callback
 			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
@@ -386,14 +324,8 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
-			try {
-				filter = new HCondition(jsonObj.getJSONObject("filter"));
-			} catch (Exception e) {
-			}
-			try {
-				jsonCallback = jsonObj.getString("callback");
-			} catch (Exception e) {
-			}
+			filter = new HCondition(jsonObj.getJSONObject("filter"));
+			jsonCallback = jsonObj.getString("callback");
 			final String msgCallback = jsonCallback;
 			//set the callback
 			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
