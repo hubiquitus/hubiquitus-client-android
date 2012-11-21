@@ -18,147 +18,222 @@
  */
 
 //Make it compatible with node and web browser
-if (typeof define !== 'function') { var define = require('amdefine')(module) }
+if (typeof define !== 'function') {
+    var define = require('amdefine')(module)
+}
+
 
 define(
-		['./codes'],
-		function(codes){
+    ['./codes'],
+    function (codes) {
 
-			/**
-			 * Creates a new client that manages a connection and connects to the
-			 * hNode Server.
-			 */
-			var HClient = function(){
-				this._connectionStatus = codes.statuses.DISCONNECTED; //update by phonegap plugin
-			};
+        /**
+         * Creates a new client that manages a connection and connects to the
+         * hNode Server.
+         */
+        var HClient = function () {
+            this._connectionStatus = codes.statuses.DISCONNECTED; //update by phonegap plugin
+        };
 
-			HClient.prototype = {
-					connect : function(publisher, password, options){
-						this.publisher = publisher;
-						this.options = options;
-						
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [{publisher: publisher, password: password, options:options}]);
-					},
-					disconnect : function(){
-						this.publisher = null;
-						return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'disconnect', []);
-					},
-					
+        HClient.prototype = {
+            connect:function (publisher, password, options) {
+                this.publisher = publisher;
+                this.options = options;
 
-					command: function(cmd, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'command', [{hcommand: cmd, callback: String(callback)}]);
-					},
+                //get domain
+                var jid = this.splitJID(publisher);
+                this.domain = jid[1];
 
-					subscribe : function(channel, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'subscribe', [{chid: channel, callback: String(callback)}]);
-					},
+                return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [
+                    {publisher:publisher, password:password, options:options}
+                ]);
+            },
+            disconnect:function () {
+                this.publisher = null;
+                return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'disconnect', []);
+            },
 
-					unsubscribe : function(channel, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'unsubscribe', [{chid: channel, callback: String(callback)}]);
-					},
+            subscribe:function (actor, callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'subscribe', [
+                    {actor:actor, callback:String(callback)}
+                ]);
+            },
 
-					publish : function(hmessage, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'publish', [{hmessage: hmessage, callback: String(callback)}]);
-					},
+            unsubscribe:function (actor, callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'unsubscribe', [
+                    {actor:actor, callback:String(callback)}
+                ]);
+            },
 
-					getSubscriptions: function(callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getSubscriptions', [{callback: String(callback)}]);
-					},
+            send:function (hmessage, callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'send', [
+                    {hmessage:hmessage, callback:String(callback)}
+                ]);
+            },
 
-					getLastMessages: function(chid, nbLastMsg, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getLastMessages', [{chid: chid, nbLastMsg: quantity, callback: String(callback)}]);
-					},
-					
-					getLastMessages: function(chid, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getLastMessages', [{chid: chid, nbLastMsg: -1, callback: String(callback)}]);
-					},
-					
-					getThread: function(chid, convid, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThread', [{chid: chid, convid: convid, callback: String(callback)}]);
-					},
-					
-					getThreads: function(chid, convState, callback){
-						cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThreads', [{chid: chid, convState: convState, callback: String(callback)}]);
-					},
+            getSubscriptions:function (callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getSubscriptions', [
+                    {callback:String(callback)}
+                ]);
+            },
 
-					buildMessage: function(chid, type, payload, options){
-		                options = options || {};
+            getLastMessages:function (actor, nbLastMsg, callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getLastMessages', [
+                    {actor:actor, nbLastMsg:nbLastMsg, callback:String(callback)}
+                ]);
+            },
 
-		                if(!chid)
-		                    throw new Error('missing chid');
+            getThread:function (actor, convid, callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThread', [
+                    {actor:actor, convid:convid, callback:String(callback)}
+                ]);
+            },
 
-		                return {
-		                    chid: chid,
-		                    convid: options.convid,
-		                    type: type,
-		                    priority: options.priority,
-		                    relevance: options.relevance,
-		                    transient: options.transient,
-		                    location: options.location,
-		                    author: options.author,
-		                    published: options.published,
-		                    headers: options.headers,
-		                    payload: payload
-		                };
-		            },
+            getThreads:function (actor, convState, callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThreads', [
+                    {actor:actor, convState:convState, callback:String(callback)}
+                ]);
+            },
 
-		            buildMeasure: function(chid, value, unit, options){
-		                if(!value)
-		                    throw new Error('missing value');
-		                else if (!unit)
-		                    throw new Error('missing unit');
+            getRelevantMessage:function (actor, callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getRelevantMessage', [
+                    {actor:actor, callback:String(callback)}
+                ]);
+            },
 
-		                return this.buildMessage(chid, 'hMeasure', {unit: unit, value: value}, options);
-		            },
+            setFilter:function (filter, callback) {
+                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'setFilter', [
+                    {filter:filter, callback:String(callback)}
+                ]);
+            },
 
-		            buildAlert: function(chid, alert, options){
-		                if(!alert)
-		                    throw new Error('missing alert');
+            buildMessage:function (actor, type, payload, options) {
+                options = options || {};
 
-		                return this.buildMessage(chid, 'hAlert', {alert: alert}, options);
-		            },
+                if (!actor)
+                    throw new Error('missing actor');
 
-		            buildAck: function(chid, ackid, ack, options){
-		                if(!ackid)
-		                    throw new Error('missing ackid');
-		                else if(!ack)
-		                    throw new Error('missing ack');
-		                else if(!/recv|read/i.test(ack))
-		                    throw new Error('ack does not match "recv" or "read"');
+                if (!options.relevanceOffset)
+                    return {
+                        actor:actor,
+                        convid:options.convid,
+                        type:type,
+                        priority:options.priority,
+                        ref:options.ref,
+                        relevance:options.relevance,
+                        persistent:options.persistent,
+                        location:options.location,
+                        author:options.author,
+                        published:options.published,
+                        headers:options.headers,
+                        timeout:options.timeout,
+                        payload:payload
+                    };
+                else{
+                    var x=new Date();
+                    var y=x.getTime()+ parseFloat(options.relevanceOffset);
+                    return{
+                        actor:actor,
+                        convid:options.convid,
+                        type:type,
+                        priority:options.priority,
+                        ref:options.ref,
+                        relevance:(new Date(y)),
+                        persistent:options.persistent,
+                        location:options.location,
+                        author:options.author,
+                        published:options.published,
+                        headers:options.headers,
+                        timeout:options.timeout,
+                        payload:payload
+                    };
+                }
 
-		                return this.buildMessage(chid, 'hAck', {ackid: ackid, ack: ack}, options);
-		            },
-		            
-		            buildConvState: function(chid, convid, status, options){
-		                if(!convid)
-		                    throw new Error('missing convid');
-		                else if(!status)
-		                    throw new Error('missing status');
-		                if(!options)
-		                    options = {};
+            },
 
-		                options.convid = convid;
+            buildMeasure:function (actor, value, unit, options) {
+                if (!value)
+                    throw new Error('missing value');
+                else if (!unit)
+                    throw new Error('missing unit');
 
-		                return this.buildMessage(chid, 'hConvState', {status: status}, options);
-		            },
-		            
-		            checkJID: function(jid){
-		                return new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$").test(jid);
-		            },
+                return this.buildMessage(actor, 'hMeasure', {unit:unit, value:value}, options);
+            },
 
-		            splitJID: function(jid){
-		                return jid.match(new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$")).splice(1, 3);
-		            },
+            buildAlert:function (actor, alert, options) {
+                if (!alert)
+                    throw new Error('missing alert');
 
-					errors: codes.errors,
-					statuses: codes.statuses,
-					hResultStatus: codes.hResultStatus
-			};
+                return this.buildMessage(actor, 'hAlert', {alert:alert}, options);
+            },
 
+            buildAck:function (actor, ref, ack, options) {
+                if (!ref)
+                    throw new Error('missing ref');
+                else if (!ack)
+                    throw new Error('missing ack');
+                else if (!/recv|read/i.test(ack))
+                    throw new Error('ack does not match "recv" or "read"');
+                if (!options)
+                    options = {};
+                options.ref = ref;
 
-			cordova.addConstructor(function() {
-				hClient = new HClient();
-				cordova.addPlugin("hClient", hClient);
-			});
-		}
-);
+                return this.buildMessage(actor, 'hAck', {ack:ack}, options);
+            },
+
+            buildConvState:function (actor, convid, status, options) {
+                if (!convid)
+                    throw new Error('missing convid');
+                else if (!status)
+                    throw new Error('missing status');
+                if (!options)
+                    options = {};
+
+                options.convid = convid;
+
+                return this.buildMessage(actor, 'hConvState', {status:status}, options);
+            },
+
+            buildCommand:function (actor, cmd, params, options) {
+                if (!actor)
+                    throw new Error('missing actor');
+                else if (!cmd)
+                    throw new Error('missing cmd');
+
+                return this.buildMessage(actor, 'hCommand', {cmd:cmd, params:params}, options);
+            },
+
+            buildResult:function (actor, ref, status, result, options) {
+                if (!actor)
+                    throw new Error('missing actor');
+                else if (!ref)
+                    throw new Error('missing ref');
+                else if (status == null)
+                    throw new Error('missing status');
+                if (!options)
+                    options = {};
+                options.ref = ref;
+                return this.buildMessage(actor, 'hResult', {status:status, result:result}, options);
+            },
+
+            checkJID:function (jid) {
+                return new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$").test(jid);
+            },
+
+            splitJID:function (jid) {
+                return jid.match(new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$")).splice(1, 3);
+            },
+
+            errors:codes.errors,
+            statuses:codes.statuses,
+            hResultStatus:codes.hResultStatus
+        };
+
+        cordova.addConstructor(function () {
+            if (!window.plugins) {
+                window.plugins = {};
+            }
+            window.plugins.hClient = new HClient();
+        });
+    }
+)

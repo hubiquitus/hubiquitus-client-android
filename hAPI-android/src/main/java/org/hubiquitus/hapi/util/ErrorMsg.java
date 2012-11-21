@@ -23,46 +23,21 @@
  *    If not, see <http://opensource.org/licenses/mit-license.php>.
  */
 
-package org.hubiquitus.hapi.hStructures;
+package org.hubiquitus.hapi.util;
 
-/**
- * @version 0.5
- * Enumeration of different status of connection take by the client.
- * For more information see Hubiquitus reference
- */
 
-public enum ConnectionStatus {
-	CONNECTING(1),
-	CONNECTED(2),
-	DISCONNECTING(5),
-	DISCONNECTED(6);
-	
-	private int value;
-	
-	private ConnectionStatus(int value) {
-		this.value = value;
-	}
-	
-	/**
-	 * @return int equivalent.
-	 */
-	public int value() {
-		return value;
-	}
-	
-	/**
-	 * Get constant for value
-	 * @param value
-	 * @return
-	 */
-	public static ConnectionStatus constant(int value) {
-		ConnectionStatus [] _values = ConnectionStatus.values();
-		ConnectionStatus _value = ConnectionStatus.DISCONNECTED;
-		for (int i = 0; i < _values.length; i++) {
-			if(_values[i].value == value){
-				_value = _values[i];
-			}
-		}
-		return _value;
-	}
+public class ErrorMsg {
+	public final static String noConnectivity = "No connectivity! Please check your network connection.";
+	public final static String alreadyDisconn = "Already disconnected!";
+	public final static String alreadyConn = "Already connected!";
+	public final static String disconnWhileDisconnecting = "Can not disconnect while a disconnection is in progress!";
+	public final static String disconnWhileConnecting = "Can not disconnect while a connection is in progress!";
+	public final static String connWhileConnecting = "Can not connect while a connection is in progress!";
+	public final static String reconnIn5s = "Try to reconnect in 5s";
+	public final static String notConn = "Not connected.";
+	public final static String nullMessage = "Provided message is null";
+	public final static String missingActor = "Actor is missing.";
+	public final static String missingConvid = "Convid is missing.";
+	public final static String missingStatus = "Status is missing.";
+	public final static String timeout = "The response of message is time out!";
 }

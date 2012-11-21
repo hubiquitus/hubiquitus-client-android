@@ -1,20 +1,26 @@
 /*
  * Copyright (c) Novedia Group 2012.
  *
- *     This file is part of Hubiquitus.
+ *    This file is part of Hubiquitus
  *
- *     Hubiquitus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy
+ *    of this software and associated documentation files (the "Software"), to deal
+ *    in the Software without restriction, including without limitation the rights
+ *    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ *    of the Software, and to permit persons to whom the Software is furnished to do so,
+ *    subject to the following conditions:
  *
- *     Hubiquitus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *    The above copyright notice and this permission notice shall be included in all copies
+ *    or substantial portions of the Software.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ *    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ *    FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ *    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *    You should have received a copy of the MIT License along with Hubiquitus.
+ *    If not, see <http://opensource.org/licenses/mit-license.php>.
  */
 
 package org.hubiquitus.hapi.client;
@@ -43,8 +49,10 @@ import org.hubiquitus.hapi.hStructures.ResultStatus;
 import org.hubiquitus.hapi.structures.JabberID;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
+import org.hubiquitus.hapi.transport.HTransportManager;
 import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketio;
+import org.hubiquitus.hapi.util.ErrorMsg;
 import org.hubiquitus.hapi.util.HUtil;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -52,6 +60,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import android.util.Log;
 
 /**
  * @version 0.5 Hubiquitus client, public API
@@ -68,7 +78,8 @@ public class HClient {
 	@SuppressWarnings("unused")
 	private HOptions options = null;
 	private HTransportOptions transportOptions = null;
-	private HTransport transport;
+	//private HTransport transport;
+	private HTransportManager transportManager = new HTransportManager();
 
 	private HStatusDelegate statusDelegate = null;
 	private HMessageDelegate messageDelegate = null;
@@ -81,6 +92,7 @@ public class HClient {
 
     public HClient() {
 		transportOptions = new HTransportOptions();
+		
 	}
 
 
@@ -128,17 +140,14 @@ public class HClient {
 
 			// choose transport layer
 			if (options.getTransport().equals("socketio")) {
-				/*
-				 * if (this.transport != null) { //check if other transport mode
-				 * connect this.transport.disconnect(); }
-				 */
-				if (this.transport == null || (this.transport.getClass() != HTransportSocketio.class)) {
-					this.transport = new HTransportSocketio();
-				}
-				this.transport.connect(transportDelegate, this.transportOptions);
+				this.transportManager.setTransport(new HTransportSocketio());
 			} else {
-				// for the future transports.
+			// for the future transports.
 			}
+			//set the callback and transport options in transport manager.
+			this.transportManager.setCallback(transportDelegate);
+			this.transportManager.setOptions(transportOptions);
+			this.transportManager.connect();
 		} else {
 			if (connInProgress) {
 				notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, null);
@@ -167,14 +176,14 @@ public class HClient {
 				connectInProgress = true;
 			}
 		}
-
 		if (shouldDisconnect) {
 			notifyStatus(ConnectionStatus.DISCONNECTING, ConnectionError.NO_ERROR, null);
-			transport.disconnect();
+			transportManager.disconnect();
 		} else if (connectInProgress) {
-			notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, "Can't disconnect while a connection is in progress");
+			notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.CONN_PROGRESS, ErrorMsg.disconnWhileConnecting);
 		} else {
 			notifyStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NOT_CONNECTED, null);
+			transportManager.disconnect();
 		}
 
 	}
@@ -215,15 +224,15 @@ public class HClient {
 	 */
 	public void send(final HMessage message, final HMessageDelegate messageDelegate) {
 		if (this.connectionStatus != ConnectionStatus.CONNECTED) {
-			notifyResultError(message.getMsgid(), ResultStatus.NOT_CONNECTED, "Not conncected.", messageDelegate);
+			notifyResultError(message.getMsgid(), ResultStatus.NOT_CONNECTED, ErrorMsg.notConn, messageDelegate);
 			return;
 		}
 		if (message == null) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Provided message is null", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.nullMessage, messageDelegate);
 			return;
 		}
 		if (message.getActor() == null) {
-			notifyResultError(message.getMsgid(), ResultStatus.MISSING_ATTR, "Actor not found in message", messageDelegate);
+			notifyResultError(message.getMsgid(), ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
 		message.setSent(new DateTime());
@@ -240,7 +249,7 @@ public class HClient {
 
 					@Override
 					public void run() {
-						notifyResultError(message.getMsgid(), ResultStatus.EXEC_TIMEOUT, "The response of message is time out!", null);
+						notifyResultError(message.getMsgid(), ResultStatus.EXEC_TIMEOUT, ErrorMsg.timeout, null);
 						messagesDelegates.remove(message.getMsgid());
 					}
 				}, message.getTimeout());
@@ -251,7 +260,7 @@ public class HClient {
 			}
 		}
 		try {
-			transport.sendObject(message);
+			transportManager.sendObject(message);
 		} catch (Exception e) {
 			logger.error("message: ", e);
 		}
@@ -366,12 +375,12 @@ public class HClient {
 
 		// check mandatory fields
 		if (actor == null || actor.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Actor is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
 
 		if (convid == null || convid.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Convid is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingConvid, messageDelegate);
 			return;
 		}
 
@@ -402,12 +411,12 @@ public class HClient {
 		JSONObject params = new JSONObject();
 		// check mandatory fields
 		if (actor == null || actor.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Actor is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
 
 		if (status == null || status.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "Status is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingStatus, messageDelegate);
 			return;
 		}
 
@@ -435,7 +444,7 @@ public class HClient {
 		}
 		// check mandatory fields
 		if (actor == null || actor.length() <= 0) {
-			notifyResultError(null, ResultStatus.MISSING_ATTR, "actor is missing", messageDelegate);
+			notifyResultError(null, ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
 
@@ -774,6 +783,7 @@ public class HClient {
 
 		this.transportOptions.setJid(jid);
 		this.transportOptions.setPassword(password);
+		this.transportOptions.setAuthCB(options.getAuthCB());
 
 		// by default we user server host rather than publish host if defined
 
@@ -847,20 +857,22 @@ public class HClient {
          */
         private void notifyMessage(final HMessage message, HMessageDelegate messageDelegate) {
             MyRunnable arun = new MyRunnable();
-
+            String apiRef = HUtil.getApiRef(message.getRef());
             // 1 we search the delegate with the ref if any
             if (!this.messagesDelegates.isEmpty() && message.getRef() != null && this.messagesDelegates.containsKey(HUtil.getApiRef(message.getRef()))) {
-                if (this.timeoutHashtable.containsKey(HUtil.getApiRef(message.getRef()))) {
-                    Timer timeout = timeoutHashtable.get(HUtil.getApiRef(message.getRef()));
+                if (this.timeoutHashtable.containsKey(apiRef)) {
+                    Timer timeout = timeoutHashtable.get(apiRef);
+                    timeoutHashtable.remove(apiRef);
                     if (timeout != null) {
                         timeout.cancel();
                     }
                 }
                 arun.delegate2Use = this.messagesDelegates.get(HUtil.getApiRef(message.getRef()));
+                messagesDelegates.remove(apiRef);
             }
             // 2 - if the ref can not provide a delegate, we try the parameter sent
-            if (messageDelegate != null) {
-                arun.delegate2Use = messageDelegate;
+            else if (messageDelegate != null) {
+            	arun.delegate2Use = messageDelegate;
             } else {
                 // in other cases we try the default delegate message
                 arun.delegate2Use = this.messageDelegate;

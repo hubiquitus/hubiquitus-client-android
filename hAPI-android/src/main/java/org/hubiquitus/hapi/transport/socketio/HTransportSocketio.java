@@ -1,20 +1,26 @@
 /*
  * Copyright (c) Novedia Group 2012.
  *
- *     This file is part of Hubiquitus.
+ *    This file is part of Hubiquitus
  *
- *     Hubiquitus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy
+ *    of this software and associated documentation files (the "Software"), to deal
+ *    in the Software without restriction, including without limitation the rights
+ *    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ *    of the Software, and to permit persons to whom the Software is furnished to do so,
+ *    subject to the following conditions:
  *
- *     Hubiquitus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *    The above copyright notice and this permission notice shall be included in all copies
+ *    or substantial portions of the Software.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ *    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ *    FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ *    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *    You should have received a copy of the MIT License along with Hubiquitus.
+ *    If not, see <http://opensource.org/licenses/mit-license.php>.
  */
 
 package org.hubiquitus.hapi.transport.socketio;
@@ -30,7 +36,6 @@ import java.util.TimerTask;
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HStatus;
-import org.hubiquitus.hapi.transport.CheckConnectivity;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions;
@@ -41,11 +46,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @cond internal
- * @version 0.5
- * HTransportSocketIO is the socketio transport layer of the hubiquitus hAPI client
+ * @version 0.5 HTransportSocketIO is the socketio transport layer of the
+ *          hubiquitus hAPI client
  */
 
-public class HTransportSocketio extends CheckConnectivity implements HTransport, IOCallback {
+public class HTransportSocketio implements HTransport, IOCallback {
 
 	final Logger logger = LoggerFactory.getLogger(HTransportSocketio.class);
 	private HTransportDelegate callback = null;
@@ -53,61 +58,55 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 	private SocketIO socketio = null;
 	private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
 	private Timer timeoutTimer = null;
-	private Timer autoReconnectTimer = new Timer();
-	private ReconnectTask autoReconnectTask = null;
-	
-	private class ReconnectTask extends TimerTask{
+	private HAuthCallback authCB = null;
+	private ConnectedCallbackClass connectedCB = new ConnectedCallbackClass();
+	private boolean shouldConnect = false;
 
-		@Override
-		public void run() {
-			try {
-				connect(callback, options);
-			} catch (Exception e) {
-				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
-			}
-			
-		}
-		
-	}
-	
 	public HTransportSocketio() {
-	};	
-	
+	};
+
 	/**
 	 * connect to a socket io hnode gateway
-	 * @param callback - see HTransportCallback for more informations
-	 * @param options - transport options
+	 * 
+	 * @param callback
+	 *            - see HTransportCallback for more informations
+	 * @param options
+	 *            - transport options
 	 */
-	public void connect(HTransportDelegate callback, HTransportOptions options){
+	public void connect(HTransportDelegate callback, HTransportOptions options) {
+		shouldConnect = true;
 		this.connectionStatus = ConnectionStatus.CONNECTING;
-		
+
 		this.callback = callback;
 		this.options = options;
-		
+
+		authCB = options.getAuthCB();
+
 		String endpointHost = options.getEndpointHost();
 		int endpointPort = options.getEndpointPort();
 		String endpointPath = options.getEndpointPath();
-		
+
 		String endpointAdress = toEndpointAdress(endpointHost, endpointPort, endpointPath);
-		//add a timer to make sure it doesn't go over timeout
+		// add a timer to make sure it doesn't go over timeout
 		timeoutTimer = new Timer();
-		//set timer task to add a connection timeout
-	    timeoutTimer.schedule(new TimerTask() {
-			
+		// set timer task to add a connection timeout
+		timeoutTimer.schedule(new TimerTask() {
+
 			@Override
 			public void run() {
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.CONN_TIMEOUT, null);
-				if(socketio.isConnected()) {
+				if (socketio != null && socketio.isConnected()) {
 					socketio.disconnect();
 				}
-				
+
 				socketio = null;
 			}
 		}, 30000);
-		
-		//init socketio component
+
+		// init socketio component
 		try {
 			socketio = new SocketIO();
+			socketio.connect(endpointAdress, this);
 		} catch (Exception e) {
 			if (timeoutTimer != null) {
 				timeoutTimer.cancel();
@@ -116,24 +115,17 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 			socketio = null;
 		}
-		
-		//connect
-		try {
-			socketio.connect(endpointAdress, this);
-		} catch (Exception e) {
-			if (timeoutTimer != null) {
-				timeoutTimer.cancel();
-				timeoutTimer = null;
-			}
-			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
-		}
 	}
-	
+
 	/**
 	 * change current status and notify delegate through callback
-	 * @param status - connection status
-	 * @param error - error code
-	 * @param errorMsg - a low level description of the error
+	 * 
+	 * @param status
+	 *            - connection status
+	 * @param error
+	 *            - error code
+	 * @param errorMsg
+	 *            - a low level description of the error
 	 */
 	public void updateStatus(ConnectionStatus status, ConnectionError error, String errorMsg) {
 		this.connectionStatus = status;
@@ -145,25 +137,24 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 	}
 
 	/**
-	 * Disconnect from server 
+	 * Disconnect from server
 	 */
 	public void disconnect() {
+		shouldConnect = false;
 		this.connectionStatus = ConnectionStatus.DISCONNECTING;
-		if(autoReconnectTask != null){
-			autoReconnectTask.cancel();
-			autoReconnectTask = null;
-		}
+
 		try {
 			socketio.disconnect();
 		} catch (Exception e) {
 		}
-		
+
 	}
-	
+
 	/* helper functions */
-	
+
 	/**
-	 * make an endpoint adress from endpoints components (ie http://host:port/path)
+	 * make an endpoint adress from endpoints components (ie
+	 * http://host:port/path)
 	 */
 	public String toEndpointAdress(String endpointHost, int endpointPort, String endpointPath) {
 		String endpointAdress = "";
@@ -171,43 +162,42 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 		if (endpointHost != null) {
 			endpointAdress += endpointHost;
 		}
-		
+
 		if (endpointPort != 0) {
 			endpointAdress += ":" + endpointPort;
 		}
-		
-		//endpointAdress += "/";
-		
-		if(endpointPath != null) {
+
+		if (endpointPath != null) {
 			endpointAdress += endpointPath;
 		}
-		
+
 		return endpointAdress;
 	}
 
 	public void sendObject(JSONObject object) {
-		if( connectionStatus == ConnectionStatus.CONNECTED) {
-			socketio.emit("hMessage",object);
+		if (connectionStatus == ConnectionStatus.CONNECTED) {
+			socketio.emit("hMessage", object);
 		} else {
 			logger.warn("message: Not connected");
-		}		
+		}
 	}
-	
-	/* Socket io  delegate callback*/
+
+	/* Socket io delegate callback */
 	public void on(String type, IOAcknowledge arg1, Object... arg2) {
-		//switch for type
+		// switch for type
 		if (type.equalsIgnoreCase("hStatus") && arg2 != null && arg2[0].getClass() == JSONObject.class) {
-			JSONObject data = (JSONObject)arg2[0];
+			JSONObject data = (JSONObject) arg2[0];
 			try {
 				HStatus status = new HStatus(data);
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
 				}
-				updateStatus(status.getStatus(), status.getErrorCode(), status.getErrorMsg());
+				updateStatus(status.getStatus(), status.getErrorCode(),
+						status.getErrorMsg());
 			} catch (Exception e) {
-				e.printStackTrace();
-				
+				logger.error("message: ", e);
+
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
 					timeoutTimer = null;
@@ -215,8 +205,8 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 				socketio.disconnect();
 				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 			}
-		} else if (type.equalsIgnoreCase("hMessage") && arg2 != null && arg2[0].getClass() == JSONObject.class){
-			JSONObject data = (JSONObject)arg2[0];
+		} else if (type.equalsIgnoreCase("hMessage") && arg2 != null && arg2[0].getClass() == JSONObject.class) {
+			JSONObject data = (JSONObject) arg2[0];
 			try {
 				if (timeoutTimer != null) {
 					timeoutTimer.cancel();
@@ -231,29 +221,40 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 			}
 		}
 	}
-	
+
+	private class ConnectedCallbackClass implements ConnectedCallback {
+		@Override
+		public void connect(String username, String password) {
+			// prepare data to be sent
+			JSONObject data = new JSONObject();
+			try {
+				data.put("publisher", username);
+				data.put("password", password);
+				data.put("sent", DateTime.now());
+				// send the event
+				socketio.emit("hConnect", data);
+			} catch (Exception e) {
+				if (socketio != null) {
+					socketio.disconnect();
+				}
+				if (timeoutTimer != null) {
+					timeoutTimer.cancel();
+					timeoutTimer = null;
+				}
+				updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
+			}
+		}
+
+	}
+
 	public void onConnect() {
-		//try to log in once connected
-		String publisher = options.getJid().getFullJID();
-		String password = options.getPassword();
-		
-		//prepare data to be sent
-		JSONObject data = new JSONObject();
-		try {
-			data.put("publisher", publisher);
-			data.put("password", password);
-            data.put("sent", DateTime.now());
-			//send the event
-			socketio.emit("hConnect", data);
-		} catch (Exception e) {
-			if(socketio != null) {
-				socketio.disconnect();
+		if(shouldConnect){
+			if(authCB != null){
+				authCB.authCb(options.getJid().getFullJID(), connectedCB);
 			}
-			if (timeoutTimer != null) {
-				timeoutTimer.cancel();
-				timeoutTimer = null;
+			else{
+				connectedCB.connect(options.getJid().getFullJID(), options.getPassword());
 			}
-			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, e.getMessage());
 		}
 	}
 
@@ -262,15 +263,18 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 			timeoutTimer.cancel();
 			timeoutTimer = null;
 		}
+		if(socketio != null)
+			socketio = null;
 		if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
-//			while(socketio.isConnected()) {
-//				socketio.disconnect();
-//			}
 			updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.NO_ERROR, null);
 		}
 	}
 
 	public void onError(SocketIOException arg0) {
+		if (timeoutTimer != null) {
+			timeoutTimer.cancel();
+			timeoutTimer = null;
+		}
 		if (socketio != null && socketio.isConnected()) {
 			socketio.disconnect();
 		}
@@ -279,20 +283,12 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 		if (arg0 != null) {
 			errorMsg = arg0.getMessage();
 		}
-		if (timeoutTimer != null) {
-			timeoutTimer.cancel();
-			timeoutTimer = null;
-		}
 		updateStatus(ConnectionStatus.DISCONNECTED, ConnectionError.TECH_ERROR, errorMsg);
-		if(hasConnectivity)
-			this.reconnect();
 	}
-
 
 	public void onMessage(String arg0, IOAcknowledge arg1) {
 		logger.info("socketio" + arg0);
 	}
-
 
 	public void onMessage(JSONObject arg0, IOAcknowledge arg1) {
 		logger.info("socketio" + arg0.toString());
@@ -303,18 +299,7 @@ public class HTransportSocketio extends CheckConnectivity implements HTransport,
 				+ options + ", socketio=" + socketio + ", connectionStatus="
 				+ connectionStatus + ", timeoutTimer=" + timeoutTimer + "]";
 	}
-	
-	/**
-	 * Called in onError. try to reconnect in 5s. if socketio can't connect, it will be called every 5s. 
-	 */
-	public void reconnect(){
-		updateStatus(connectionStatus, ConnectionError.NOT_CONNECTED, "Lost connection, try to reconnect in 5 s");
-		if(autoReconnectTask != null){
-			autoReconnectTask.cancel();
-		}
-		autoReconnectTask = new ReconnectTask();
-		autoReconnectTimer.schedule(autoReconnectTask, 5000);
-	}	
+
 }
 
 /**

@@ -1,20 +1,26 @@
 /*
  * Copyright (c) Novedia Group 2012.
  *
- *     This file is part of Hubiquitus.
+ *    This file is part of Hubiquitus
  *
- *     Hubiquitus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy
+ *    of this software and associated documentation files (the "Software"), to deal
+ *    in the Software without restriction, including without limitation the rights
+ *    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ *    of the Software, and to permit persons to whom the Software is furnished to do so,
+ *    subject to the following conditions:
  *
- *     Hubiquitus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *    The above copyright notice and this permission notice shall be included in all copies
+ *    or substantial portions of the Software.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ *    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ *    FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ *    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *    You should have received a copy of the MIT License along with Hubiquitus.
+ *    If not, see <http://opensource.org/licenses/mit-license.php>.
  */
 
 
@@ -28,19 +34,24 @@ function connect(){
         if(transports[i].checked)
             transport = transports[i].value;
 
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+
+    var acb = function(username, cb){authCb(username, cb)};
     var hOptions = {
         transport: transport,
         endpoints: endpoints,
-        timeout: 3000
+        timeout: 3000,
+        authCb:acb
     };
 
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
 
     window.plugins.hClient.onMessage = onMessage;
     window.plugins.hClient.onStatus = onStatus;
     window.plugins.hClient.connect(username, password, hOptions);
 }
+
+
 
 function disconnect(){
     window.plugins.hClient.disconnect();
@@ -210,7 +221,6 @@ function build_convstate(){
 
 function onStatus(hStatus){
     var status,error;
-
     switch(hStatus.status){
         case window.plugins.hClient.statuses.CONNECTED:
             status = 'Connected';
@@ -266,4 +276,10 @@ function callback(hMessage){
 
 function onMessage(hMessage){
     document.getElementById("hMessage").innerHTML = "Message : " + JSON.stringify(hMessage);
+}
+
+function authCb(username, cb){
+    // do something
+    var password = '******'
+    cb(username, 'u1' );
 }

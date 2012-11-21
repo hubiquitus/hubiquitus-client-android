@@ -23,46 +23,8 @@
  *    If not, see <http://opensource.org/licenses/mit-license.php>.
  */
 
-package org.hubiquitus.hapi.hStructures;
+package org.hubiquitus.hapi.transport.socketio;
 
-/**
- * @version 0.5
- * Enumeration of different status of connection take by the client.
- * For more information see Hubiquitus reference
- */
-
-public enum ConnectionStatus {
-	CONNECTING(1),
-	CONNECTED(2),
-	DISCONNECTING(5),
-	DISCONNECTED(6);
-	
-	private int value;
-	
-	private ConnectionStatus(int value) {
-		this.value = value;
-	}
-	
-	/**
-	 * @return int equivalent.
-	 */
-	public int value() {
-		return value;
-	}
-	
-	/**
-	 * Get constant for value
-	 * @param value
-	 * @return
-	 */
-	public static ConnectionStatus constant(int value) {
-		ConnectionStatus [] _values = ConnectionStatus.values();
-		ConnectionStatus _value = ConnectionStatus.DISCONNECTED;
-		for (int i = 0; i < _values.length; i++) {
-			if(_values[i].value == value){
-				_value = _values[i];
-			}
-		}
-		return _value;
-	}
+public interface ConnectedCallback {
+	public void connect(String username, String password);
 }

@@ -1,20 +1,26 @@
 /*
  * Copyright (c) Novedia Group 2012.
  *
- *     This file is part of Hubiquitus.
+ *    This file is part of Hubiquitus
  *
- *     Hubiquitus is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as sended by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy
+ *    of this software and associated documentation files (the "Software"), to deal
+ *    in the Software without restriction, including without limitation the rights
+ *    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ *    of the Software, and to permit persons to whom the Software is furnished to do so,
+ *    subject to the following conditions:
  *
- *     Hubiquitus is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *    The above copyright notice and this permission notice shall be included in all copies
+ *    or substantial portions of the Software.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with Hubiquitus.  If not, see <http://www.gnu.org/licenses/>.
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ *    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ *    FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ *    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *    You should have received a copy of the MIT License along with Hubiquitus.
+ *    If not, see <http://opensource.org/licenses/mit-license.php>.
  */
 package org.hubiquitus.hapi.phonegap;
 
@@ -27,6 +33,8 @@ import org.hubiquitus.hapi.hStructures.HCondition;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
+import org.hubiquitus.hapi.transport.socketio.ConnectedCallback;
+import org.hubiquitus.hapi.transport.socketio.HAuthCallback;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -40,6 +48,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 
 	final Logger logger = LoggerFactory.getLogger(HClientPhoneGapPlugin.class);
 	private HClient hclient = null;
+	private ConnectedCallback connectCb = null;
 	
 	/**
 	 * Receive actions from phonegap and dispatch them to the corresponding function
@@ -73,9 +82,11 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		} else if(action.equalsIgnoreCase("getthreads")) {
 			this.getThreads(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("getrelevantmessage")) {
-			this.getRelecantMessage(action, data, callbackid);
+			this.getRelevantMessage(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("setfilter")) {
 			this.setFilter(action, data, callbackid);
+		}else if(action.equalsIgnoreCase("login")){
+			this.login(action, data, callbackid);
 		}
 		
 		return null;
@@ -340,7 +351,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 * @param data
 	 * @param callbackid
 	 */
-	public void getRelecantMessage(String action, JSONArray data, String callbackid){
+	public void getRelevantMessage(String action, JSONArray data, String callbackid){
 		JSONObject jsonObj = null;
 		String actor = null;
 		String jsonCallback = null;
@@ -386,7 +397,6 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			final String msgCallback = jsonCallback;
 			//set the callback
 			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
-			logger.info("----> setFilter called with filter = " + filter);
 			hclient.setFilter(filter, messageDelegate);
 		} catch (Exception e) {
 			logger.error("message: ",e);
@@ -411,25 +421,83 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 * @param callbackid
 	 */
 	public void connect(String action, JSONArray data, String callbackid) {
+		
 		String publisher = null;
 		String password = null;
 		HOptions options = null;
+		String jsonAuthCB = null;
 		try {
 			//get vars
 			JSONObject jsonObj = data.getJSONObject(0); 
 			publisher = jsonObj.getString("publisher");
 			password = jsonObj.getString("password");
 			JSONObject jsonOptions = (JSONObject) jsonObj.get("options");
+			jsonAuthCB = jsonObj.getString("authCB");
 			options = new HOptions(jsonOptions);
 		} catch (Exception e) {
 			logger.error("message: ",e);
 		}
+		if(!"undefined".equalsIgnoreCase(jsonAuthCB)&&jsonAuthCB!= null){
+			options.setAuthCB(new AuthCb(jsonAuthCB, publisher));
+		}
 		
 		//set callback
 		hclient.connect(publisher, password, options);
-		//hclient.connect(publisher, password, this, new HOptions());
+	}
+	
+	class AuthCb implements HAuthCallback{
+		private String authCbName;
+		private String publisher;
+		
+		public AuthCb(String authCbName, String publisher){
+			this.authCbName = authCbName;
+			this.publisher = "'"+publisher+"'";
+		}
+		
+		@Override
+		public void authCb(String arg0, ConnectedCallback arg1) {
+			notifyJsCallback("var tmpcallback = " + authCbName + "; tmpcallback", publisher, "window.plugins.hClient.login" );		
+			connectCb = arg1;
+		}
+	}
+	
+	public void login(String action, JSONArray data, String callbackid){
+		String jid = null;
+		String password = null;
+		try {
+			JSONObject json = data.getJSONObject(0);
+			jid = json.getString("publisher");
+			password = json.getString("password");
+			if(connectCb != null){
+				connectCb.connect(jid, password);
+			}
+		} catch (Exception e) {
+			logger.error("message: ",e);
+		}
 	}
 
+	/**
+	 * Helper function, that will call a jsCallback with an argument (model used in hapi);
+	 * @param callback
+	 * @param arg0
+	 * @param arg1
+	 */
+	private void notifyJsCallback(final String jsCallback, final String arg0, final String arg1) {
+		if (jsCallback != null && jsCallback.length() > 0) {
+			
+			//do callback on main thread
+			this.webView.post(new Runnable() {
+
+				public void run() {
+					//send callback through javascript
+					String jsCallbackFct = jsCallback + "(" + arg0 + ", " + arg1 + ");";
+					logger.debug("HClientPhoneGapPlugiin::jsCallback: " + jsCallbackFct);
+					sendJavascript(jsCallbackFct);
+				}
+			});	
+		}
+	}
+	
 	/**
 	 * Helper function, that will call a jsCallback with an argument (model used in hapi);
 	 * @param callback
@@ -444,6 +512,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 				public void run() {
 					//send callback through javascript
 					String jsCallbackFct = jsCallback + "(" + arg + ");";
+					logger.debug("HClientPhoneGapPlugiin::jsCallback: " + jsCallbackFct);
 					sendJavascript(jsCallbackFct);
 				}
 			});	
@@ -469,6 +538,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	
 	@Override
 	public void onStatus(HStatus status) {
+		logger.debug("HClientPhoneGapPlugiin::onStatus: " + status);
 		notifyJsUpdateConnState(status);
 		notifyJsCallback("window.plugins.hClient.onStatus", status.toString());
 	}
@@ -496,7 +566,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		
 		@Override
 		public void onMessage(HMessage message) {
-			logger.info("---oM ---> " + message + "--->" + msgCallback);
+			logger.debug("HClientPhoneGapPlugiin::onMessage: " + message);
 			notifyJsCallback("var tmpcallback = " + this.msgCallback + "; tmpcallback", message.toString());	
 		}
 		
