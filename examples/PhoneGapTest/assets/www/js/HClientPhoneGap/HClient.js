@@ -39,6 +39,8 @@ define(
          */
         var HClient = function () {
             this._connectionStatus = codes.statuses.DISCONNECTED; //update by phonegap plugin
+            this.fullJid = null;
+            this.resource = null;
         };
 
         HClient.prototype = {
@@ -49,16 +51,6 @@ define(
                 //get domain
                 var jid = this.splitJID(publisher);
                 this.domain = jid[1];
-                this.resource = jid[2];
-                if(this.resource == null || this.resource=='')
-                {
-                    this.fullJid = jid[0] + '@' + this.domain;
-                }
-                else
-                {
-                    this.fullJid = jid[0] + '@' + this.domain + '/' + this.resource;
-                }
-
 
                 return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [
                     {publisher:publisher, password:password, options:options, authCB:String(options.authCb) }

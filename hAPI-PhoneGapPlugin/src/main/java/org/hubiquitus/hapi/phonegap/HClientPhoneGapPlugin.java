@@ -29,6 +29,7 @@ import org.apache.cordova.api.PluginResult;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
+import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HCondition;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HOptions;
@@ -49,6 +50,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	final Logger logger = LoggerFactory.getLogger(HClientPhoneGapPlugin.class);
 	private HClient hclient = null;
 	private ConnectedCallback connectCb = null;
+	private boolean isFullJidSet = false;
 	
 	/**
 	 * Receive actions from phonegap and dispatch them to the corresponding function
@@ -342,6 +344,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 * @param callbackid
 	 */
 	public void disconnect(String action, JSONArray data, String callbackid) {
+		isFullJidSet = false;
 		hclient.disconnect();
 	}
 	
@@ -468,9 +471,25 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		}
 	}
 	
+	private void setFullJidAndResource(){
+		if(!isFullJidSet){
+			this.webView.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					sendJavascript("window.plugins.hClient.fullJid=" +"'"+ hclient.getFullJid()+"'");
+					sendJavascript("window.plugins.hClient.resource=" + "'"+hclient.getResource()+"'");
+					isFullJidSet = true;
+				}
+			});
+		}
+	}
+	
 	@Override
 	public void onStatus(HStatus status) {
 		logger.debug("HClientPhoneGapPlugiin::onStatus: " + status);
+		if(status.getStatus() == ConnectionStatus.CONNECTED)
+			setFullJidAndResource();
 		notifyJsUpdateConnState(status);
 		notifyJsCallback("window.plugins.hClient.onStatus", status.toString());
 	}
