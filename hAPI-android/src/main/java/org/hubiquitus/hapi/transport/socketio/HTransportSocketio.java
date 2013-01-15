@@ -244,6 +244,9 @@ public class HTransportSocketio implements HTransport, IOCallback {
 				data.put("login", username);
 				data.put("password", password);
 				data.put("sent", DateTime.now());
+				if(options.getContext()!=null){
+					data.put("context", options.getContext());
+				}
 				// send the event
 				socketio.emit("hConnect", data);
 			} catch (Exception e) {

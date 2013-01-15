@@ -114,9 +114,10 @@ public class HClient {
 	 * @param publisher : user jid (ie : my_user@domain/resource). Mandatory.
 	 * @param password : Mandatory.
 	 * @param options : Complementary values used for the connection to the server. Not mandatory.
+	 * @param context : Not mandatory.
 	 */
     @SuppressWarnings("unused")
-	public void connect(String publisher, String password, HOptions options) {
+	public void connect(String login, String password, HOptions options, JSONObject context) {
 		boolean shouldConnect = false;
 		boolean connInProgress = false;
 		boolean disconInProgress = false;
@@ -143,8 +144,8 @@ public class HClient {
 			this.notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.NO_ERROR, null);
 
 			// fill HTransportOptions
-			if(Pattern.matches(HUtil.URN_REGEX, publisher))
-				this.fillHTransportOptions(publisher, password, options);
+			if(Pattern.matches(HUtil.URN_REGEX, login))
+				this.fillHTransportOptions(login, password, options, context);
 			else {
 				// stop connecting if filling error
 				this.notifyStatus(ConnectionStatus.DISCONNECTED, ConnectionError.URN_MALFORMAT, null);
@@ -172,6 +173,18 @@ public class HClient {
 			}
 		}
 	}
+    
+    
+	/**
+	 * Establishes a connection to hNode to allow the reception and sending of messages and commands.
+	 * @param publisher : user jid (ie : my_user@domain/resource). Mandatory.
+	 * @param password : Mandatory.
+	 * @param options : Complementary values used for the connection to the server. Not mandatory.
+	 */
+    public void connect(String login, String password, HOptions options){
+    	this.connect(login, password, options, null);
+    }
+    
 
 	/**
 	 * Disconnect the user from the current working session.
@@ -307,11 +320,11 @@ public class HClient {
 	 * @throws MissingAttrException  raised if a mandatory attribute is not well provided
 	 */
     @SuppressWarnings("unused")
-	public void unsubscribe(String actor, HMessageDelegate messageDelegate) throws MissingAttrException {
+	public void unsubscribe(HMessageDelegate messageDelegate) throws MissingAttrException {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand(actor, "hUnsubscribe", null, null, null);
+		HMessage cmdMessage = buildCommand("session", "hUnsubscribe", null, null, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		send(cmdMessage, messageDelegate);
 	}
@@ -365,7 +378,7 @@ public class HClient {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand(transportOptions.getHserverService(), "hGetSubscriptions", null, null, null);
+		HMessage cmdMessage = buildCommand("session", "hGetSubscriptions", null, null, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		this.send(cmdMessage, messageDelegate);
 	}
@@ -788,16 +801,16 @@ public class HClient {
 
 	/**
 	 * fill htransport, randomly pick an endpoint from availables endpoints. By default it uses options server host to fill serverhost field and as fallback jid domain
-	 * @param publisher : publisher as jid format (my_user@serverhost.com/my_resource)
+	 * @param publisher : publisher as urn format (urn:localhost:username)
 	 * @param password the password to open the a session with the hnode
 	 * @param options options to open a session
-	 * @throws Exception : in case jid is malformatted, it throws an exception
 	 */
-	private void fillHTransportOptions(String publisher, String password, HOptions options) {
+	private void fillHTransportOptions(String publisher, String password, HOptions options, JSONObject context) {
 
 
 		this.transportOptions.setUrn(publisher);
 		this.transportOptions.setPassword(password);
+		this.transportOptions.setContext(context);
 		this.transportOptions.setAuthCB(options.getAuthCB());
 
 		// by default we user server host rather than publish host if defined
