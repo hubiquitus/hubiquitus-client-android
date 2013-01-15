@@ -108,5 +108,26 @@ public class HCommand extends JSONObject {
 			logger.warn("message: ", e);
 		}
 	}
+	
+	public HCondition getFilter(){
+		HCondition filter;
+		try {
+			filter = new HCondition(this.getJSONObject("filter"));
+		} catch (JSONException e) {
+			filter = null;
+		}
+		return filter;
+	}
 
+	public void setFilter(HCondition filter){
+		try {
+			if(filter == null){
+				this.remove("filter");
+			}else{
+				this.put("filter", filter);
+			}
+		} catch (JSONException e) {
+			logger.warn("Can not update attribute filter : ", e);
+		}
+	}
 }
