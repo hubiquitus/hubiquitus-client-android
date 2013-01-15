@@ -273,7 +273,6 @@ public class HClient {
 			}
 		}
 		try {
-			logger.debug("--send-- : " + message.toString());
 			transportManager.sendObject(message);
 		} catch (Exception e) {
 			logger.error("message: ", e);
@@ -294,7 +293,7 @@ public class HClient {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand(actor, "hsubscribe",null, null, null);
+		HMessage cmdMessage = buildCommand(actor, "hSubscribe",null, null, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		send(cmdMessage, messageDelegate);
 	}
@@ -312,7 +311,7 @@ public class HClient {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand(actor, "hunsubscribe", null, null, null);
+		HMessage cmdMessage = buildCommand(actor, "hUnsubscribe", null, null, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		send(cmdMessage, messageDelegate);
 	}
@@ -339,7 +338,7 @@ public class HClient {
 		} catch (JSONException e) {
 			logger.error("message: ", e);
 		}
-		HMessage cmdMessage = buildCommand(actor, "hgetlastmessages", params, filter, null);
+		HMessage cmdMessage = buildCommand(actor, "hGetLastMessages", params, filter, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		send(cmdMessage, messageDelegate);
 	}
@@ -366,7 +365,7 @@ public class HClient {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand(transportOptions.getHserverService(), "hgetsubscriptions", null, null, null);
+		HMessage cmdMessage = buildCommand(transportOptions.getHserverService(), "hGetSubscriptions", null, null, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		this.send(cmdMessage, messageDelegate);
 	}
@@ -385,7 +384,7 @@ public class HClient {
 			throw new MissingAttrException("messageDelegate");
 		}
 		JSONObject params = new JSONObject();
-		String cmdName = "hgetthread";
+		String cmdName = "hGetThread";
 
 		// check mandatory fields
 		if (actor == null || actor.length() <= 0) {
@@ -439,7 +438,7 @@ public class HClient {
 		} catch (JSONException e) {
 			logger.error("message: ", e);
 		}
-		HMessage cmdMessage = buildCommand(actor, "hgetthreads", params, filter, null);
+		HMessage cmdMessage = buildCommand(actor, "hGetThreads", params, filter, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		this.send(cmdMessage, messageDelegate);
 	}
