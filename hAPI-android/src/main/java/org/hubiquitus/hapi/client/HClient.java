@@ -29,6 +29,7 @@ import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.hubiquitus.hapi.exceptions.MissingAttrException;
 import org.hubiquitus.hapi.hStructures.ConnectionError;
@@ -46,8 +47,6 @@ import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HResult;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.hStructures.ResultStatus;
-import org.hubiquitus.hapi.structures.JabberID;
-import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportManager;
 import org.hubiquitus.hapi.transport.HTransportOptions;
@@ -60,8 +59,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import android.util.Log;
 
 /**
  * @version 0.5 Hubiquitus client, public API
@@ -90,8 +87,8 @@ public class HClient {
 
 	private TransportDelegate transportDelegate = new TransportDelegate();
 
-    public String getFullJid() {
-		return this.transportOptions.getJid().getFullJID();
+    public String getFullUrn() {
+		return this.transportOptions.getFullUrn();
 	}
 
 
@@ -141,11 +138,11 @@ public class HClient {
 			this.notifyStatus(ConnectionStatus.CONNECTING, ConnectionError.NO_ERROR, null);
 
 			// fill HTransportOptions
-			try {
+			if(Pattern.matches(HUtil.URN_REGEX, publisher))
 				this.fillHTransportOptions(publisher, password, options);
-			} catch (Exception e) {
+			else {
 				// stop connecting if filling error
-				this.notifyStatus(ConnectionStatus.DISCONNECTED, ConnectionError.JID_MALFORMAT, e.getMessage());
+				this.notifyStatus(ConnectionStatus.DISCONNECTED, ConnectionError.URN_MALFORMAT, null);
 				return;
 			}
 
@@ -247,7 +244,7 @@ public class HClient {
 			return;
 		}
 		message.setSent(new DateTime());
-		message.setPublisher(transportOptions.getJid().getBareJID());
+		message.setPublisher(transportOptions.getFullUrn());
 		if (message.getTimeout() > 0) {
 			// hAPI will do correlation. If no answer within the
 			// timeout, a timeout error will be sent.
@@ -520,8 +517,8 @@ public class HClient {
 			hmessage.setPublished(options.getPublished());
 			hmessage.setTimeout(options.getTimeout());
 		}
-		if (transportOptions != null && transportOptions.getJid() != null) {
-			hmessage.setPublisher(transportOptions.getJid().getBareJID());
+		if (transportOptions != null && transportOptions.getFullUrn() != null) {
+			hmessage.setPublisher(transportOptions.getFullUrn());
 		} else {
 			hmessage.setPublisher(null);
 		}
@@ -789,10 +786,10 @@ public class HClient {
 	 * @param options options to open a session
 	 * @throws Exception : in case jid is malformatted, it throws an exception
 	 */
-	private void fillHTransportOptions(String publisher, String password, HOptions options) throws Exception {
-		JabberID jid = new JabberID(publisher);
+	private void fillHTransportOptions(String publisher, String password, HOptions options) {
 
-		this.transportOptions.setJid(jid);
+
+		this.transportOptions.setUrn(publisher);
 		this.transportOptions.setPassword(password);
 		this.transportOptions.setAuthCB(options.getAuthCB());
 

@@ -36,7 +36,6 @@ import java.util.TimerTask;
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
 import org.hubiquitus.hapi.hStructures.HStatus;
-import org.hubiquitus.hapi.structures.JabberID;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions;
@@ -225,8 +224,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		}else if(type.equalsIgnoreCase("attrs") && arg2 != null && arg2[0].getClass() == JSONObject.class){
 			JSONObject data = (JSONObject)arg2[0];
 			try {
-				JabberID jid = new JabberID(data.getString("publisher"));
-				this.options.setJid(jid);
+				this.options.setFullUrn(data.getString("publisher"));
 				isFullJidSet = true;
 				if(connectionStatus != ConnectionStatus.CONNECTED){
 					updateStatus(ConnectionStatus.CONNECTED, ConnectionError.NO_ERROR, null);
@@ -243,7 +241,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			// prepare data to be sent
 			JSONObject data = new JSONObject();
 			try {
-				data.put("publisher", username);
+				data.put("login", username);
 				data.put("password", password);
 				data.put("sent", DateTime.now());
 				// send the event
@@ -265,10 +263,10 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	public void onConnect() {
 		if(shouldConnect){
 			if(authCB != null){
-				authCB.authCb(options.getJid().getFullJID(), connectedCB);
+				authCB.authCb(options.getUrn(), connectedCB);
 			}
 			else{
-				connectedCB.connect(options.getJid().getFullJID(), options.getPassword());
+				connectedCB.connect(options.getUrn(), options.getPassword());
 			}
 		}
 	}

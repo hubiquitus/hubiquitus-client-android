@@ -33,7 +33,7 @@ package org.hubiquitus.hapi.hStructures;
 
 public enum ConnectionError {
 	NO_ERROR(0),
-	JID_MALFORMAT(1),
+	URN_MALFORMAT(1),
 	CONN_TIMEOUT(2),
 	AUTH_FAILED(3),
 	ALREADY_CONNECTED(5),
