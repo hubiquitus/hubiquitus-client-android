@@ -232,7 +232,7 @@ public class HMessage extends JSONObject {
 			if (relevance == null) {
 				this.remove("relevance");
 			} else {
-				this.put("relevance", relevance);
+				this.put("relevance", relevance.getMillis());
 			}
 		} catch (JSONException e) {
 			logger.warn("message: ", e);
@@ -362,7 +362,7 @@ public class HMessage extends JSONObject {
 			if (published == null) {
 				this.remove("published");
 			} else {
-				this.put("published", published);
+				this.put("published", published.getMillis());
 			}
 		} catch (JSONException e) {
 			logger.warn("message: " , e);
@@ -800,7 +800,7 @@ public class HMessage extends JSONObject {
 			if (sent == null) {
 				this.remove("sent");
 			} else {
-				this.put("sent", sent);
+				this.put("sent", sent.getMillis());
 			}
 		} catch (JSONException e) {
 			logger.warn("message: ", e);

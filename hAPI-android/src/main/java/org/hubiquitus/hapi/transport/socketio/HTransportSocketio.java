@@ -243,7 +243,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			try {
 				data.put("login", username);
 				data.put("password", password);
-				data.put("sent", DateTime.now());
+				data.put("sent", DateTime.now().getMillis());
 				if(options.getContext()!=null){
 					data.put("context", options.getContext());
 				}
