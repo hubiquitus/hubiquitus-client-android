@@ -43,7 +43,7 @@ public class HCommand extends JSONObject {
 		super();
 	}
 
-	public HCommand(String cmd, JSONObject params){
+	public HCommand(String cmd, JSONObject params, HCondition filter){
 		this();
 		try {
 			setCmd(cmd);
@@ -51,6 +51,7 @@ public class HCommand extends JSONObject {
 			logger.error("message: ", e);
 		}
 		setParams(params);
+		setFilter(filter);
 	}
 
 	public HCommand(JSONObject jsonObj) throws JSONException {

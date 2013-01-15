@@ -75,6 +75,7 @@ public class HClient {
 	@SuppressWarnings("unused")
 	private HOptions options = null;
 	private HTransportOptions transportOptions = null;
+	private HCondition filter;
 	//private HTransport transport;
 	private HTransportManager transportManager = new HTransportManager();
 
@@ -100,7 +101,11 @@ public class HClient {
 
     public HClient() {
 		transportOptions = new HTransportOptions();
-		
+		try {
+			filter = new HCondition("{}");
+		} catch (JSONException e) {
+			logger.error("Can not init filter : ", e);
+		}
 	}
 
 
@@ -268,6 +273,7 @@ public class HClient {
 			}
 		}
 		try {
+			logger.debug("--send-- : " + message.toString());
 			transportManager.sendObject(message);
 		} catch (Exception e) {
 			logger.error("message: ", e);
@@ -288,7 +294,7 @@ public class HClient {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand(actor, "hsubscribe", null, null);
+		HMessage cmdMessage = buildCommand(actor, "hsubscribe",null, null, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		send(cmdMessage, messageDelegate);
 	}
@@ -306,7 +312,7 @@ public class HClient {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand(actor, "hunsubscribe", null, null);
+		HMessage cmdMessage = buildCommand(actor, "hunsubscribe", null, null, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		send(cmdMessage, messageDelegate);
 	}
@@ -333,7 +339,7 @@ public class HClient {
 		} catch (JSONException e) {
 			logger.error("message: ", e);
 		}
-		HMessage cmdMessage = buildCommand(actor, "hgetlastmessages", params, null);
+		HMessage cmdMessage = buildCommand(actor, "hgetlastmessages", params, filter, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		send(cmdMessage, messageDelegate);
 	}
@@ -360,7 +366,7 @@ public class HClient {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand(transportOptions.getHserverService(), "hgetsubscriptions", null, null);
+		HMessage cmdMessage = buildCommand(transportOptions.getHserverService(), "hgetsubscriptions", null, null, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		this.send(cmdMessage, messageDelegate);
 	}
@@ -398,7 +404,7 @@ public class HClient {
 			logger.error("message: ", e);
 		}
 
-		HMessage cmdMessage = this.buildCommand(actor, cmdName, params, null);
+		HMessage cmdMessage = this.buildCommand(actor, cmdName, params, filter, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		this.send(cmdMessage, messageDelegate);
 	}
@@ -433,7 +439,7 @@ public class HClient {
 		} catch (JSONException e) {
 			logger.error("message: ", e);
 		}
-		HMessage cmdMessage = buildCommand(actor, "hgetthreads", params, null);
+		HMessage cmdMessage = buildCommand(actor, "hgetthreads", params, filter, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		this.send(cmdMessage, messageDelegate);
 	}
@@ -456,7 +462,7 @@ public class HClient {
 			return;
 		}
 
-		HMessage cmdMessage = buildCommand(actor, "hRelevantMessages", null, null);
+		HMessage cmdMessage = buildCommand(actor, "hRelevantMessages", null, filter, null);
 		cmdMessage.setTimeout(options.getTimeout());
 		this.send(cmdMessage, messageDelegate);
 	}
@@ -472,7 +478,8 @@ public class HClient {
 		if(messageDelegate == null){
 			throw new MissingAttrException("messageDelegate");
 		}
-		HMessage cmdMessage = buildCommand("session", "hSetFilter", filter, null);
+		HMessage cmdMessage = buildCommand("session", "hSetFilter", filter, null, null);
+		this.filter = filter;
 		cmdMessage.setTimeout(options.getTimeout());
 		this.send(cmdMessage, messageDelegate);
 	}
@@ -652,11 +659,12 @@ public class HClient {
 	 * @param actor : The actor for the hMessage. Mandatory.
 	 * @param cmd : The name of the command. Mandatory.
 	 * @param params : Parameters of the command. Not mandatory.
+	 * @param filter : The filter on the session.
 	 * @param options : The options to use if any for the creation of the hMessage. Not mandatory.
 	 * @return A hMessage with a hCommand payload.
 	 * @throws MissingAttrException raised if a mandatory attribute is not well provided
 	 */
-	public HMessage buildCommand(String actor, String cmd, JSONObject params, HMessageOptions options) throws MissingAttrException {
+	public HMessage buildCommand(String actor, String cmd, JSONObject params,HCondition filter, HMessageOptions options) throws MissingAttrException {
 		// check for required attributes
 		if (actor == null || actor.length() <= 0) {
 			throw new MissingAttrException("actor");
@@ -667,7 +675,7 @@ public class HClient {
 			throw new MissingAttrException("cmd");
 		}
 
-		HCommand hcommand = new HCommand(cmd, params);
+		HCommand hcommand = new HCommand(cmd, params, filter);
 		return buildMessage(actor, "hCommand", hcommand, options);
 	}
 
