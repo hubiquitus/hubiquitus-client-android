@@ -25,6 +25,7 @@
 
 package org.hubiquitus.hapi.client;
 
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,7 +54,6 @@ import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.hubiquitus.hapi.transport.socketio.HTransportSocketio;
 import org.hubiquitus.hapi.util.ErrorMsg;
 import org.hubiquitus.hapi.util.HUtil;
-import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -261,7 +261,7 @@ public class HClient {
 			notifyResultError(message.getMsgid(), ResultStatus.MISSING_ATTR, ErrorMsg.missingActor, messageDelegate);
 			return;
 		}
-		message.setSent(new DateTime());
+		message.setSent(new Date());
 		message.setPublisher(transportOptions.getFullUrn());
 		if (message.getTimeout() > 0) {
 			// hAPI will do correlation. If no answer within the
@@ -525,7 +525,7 @@ public class HClient {
 			hmessage.setPriority(options.getPriority());
 			//override relevance if relevanceOffset is set.
 			if (options.getRelevanceOffset() != null) {
-				hmessage.setRelevance((new DateTime()).plusMillis(options.getRelevanceOffset()));
+				hmessage.setRelevance((new Date()).getTime() + options.getRelevanceOffset());
 			}else{
 				hmessage.setRelevance(options.getRelevance());
 			}

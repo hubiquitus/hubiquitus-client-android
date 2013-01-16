@@ -82,11 +82,7 @@
                 <scope>system</scope>
                 <systemPath>${basedir}/../external-libs/socketio.jar</systemPath>
         </dependency>
-	<dependency>
-		<groupId>joda-time</groupId>
-		<artifactId>joda-time</artifactId>
-		<version>2.1</version>
-	</dependency>
+	
 	<dependency>
 	<groupId>com.google.android</groupId>
 	<artifactId>android</artifactId>

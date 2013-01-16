@@ -30,6 +30,7 @@ import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,7 +40,6 @@ import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.transport.HTransport;
 import org.hubiquitus.hapi.transport.HTransportDelegate;
 import org.hubiquitus.hapi.transport.HTransportOptions;
-import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,7 +243,7 @@ public class HTransportSocketio implements HTransport, IOCallback {
 			try {
 				data.put("login", username);
 				data.put("password", password);
-				data.put("sent", DateTime.now().getMillis());
+				data.put("sent", (new Date()).getTime());
 				if(options.getContext()!=null){
 					data.put("context", options.getContext());
 				}

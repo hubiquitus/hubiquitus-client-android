@@ -25,13 +25,14 @@
 
 package org.hubiquitus.hapi.hStructures;
 
+import java.util.Date;
+
 import org.hubiquitus.hapi.exceptions.MissingAttrException;
-import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @version 0.5 
@@ -214,25 +215,47 @@ public class HMessage extends JSONObject {
 	}
 
 	/**
-	 * Date-time until which the message is considered as relevant.
+	 * Date until which the message is considered as relevant.
 	 * @return relevance. NULL if undefined
 	 */
-	public DateTime getRelevance() {
-		DateTime relevance;
+	public Date getRelevanceAsDate() {
+		Date relevance;
 		try {
-			relevance = (DateTime)this.get("relevance");
+			relevance = new Date(this.getLong("relevance"));
 		} catch (Exception e) {
 			relevance = null;
 		}
 		return relevance;
 	}
+	
+	public long getRelevance() {
+		long relevance;
+		try {
+			relevance = this.getLong("relevance");
+		} catch (Exception e) {
+			relevance = 0;
+		}
+		return relevance;
+	}
 
-	public void setRelevance(DateTime relevance) {
+	public void setRelevance(Date relevance) {
 		try {
 			if (relevance == null) {
 				this.remove("relevance");
 			} else {
-				this.put("relevance", relevance.getMillis());
+				this.put("relevance", relevance.getTime());
+			}
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+	
+	public void setRelevance(long relevance) {
+		try {
+			if (relevance == 0) {
+				this.remove("relevance");
+			} else {
+				this.put("relevance", relevance);
 			}
 		} catch (JSONException e) {
 			logger.warn("message: ", e);
@@ -347,22 +370,44 @@ public class HMessage extends JSONObject {
 	/**
 	 * @return published. NULL if undefined
 	 */
-	public DateTime getPublished() {
-		DateTime published;
+	public Date getPublishedAsDate() {
+		Date published;
 		try {
-			published = (DateTime) this.get("published");
+			published = new Date(this.getLong("published"));
 		} catch (JSONException e) {
 			published = null;
 		}
 		return published;
 	}
+	
+	public long getPublished() {
+		long published;
+		try {
+			published = this.getLong("published");
+		} catch (JSONException e) {
+			published = 0;
+		}
+		return published;
+	}
 
-	public void setPublished(DateTime published) {
+	public void setPublished(Date published) {
 		try {
 			if (published == null) {
 				this.remove("published");
 			} else {
-				this.put("published", published.getMillis());
+				this.put("published", published.getTime());
+			}
+		} catch (JSONException e) {
+			logger.warn("message: " , e);
+		}
+	}
+	
+	public void setPublished(long published) {
+		try {
+			if (published == 0) {
+				this.remove("published");
+			} else {
+				this.put("published", published);
 			}
 		} catch (JSONException e) {
 			logger.warn("message: " , e);
@@ -785,22 +830,44 @@ public class HMessage extends JSONObject {
 	/**
 	 * @return sent. Null if undefined.
 	 */
-	public DateTime getSent() {
-		DateTime sent;
+	public Date getSentAsDate() {
+		Date sent;
 		try {
-			sent = (DateTime) this.get("sent");
+			sent = new Date(this.getLong("sent"));
 		} catch (Exception e) {
 			sent = null;
 		}
 		return sent;
 	}
+	
+	public long getSent() {
+		long sent;
+		try {
+			sent = this.getLong("sent");
+		} catch (Exception e) {
+			sent = 0;
+		}
+		return sent;
+	}
 
-	public void setSent(DateTime sent){
+	public void setSent(Date sent){
 		try {
 			if (sent == null) {
 				this.remove("sent");
 			} else {
-				this.put("sent", sent.getMillis());
+				this.put("sent", sent.getTime());
+			}
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+	
+	public void setSent(long sent){
+		try {
+			if (sent == 0) {
+				this.remove("sent");
+			} else {
+				this.put("sent", sent);
 			}
 		} catch (JSONException e) {
 			logger.warn("message: ", e);

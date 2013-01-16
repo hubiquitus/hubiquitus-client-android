@@ -25,7 +25,6 @@
 
 package org.hubiquitus.hapi.hStructures;
 
-import org.joda.time.DateTime;
 import org.json.JSONObject;
 
 /**
@@ -38,13 +37,13 @@ public class HMessageOptions {
 	private String ref = null;
 	private String convid = null;
 	private HMessagePriority priority = null;
-	private DateTime relevance = null;
+	private long relevance = 0;
 	private Integer relevanceOffset = null;
 	private Boolean persistent = null;
 	private HLocation location = null;
 	private String author = null;
 	private JSONObject headers = null;
-	private DateTime published = null;
+	private long published = 0;
 	private Integer timeout = 0;
 	
 	/**
@@ -83,10 +82,10 @@ public class HMessageOptions {
 	 * Date-time until which the message is considered as relevant.
 	 * @return relevance. NULL if undefined
 	 */
-	public DateTime getRelevance() {
+	public long getRelevance() {
 		return relevance;
 	}
-	public void setRelevance(DateTime relevance) {
+	public void setRelevance(long relevance) {
 		this.relevance = relevance;
 	}
 	
@@ -150,10 +149,10 @@ public class HMessageOptions {
 	 * Date-time when the message is publish
 	 * @return relevance. NULL if undefined
 	 */
-	public DateTime getPublished() {
+	public long getPublished() {
 		return published;
 	}
-	public void setPublished(DateTime published) {
+	public void setPublished(long published) {
 		this.published = published;
 	}
 	
