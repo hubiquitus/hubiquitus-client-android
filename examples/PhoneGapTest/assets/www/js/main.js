@@ -41,8 +41,7 @@ function connect(){
     var hOptions = {
         transport: transport,
         endpoints: endpoints,
-        timeout: 3000,
-        authCb:acb
+        timeout: 3000
     };
 
 
@@ -110,7 +109,7 @@ function pub_convstate(){
 function set_filter(){
     var filter = {
         in:{
-            publisher:['u2@localhost']
+            publisher:['urn:localhost:u2']
         }
     };
     var cb = function(hMessage){callback(hMessage)}
@@ -224,6 +223,9 @@ function onStatus(hStatus){
     switch(hStatus.status){
         case window.plugins.hClient.statuses.CONNECTED:
             status = 'Connected';
+            console.log("fullUrn  :  " + window.plugins.hClient.fullUrn);
+            console.log("resource  :  " + window.plugins.hClient.resource);
+            console.log("domain  :  " + window.plugins.hClient.domain);
             break;
         case window.plugins.hClient.statuses.CONNECTING:
             status = 'Connecting';
@@ -240,8 +242,8 @@ function onStatus(hStatus){
         case window.plugins.hClient.errors.NO_ERROR:
             error = 'No Error Detected';
             break;
-        case window.plugins.hClient.errors.JID_MALFORMAT:
-            error = 'JID Malformat';
+        case window.plugins.hClient.errors.URN_MALFORMAT:
+            error = 'URN Malformat';
             break;
         case window.plugins.hClient.errors.CONN_TIMEOUT:
             error = 'Connection timed out';
@@ -278,5 +280,5 @@ function onMessage(hMessage){
 function authCb(username, cb){
     // do something
     var password = '******'
-    cb(username, 'u1' );
+    cb(username, password );
 }

@@ -43,6 +43,7 @@ import org.hubiquitus.hapi.hStructures.OperandNames;
 import org.hubiquitus.hapi.transport.socketio.ConnectedCallback;
 import org.hubiquitus.hapi.transport.socketio.HAuthCallback;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,9 +165,9 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		outputScroller = (ScrollView)findViewById(R.id.scrollview);
 		connectionStatusLabel = (TextView)findViewById(R.id.connectionStatusLabel);
 
-		loginEditText.setText("u1@localhost");
-		passwordEditText.setText("u1");
-		channelIDText.setText("#test@localhost");
+		loginEditText.setText("urn:localhost:u1");
+		passwordEditText.setText("urn:localhost:u1");
+		channelIDText.setText("urn:localhost:testChannel");
 		gatewaysEditText.setText("http://10.0.2.2:8080");
 		
 		MessageEditText.setText("");		
@@ -210,6 +211,14 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 				options.setTransport(transport);
 				options.setEndpoints(endpoints);
 //				options.setAuthCB(new ACB(login, password));
+				
+//				JSONObject context = new JSONObject();
+//				try {
+//					context.put("name", "sunchenliang");
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				client.connect(login, password, options);
 			}
 		};
@@ -265,7 +274,7 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
 				try {
-					client.unsubscribe(channelIDText.getText().toString(), outerClass);
+					client.unsubscribe(outerClass);
 				} catch (MissingAttrException e) {
 					logger.error("message: ",e);
 				}
@@ -275,7 +284,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 	}
 	
 	public void initListenerSendButton() {
-		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
 				JSONObject payload = new JSONObject();
@@ -313,7 +321,7 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 				}
 				message.setPayload(payload);
 				try {
-					message = client.buildCommand("hnode@localhost", "hgetsubscriptions", null, null);
+					message = client.buildCommand("hnode@localhost", "hgetsubscriptions", null,null, null);
 				} catch (MissingAttrException e) {
 					e.printStackTrace();
 				}
