@@ -162,14 +162,14 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
-				
+			String actor = jsonObj.getString("actor");
 			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			
 			//set the callback
 			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
-			hclient.unsubscribe(messageDelegate);
+			hclient.unsubscribe(actor,messageDelegate);
 		} catch (Exception e) {
 			logger.error("message: ",e);
 		} 

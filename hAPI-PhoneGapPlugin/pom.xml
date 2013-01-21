@@ -82,7 +82,7 @@
     <dependency>
      <groupId>org.hubiquitus.android</groupId>
   	 <artifactId>hAPI-android</artifactId>
- 	 <version>0.5.4</version>
+ 	 <version>0.6</version>
  	</dependency>
   </dependencies>
 </project>

@@ -319,11 +319,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 					message.setTimeout(timeout);
 				}
 				message.setPayload(payload);
-				try {
-					message = client.buildCommand("hnode@localhost", "hgetsubscriptions", null,null, null);
-				} catch (MissingAttrException e) {
-					e.printStackTrace();
-				}
 				message.setTimeout(3000);
 				client.send(message, new HMDelegate());
 			}

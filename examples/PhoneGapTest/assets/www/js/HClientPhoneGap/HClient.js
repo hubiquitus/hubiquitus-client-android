@@ -72,7 +72,7 @@ define(
 
             unsubscribe:function (actor, callback) {
                 cordova.exec(null, null, 'HClientPhoneGapPlugin', 'unsubscribe', [
-                    {callback:String(callback)}
+                    {actor:actor, callback:String(callback)}
                 ]);
             },
 
