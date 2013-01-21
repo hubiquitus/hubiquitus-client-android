@@ -280,5 +280,5 @@ function onMessage(hMessage){
 function authCb(username, cb){
     // do something
     var password = '******'
-    cb(username, password );
+    cb(username, password	 );
 }
