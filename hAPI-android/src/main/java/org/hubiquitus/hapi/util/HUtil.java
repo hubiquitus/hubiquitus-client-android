@@ -35,7 +35,7 @@ import org.json.JSONArray;
  */
 public class HUtil {
 
-	public static String URN_REGEX = "^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,\\-.:=@;$_!*']|%[0-9a-f]{2})+$";
+//	public static String URN_REGEX = "^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,\\-.:=@;$_!*']|%[0-9a-f]{2})+$";
 	
 	/**
 	 * Pick the index of a random element in a list

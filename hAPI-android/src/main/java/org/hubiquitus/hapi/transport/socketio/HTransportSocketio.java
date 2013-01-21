@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @cond internal
- * @version 0.5 HTransportSocketIO is the socketio transport layer of the
+ * @version 0.6 HTransportSocketIO is the socketio transport layer of the
  *          hubiquitus hAPI client
  */
 
@@ -266,10 +266,10 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	public void onConnect() {
 		if(shouldConnect){
 			if(authCB != null){
-				authCB.authCb(options.getUrn(), connectedCB);
+				authCB.authCb(options.getLogin(), connectedCB);
 			}
 			else{
-				connectedCB.connect(options.getUrn(), options.getPassword());
+				connectedCB.connect(options.getLogin(), options.getPassword());
 			}
 		}
 	}

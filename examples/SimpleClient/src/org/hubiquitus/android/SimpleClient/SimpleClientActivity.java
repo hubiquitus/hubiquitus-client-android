@@ -186,7 +186,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		public void authCb(String username, ConnectedCallback connectedCB) {
 			connectedCB.connect(login, password);
 		}
-		
 	}
 
 	public void initListenerBoutonConnection() {
@@ -274,7 +273,7 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
 				try {
-					client.unsubscribe(outerClass);
+					client.unsubscribe(channelIDText.getText().toString(), outerClass);
 				} catch (MissingAttrException e) {
 					logger.error("message: ",e);
 				}

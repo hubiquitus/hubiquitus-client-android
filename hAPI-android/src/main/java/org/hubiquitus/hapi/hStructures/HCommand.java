@@ -110,6 +110,18 @@ public class HCommand extends JSONObject {
 		}
 	}
 	
+	public void setParams(String params) {
+		try {
+			if (params == null) {
+				this.remove("params");
+			} else {
+				this.put("params", params);
+			}
+		} catch (JSONException e) {
+			logger.warn("message: ", e);
+		}
+	}
+	
 	public HCondition getFilter(){
 		HCondition filter;
 		try {
