@@ -28,7 +28,7 @@ package org.hubiquitus.hapi.hStructures;
 import org.json.JSONObject;
 
 /**
- * @version 0.5
+ * @version 0.6
  * hAPI MessageOption. For more info, see Hubiquitus reference
  */
 

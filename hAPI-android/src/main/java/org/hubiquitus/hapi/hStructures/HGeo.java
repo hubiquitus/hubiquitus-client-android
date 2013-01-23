@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *  @version v0.5
+ *  @version v0.6
  *  Specifies the exact longitude and latitude of the location
  */
 public class HGeo extends JSONObject {

@@ -31,7 +31,7 @@ import org.json.JSONArray;
 
 /**
  * @cond internal
- * @version 0.5 Contain some utils function
+ * @version 0.6 Contain some utils function
  */
 public class HUtil {
 

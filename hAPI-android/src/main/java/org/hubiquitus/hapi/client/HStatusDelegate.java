@@ -28,7 +28,7 @@ package org.hubiquitus.hapi.client;
 import org.hubiquitus.hapi.hStructures.HStatus;
 
 /**
- * @version 0.5
+ * @version 0.6
  * Delegate receiving connection status update events
  * Events are received asynchronously and threaded
  */

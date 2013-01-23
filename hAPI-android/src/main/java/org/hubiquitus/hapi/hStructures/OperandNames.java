@@ -25,7 +25,7 @@
 
 package org.hubiquitus.hapi.hStructures;
 /**
- * @version v0.5
+ * @version v0.6
  * Enumeration of available operand names for hCondition.
  */
 public enum OperandNames {

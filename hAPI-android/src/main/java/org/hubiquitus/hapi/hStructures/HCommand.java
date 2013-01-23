@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 /**
- * @version 0.5 
+ * @version 0.6 
  * hAPI Command. For more info, see Hubiquitus reference
  */
 

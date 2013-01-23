@@ -27,7 +27,7 @@
 package org.hubiquitus.hapi.hStructures;
 
 /**
- * @version 0.5
+ * @version 0.6
  * Enumeration of different message acknoledgements state.
  * For more information see Hubiquitus reference
  */

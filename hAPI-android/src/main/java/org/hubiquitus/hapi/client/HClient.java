@@ -60,7 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.5 Hubiquitus client, public API
+ * @version 0.6 Hubiquitus client, public API
  */
 
 public class HClient {

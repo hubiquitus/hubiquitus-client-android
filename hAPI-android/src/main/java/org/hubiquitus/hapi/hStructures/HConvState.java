@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.5 
+ * @version 0.6 
  * This kind of payload is used to describe the status of a thread of correlated messages identified by its convid. 
  * Multiple hConvStates with the same convid can be published into a channel, specifying the evolution of the state of the thread during time.
  */
