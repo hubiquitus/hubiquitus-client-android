@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @version v0.5
+ * @version v0.6
  * This structure defines a simple condition value for the available operand
  */
 public class HValue extends JSONObject {

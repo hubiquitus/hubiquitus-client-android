@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.5 
+ * @version 0.6 
  * hAPI allows to attach acknowledgements to each message.
  * Acknowledgements are used to identify the participants that have received or not received, read or not read a message Note, 
  * when a hMessage contains a such kind of payload, the convid must be provided with the same value has the acknowledged hMessage.

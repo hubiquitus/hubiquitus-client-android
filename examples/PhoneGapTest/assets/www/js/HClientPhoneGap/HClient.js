@@ -39,21 +39,18 @@ define(
          */
         var HClient = function () {
             this._connectionStatus = codes.statuses.DISCONNECTED; //update by phonegap plugin
-            this.fullJid = null;
+            this.fullUrn = null;
             this.resource = null;
+            this.domain = null;
         };
 
         HClient.prototype = {
-            connect:function (publisher, password, options) {
-                this.publisher = publisher;
+            connect:function (login, password, options) {
+                this.publisher = login;
                 this.options = options;
 
-                //get domain
-                var jid = this.splitJID(publisher);
-                this.domain = jid[1];
-
                 return cordova.exec(null, null, 'HClientPhoneGapPlugin', 'connect', [
-                    {publisher:publisher, password:password, options:options, authCB:String(options.authCb) }
+                    {publisher:login, password:password, options:options, authCB:String(options.authCb) }
                 ]);
             },
             login:function(publisher, password){ //only used to log in with username and password after authentication callback
@@ -152,7 +149,7 @@ define(
                         type:type,
                         priority:options.priority,
                         ref:options.ref,
-                        relevance:(new Date(y)),
+                        relevance:(new Date(y)).getTime(),
                         persistent:options.persistent,
                         location:options.location,
                         author:options.author,
@@ -208,13 +205,13 @@ define(
                 return this.buildMessage(actor, 'hConvState', {status:status}, options);
             },
 
-            buildCommand:function (actor, cmd, params, options) {
+            buildCommand:function (actor, cmd, params, filter, options) {
                 if (!actor)
                     throw new Error('missing actor');
                 else if (!cmd)
                     throw new Error('missing cmd');
 
-                return this.buildMessage(actor, 'hCommand', {cmd:cmd, params:params}, options);
+                return this.buildMessage(actor, 'hCommand', {cmd:cmd, params:params, filter:filter}, options);
             },
 
             buildResult:function (actor, ref, status, result, options) {
@@ -228,14 +225,6 @@ define(
                     options = {};
                 options.ref = ref;
                 return this.buildMessage(actor, 'hResult', {status:status, result:result}, options);
-            },
-
-            checkJID:function (jid) {
-                return new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$").test(jid);
-            },
-
-            splitJID:function (jid) {
-                return jid.match(new RegExp("^(?:([^@/<>'\"]+)@)([^@/<>'\"]+)(?:/([^/<>'\"]*))?$")).splice(1, 3);
             },
 
             errors:codes.errors,

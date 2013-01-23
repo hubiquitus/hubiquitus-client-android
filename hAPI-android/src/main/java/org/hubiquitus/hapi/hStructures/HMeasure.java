@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.5 
+ * @version 0.6 
  * Describes a measure payload
  */
 

@@ -26,14 +26,14 @@
 package org.hubiquitus.hapi.hStructures;
 
 /**
- * @version 0.5
+ * @version 0.6
  * Enumeration of different connection errors take by the client.
  * For more information see Hubiquitus reference
  */
 
 public enum ConnectionError {
 	NO_ERROR(0),
-	JID_MALFORMAT(1),
+	URN_MALFORMAT(1),
 	CONN_TIMEOUT(2),
 	AUTH_FAILED(3),
 	ALREADY_CONNECTED(5),
