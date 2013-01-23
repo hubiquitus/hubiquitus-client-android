@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @version 0.5 hAPI options. For more info, see Hubiquitus reference
+ * @version 0.6 hAPI options. For more info, see Hubiquitus reference
  */
 
 public class HOptions extends JSONObject {

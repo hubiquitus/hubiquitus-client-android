@@ -27,7 +27,7 @@
 package org.hubiquitus.hapi.exceptions;
 
 /**
- * @version 0.5
+ * @version 0.6
  * Exception to notify a missing attribute (used in builders and services with callback)
  */
 

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 /**
- * @version 0.5 
+ * @version 0.6 
  * hAPI Command. For more info, see Hubiquitus reference
  */
 
@@ -43,7 +43,7 @@ public class HCommand extends JSONObject {
 		super();
 	}
 
-	public HCommand(String cmd, JSONObject params){
+	public HCommand(String cmd, JSONObject params, HCondition filter){
 		this();
 		try {
 			setCmd(cmd);
@@ -51,6 +51,7 @@ public class HCommand extends JSONObject {
 			logger.error("message: ", e);
 		}
 		setParams(params);
+		setFilter(filter);
 	}
 
 	public HCommand(JSONObject jsonObj) throws JSONException {
@@ -108,5 +109,26 @@ public class HCommand extends JSONObject {
 			logger.warn("message: ", e);
 		}
 	}
+	
+	public HCondition getFilter(){
+		HCondition filter;
+		try {
+			filter = new HCondition(this.getJSONObject("filter"));
+		} catch (JSONException e) {
+			filter = null;
+		}
+		return filter;
+	}
 
+	public void setFilter(HCondition filter){
+		try {
+			if(filter == null){
+				this.remove("filter");
+			}else{
+				this.put("filter", filter);
+			}
+		} catch (JSONException e) {
+			logger.warn("Can not update attribute filter : ", e);
+		}
+	}
 }

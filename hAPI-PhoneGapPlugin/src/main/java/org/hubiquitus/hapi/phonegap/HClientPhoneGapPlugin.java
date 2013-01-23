@@ -159,19 +159,17 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	 */
 	public void unsubscribe(String action, JSONArray data, String callbackid) {
 		JSONObject jsonObj = null;
-		String actor = null;
 		String jsonCallback = null;
 		try {
 			jsonObj = data.getJSONObject(0);
-				
-			actor = jsonObj.getString("actor");
+			String actor = jsonObj.getString("actor");
 			jsonCallback = jsonObj.getString("callback");
 			
 			final String msgCallback = jsonCallback;
 			
 			//set the callback
 			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
-			hclient.unsubscribe(actor, messageDelegate);
+			hclient.unsubscribe(actor,messageDelegate);
 		} catch (Exception e) {
 			logger.error("message: ",e);
 		} 
@@ -471,14 +469,15 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 		}
 	}
 	
-	private void setFullJidAndResource(){
+	private void setFullUrnAndResource(){
 		if(!isFullJidSet){
 			this.webView.post(new Runnable() {
 				
 				@Override
 				public void run() {
-					sendJavascript("window.plugins.hClient.fullJid=" +"'"+ hclient.getFullJid()+"'");
+					sendJavascript("window.plugins.hClient.fullUrn=" +"'"+ hclient.getFullUrn()+"'");
 					sendJavascript("window.plugins.hClient.resource=" + "'"+hclient.getResource()+"'");
+					sendJavascript("window.plugins.hClient.domain=" + "'"+hclient.getFullUrn().split(":")[1]+"'");
 					isFullJidSet = true;
 				}
 			});
@@ -489,7 +488,7 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	public void onStatus(HStatus status) {
 		logger.debug("HClientPhoneGapPlugiin::onStatus: " + status);
 		if(status.getStatus() == ConnectionStatus.CONNECTED)
-			setFullJidAndResource();
+			setFullUrnAndResource();
 		notifyJsUpdateConnState(status);
 		notifyJsCallback("window.plugins.hClient.onStatus", status.toString());
 	}
