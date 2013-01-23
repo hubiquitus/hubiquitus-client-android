@@ -443,7 +443,8 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 				 HArrayOfValue values = new HArrayOfValue();
 				 values.setName("publisher");
 				 JSONArray jsonArray = new JSONArray();
-				 jsonArray.put("u1@localhost");
+				 jsonArray.put("urn:localhost:u1");
+				 jsonArray.put("urn:localhost:u2");
 				 values.setValues(jsonArray);
 				 filter.setValueArray(OperandNames.IN, values);
 				 try {
