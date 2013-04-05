@@ -51,7 +51,6 @@ public class HTransportManager {
 	
 	class TransportManagerDelegate implements HTransportDelegate{
 
-		@Override
 		public void onStatus(ConnectionStatus status, ConnectionError error,
 				String errorMsg) {
 			connStatus = status;
@@ -70,7 +69,6 @@ public class HTransportManager {
 			}
 		}
 
-		@Override
 		public void onData(String type, JSONObject jsonData) {
 			callback.onData(type, jsonData);
 		}

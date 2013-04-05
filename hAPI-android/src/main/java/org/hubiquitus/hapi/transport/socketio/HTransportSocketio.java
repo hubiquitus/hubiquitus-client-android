@@ -30,9 +30,14 @@ import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.net.ssl.SSLContext;
 
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
@@ -64,10 +69,18 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	private boolean isFullJidSet = false;
 
 	public HTransportSocketio() {
+		SSLContext sslContext;
+		try {
+			sslContext = SSLContext.getInstance("TLS", "HarmonyJSSE");
+			sslContext.init(null, null, null);
+			SocketIO.setDefaultSSLSocketFactory(sslContext);
+		} catch (Exception e) {
+			logger.error("Error while setting ssl context : " + e.getMessage(), e);
+		}
 	};
 
 	/**
-	 * connect to a socket io hnode gateway
+	 * connect to a socket io gateway
 	 * 
 	 * @param callback
 	 *            - see HTransportCallback for more informations
@@ -82,12 +95,8 @@ public class HTransportSocketio implements HTransport, IOCallback {
 		this.options = options;
 
 		authCB = options.getAuthCB();
-
-		String endpointHost = options.getEndpointHost();
-		int endpointPort = options.getEndpointPort();
-		String endpointPath = options.getEndpointPath();
-
-		String endpointAdress = toEndpointAdress(endpointHost, endpointPort, endpointPath);
+		
+		String endpointAdress = options.getEndpoint();
 		// add a timer to make sure it doesn't go over timeout
 		timeoutTimer = new Timer();
 		// set timer task to add a connection timeout
@@ -154,28 +163,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 
 	/* helper functions */
 
-	/**
-	 * make an endpoint adress from endpoints components (ie
-	 * http://host:port/path)
-	 */
-	public String toEndpointAdress(String endpointHost, int endpointPort, String endpointPath) {
-		String endpointAdress = "";
-		endpointAdress += "http://";
-		if (endpointHost != null) {
-			endpointAdress += endpointHost;
-		}
-
-		if (endpointPort != 0) {
-			endpointAdress += ":" + endpointPort;
-		}
-
-		if (endpointPath != null) {
-			endpointAdress += endpointPath;
-		}
-
-		return endpointAdress;
-	}
-
 	public void sendObject(JSONObject object) {
 		if (connectionStatus == ConnectionStatus.CONNECTED) {
 			socketio.emit("hMessage", object);
@@ -236,7 +223,6 @@ public class HTransportSocketio implements HTransport, IOCallback {
 	}
 
 	private class ConnectedCallbackClass implements ConnectedCallback {
-		@Override
 		public void connect(String username, String password) {
 			// prepare data to be sent
 			JSONObject data = new JSONObject();
