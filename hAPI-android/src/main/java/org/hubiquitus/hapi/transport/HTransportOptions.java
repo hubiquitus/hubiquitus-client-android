@@ -40,10 +40,7 @@ public class HTransportOptions {
 	private String domain = null;
 	private String resource = null;
 	private String password = null;
-	private String endpointHost = null;
-	private int endpointPort = 0;
-	private String endpointPath = null;
-	private String hserver = "hnode";
+	private String endpoint = null;
 	private HAuthCallback authCB = null;
 	private JSONObject context = null;
 	
@@ -118,50 +115,18 @@ public class HTransportOptions {
 
 
 
-	/**
-	 * @return endpoint host (ie : localhost)
-	 */
-	public String getEndpointHost() {
-		return endpointHost;
-	}
-
-
-	public void setEndpointHost(String endpointHost) {
-		this.endpointHost = endpointHost;
-	}
-	
-	/** 
-	 * @return endpoint port (ie : 8080)
-	 */
-	public int getEndpointPort() {
-		return endpointPort;
-	}
-
-
-	public void setEndpointPort(int endpointPort) {
-		this.endpointPort = endpointPort;
-	}
 
 	/**
 	 * @return endpoint path (ie my_path) without begin /
 	 */
-	public String getEndpointPath() {
-		return endpointPath;
+	public String getEndpoint() {
+		return endpoint;
 	}
 
 
-	public void setEndpointPath(String endpointPath) {
-		this.endpointPath = endpointPath;
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
 	}
-
-	public String getHserver() {
-		return hserver;
-	}
-
-	public void setHserver(String hserver) {
-		this.hserver = hserver;
-	}
-	
 
 	public HAuthCallback getAuthCB() {
 		return authCB;
