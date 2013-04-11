@@ -75,16 +75,8 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			this.unsubscribe(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("send")) {
 			this.send(action, data, callbackid);
-		} else if(action.equalsIgnoreCase("getlastmessages")) {
-			this.getLastMessages(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("getsubscriptions")) {
 			this.getSubscriptions(action, data, callbackid);
-		} else if(action.equalsIgnoreCase("getthread")) {
-			this.getThread(action, data, callbackid);
-		} else if(action.equalsIgnoreCase("getthreads")) {
-			this.getThreads(action, data, callbackid);
-		} else if(action.equalsIgnoreCase("getrelevantmessage")) {
-			this.getRelevantMessage(action, data, callbackid);
 		} else if(action.equalsIgnoreCase("setfilter")) {
 			this.setFilter(action, data, callbackid);
 		}else if(action.equalsIgnoreCase("login")){
@@ -113,39 +105,6 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			//set the callback
 			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
 			hclient.getSubscriptions(messageDelegate);
-		} catch (Exception e) {
-			logger.error("message: ",e);
-		}
-	}
-	
-	/**
-	 * Bridge to HClient.getLastMessages
-	 * @param action
-	 * @param data
-	 * @param callbackid
-	 */
-	public void getLastMessages(String action, JSONArray data, String callbackid) {
-		JSONObject jsonObj = null;
-		String actor = null;
-		int nbLastMsg = -1;
-		String jsonCallback = null;
-		try {
-			jsonObj = data.getJSONObject(0);
-			
-			actor = jsonObj.getString("actor");
-			nbLastMsg = jsonObj.getInt("nbLastMsg");
-			jsonCallback = jsonObj.getString("callback");
-			
-			final String msgCallback = jsonCallback;
-			
-			//set the callback
-			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
-			
-			if (nbLastMsg < 0) {
-				hclient.getLastMessages(actor, messageDelegate);
-			} else {
-				hclient.getLastMessages(actor, nbLastMsg, messageDelegate);
-			}
 		} catch (Exception e) {
 			logger.error("message: ",e);
 		}
@@ -226,87 +185,6 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
 			
 			hclient.subscribe(actor, messageDelegate);
-		} catch (Exception e) {
-			logger.error("message: ",e);
-		}
-	}
-	
-	/**
-	 * Bridge to HClient.getThread
-	 * @param action
-	 * @param data
-	 * @param callbackid
-	 */
-	public void getThread(String action, JSONArray data, String callbackid) {
-		JSONObject jsonObj = null;
-		String actor = null;
-		String convid = null;
-		String jsonCallback = null;
-		try {
-			jsonObj = data.getJSONObject(0);
-			
-			actor = jsonObj.getString("actor");
-			convid = jsonObj.getString("convid");
-			jsonCallback = jsonObj.getString("callback");
-			
-			final String msgCallback = jsonCallback;
-			
-			//set the callback
-			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
-			
-			hclient.getThread(actor, convid, messageDelegate);
-		} catch (Exception e) {
-			logger.error("message: ",e);
-		}
-	}
-	
-	/**
-	 * Bridge to HClient.getThreads
-	 * @param action
-	 * @param data
-	 * @param callbackid
-	 */
-	public void getThreads(String action, JSONArray data, String callbackid) {
-		JSONObject jsonObj = null;
-		String actor = null;
-		String convState = null;
-		String jsonCallback = null;
-		try {
-			jsonObj = data.getJSONObject(0);
-			
-			actor = jsonObj.getString("actor");
-			convState = jsonObj.getString("convState");
-			jsonCallback = jsonObj.getString("callback");
-			
-			final String msgCallback = jsonCallback;
-			
-			//set the callback
-			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
-			
-			hclient.getThreads(actor, convState, messageDelegate);
-		} catch (Exception e) {
-			logger.error("message: ",e);
-		}
-	}
-	
-	/**
-	 * Bridge to HClient.getRelevantMessage
-	 * @param action
-	 * @param data
-	 * @param callbackid
-	 */
-	public void getRelevantMessage(String action, JSONArray data, String callbackid){
-		JSONObject jsonObj = null;
-		String actor = null;
-		String jsonCallback = null;
-		try {
-			jsonObj = data.getJSONObject(0);
-			actor = jsonObj.getString("actor");
-			jsonCallback = jsonObj.getString("callback");
-			final String msgCallback = jsonCallback;
-			//set the callback
-			HMessageDelegate messageDelegate = new MessageDelegate(msgCallback);
-			hclient.getRelevantMessages(actor, messageDelegate);
 		} catch (Exception e) {
 			logger.error("message: ",e);
 		}
