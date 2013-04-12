@@ -75,21 +75,16 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 	private Button subscribeButton;
 	private Button unsubscribeButton;
 	private Button sendButton;
-	private Button getLastMessageButton;
 	private Button getSubcriptionButton;
-	private Button getThreadButton;
-	private Button getThreadsButton;
 	private Button pubConvState;
 	private Button setFilterButton;
 	private Button exitButton;
-	private Button getRelevantMsgButton;
 
 	private EditText loginEditText;
 	private EditText passwordEditText;
 	private EditText gatewaysEditText;
 	private EditText channelIDText;
 	private EditText timeOutText;
-	private EditText nbLastMessageText;
 	private EditText MessageEditText;
 	private EditText relevantOffsetEditText;
 	private EditText convidEditText;
@@ -116,13 +111,9 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		initListenerSubscribeButton();
 		initListenerUnsubscribeButton();
 		initListenerSendButton();
-		initListenerGetLastMessageButton();
 		initListenerGetSubscriptionButton();
-		initListenerGetThreadButton();
-		initListenerGetThreadsButton();
 		initListenerPubConvStateButton();
 		initListenerSetFilterButton();
-		initListenerGetRelevantMsgButton();
 		initListenerExitButton();
 
 		client = new HClient();
@@ -138,13 +129,9 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		subscribeButton = (Button) findViewById(R.id.SubscribeButton);
 		unsubscribeButton = (Button) findViewById(R.id.UnsubscribeButton);
 		sendButton = (Button) findViewById(R.id.SendButton);
-		getLastMessageButton = (Button) findViewById(R.id.GetLastMessageButton);
 		getSubcriptionButton = (Button) findViewById(R.id.GetSubcriptionButton);
-		getThreadButton = (Button) findViewById(R.id.GetThreadButton);
-		getThreadsButton = (Button) findViewById(R.id.GetThreadsButton);
 		pubConvState = (Button) findViewById(R.id.PubConvStateButton);
 		setFilterButton = (Button) findViewById(R.id.SetFilterButton);
-		getRelevantMsgButton = (Button) findViewById(R.id.GetRelevantMsgButton);
 		exitButton = (Button) findViewById(R.id.ExitButton);
 
 
@@ -153,7 +140,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		gatewaysEditText = (EditText) findViewById(R.id.gatewaysText); 
 		channelIDText = (EditText) findViewById(R.id.ChannelIDText);
 		timeOutText = (EditText) findViewById(R.id.timeOutText);
-		nbLastMessageText = (EditText) findViewById(R.id.nbLastMessageText);
 		relevantOffsetEditText = (EditText) findViewById(R.id.relevantOffsetText);
 		MessageEditText = (EditText) findViewById(R.id.messageText);
 		convidEditText = (EditText) findViewById(R.id.ConvidText);
@@ -337,31 +323,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		
 	}
 	
-	public void initListenerGetLastMessageButton() {
-		final SimpleClientActivity outerClass = this;
-		OnClickListener listener = new OnClickListener() {
-			public void onClick(View v) {
-				String actor = channelIDText.getText().toString();
-				int nbLastMessage = 0;
-				try{
-					try {
-						nbLastMessage = Integer.parseInt(nbLastMessageText.getText().toString());
-					} catch (Exception e) {
-						nbLastMessage = 0;
-					}
-					if(nbLastMessage > 0) {
-						client.getLastMessages(actor, nbLastMessage, outerClass);
-					} else {
-						client.getLastMessages(actor, outerClass);
-					}
-				} catch (Exception e) {
-					logger.error("message: ",e);
-				}
-			}
-		};
-		getLastMessageButton.setOnClickListener(listener);
-	}
-	
 	public void initListenerGetSubscriptionButton() {
 		final SimpleClientActivity outerClass = this;
 		OnClickListener listener = new OnClickListener() {
@@ -374,38 +335,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 			}
 		};
 		getSubcriptionButton.setOnClickListener(listener);
-	}
-	
-	public void initListenerGetThreadButton() {
-		final SimpleClientActivity outerClass = this;
-		OnClickListener listener = new OnClickListener() {
-			public void onClick(View v) {
-				String actor = channelIDText.getText().toString();
-				String convid = convidEditText.getText().toString();
-				try{
-					client.getThread(actor, convid, outerClass);
-				} catch (Exception e) {
-					logger.error("message: ",e);
-				}
-			}
-		};
-		getThreadButton.setOnClickListener(listener);
-	}
-	
-	public void initListenerGetThreadsButton() {
-		final SimpleClientActivity outerClass = this;
-		OnClickListener listener = new OnClickListener() {
-			public void onClick(View v) {
-				String actor = channelIDText.getText().toString();
-				String status = convstateEditText.getText().toString();
-				try{
-					client.getThreads(actor, status, outerClass);
-				} catch (Exception e) {
-					logger.error("message: ", e);
-				}
-			}
-		};
-		getThreadsButton.setOnClickListener(listener);
 	}
 	
 	public void initListenerPubConvStateButton() {
@@ -455,22 +384,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 			}
 		};
 		setFilterButton.setOnClickListener(listener);
-	}
-	
-	public void initListenerGetRelevantMsgButton() {
-		final SimpleClientActivity outerClass = this;
-		OnClickListener listener = new OnClickListener() {
-			public void onClick(View v) {
-				String actor = channelIDText.getText().toString();
-			
-				try{
-					client.getRelevantMessages(actor, outerClass);
-				} catch (Exception e) {
-					logger.error("message: ", e);
-				}
-			}
-		};
-		getRelevantMsgButton.setOnClickListener(listener);
 	}
 	
 	public void initListenerExitButton(){

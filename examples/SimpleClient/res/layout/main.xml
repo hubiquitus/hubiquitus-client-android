@@ -163,23 +163,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp">
-
-        <TextView
-            android:id="@+id/nbLastMessageLabel"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:text="nbLastMessage"
-            android:padding="0dp"
-            android:textSize="10sp" />
-
-        <EditText
-            android:id="@+id/nbLastMessageText"
-            android:layout_width="fill_parent" 
-    		android:layout_height="wrap_content"
-    		android:inputType="number" 
-    		android:padding="0dp"
-    		android:background="#F7F7F7"
-    		android:textSize="10sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -373,6 +356,13 @@
                 android:text="@string/sub"
                 android:textSize="10sp" />
 
+            <Button
+                android:id="@+id/SetFilterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setfilter"
+                android:textSize="10sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -394,64 +384,31 @@
                 android:textSize="10sp" />
 
             <Button
-                android:id="@+id/GetLastMessageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/getlstmsg"
-                android:textSize="10sp" />
-
-            <Button
                 android:id="@+id/GetSubcriptionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/getsubs"
                 android:textSize="10sp" />
-            <Button
-                android:id="@+id/GetRelevantMsgButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/getrelevantmsg"
-                android:textSize="10sp" />
-            
-    </LinearLayout>
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="30dp">
 
-            
-            <Button
-                android:id="@+id/GetThreadButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/getthread"
-                android:textSize="10sp" />
-
-            <Button
-                android:id="@+id/GetThreadsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/getthreads"
-                android:textSize="10sp" />
-            
             <Button
                 android:id="@+id/PubConvStateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pubconvsta"
                 android:textSize="10sp" />
-             <Button
-                android:id="@+id/SetFilterButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/setfilter"
-                android:textSize="10sp" />
-             <Button
+
+            <Button
                 android:id="@+id/ExitButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/exit"
                 android:textSize="10sp" />
+            
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp" >
     </LinearLayout>
 
     <ScrollView
