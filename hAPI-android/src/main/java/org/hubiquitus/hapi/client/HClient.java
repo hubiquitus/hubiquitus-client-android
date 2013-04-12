@@ -819,17 +819,13 @@ public class HClient {
 			int endpointIndex = HUtil.pickIndex(options.getEndpoints());
 			try {
 				String endpoint = options.getEndpoints().getString(endpointIndex);
-				this.transportOptions.setEndpointHost(HUtil.getHost(endpoint));
-				this.transportOptions.setEndpointPort(HUtil.getPort(endpoint));
-				this.transportOptions.setEndpointPath(HUtil.getPath(endpoint));
+				this.transportOptions.setEndpoint(endpoint);
 			} catch (JSONException e) {
 				logger.error("message: ", e);
 			}
 			
 		} else {
-			this.transportOptions.setEndpointHost(null);
-			this.transportOptions.setEndpointPort(0);
-			this.transportOptions.setEndpointPath(null);
+			this.transportOptions.setEndpoint(null);
 		}
 	}
 
