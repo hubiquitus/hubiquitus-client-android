@@ -85,7 +85,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 	private EditText gatewaysEditText;
 	private EditText channelIDText;
 	private EditText timeOutText;
-	private EditText nbLastMessageText;
 	private EditText MessageEditText;
 	private EditText relevantOffsetEditText;
 	private EditText convidEditText;
@@ -141,7 +140,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		gatewaysEditText = (EditText) findViewById(R.id.gatewaysText); 
 		channelIDText = (EditText) findViewById(R.id.ChannelIDText);
 		timeOutText = (EditText) findViewById(R.id.timeOutText);
-		nbLastMessageText = (EditText) findViewById(R.id.nbLastMessageText);
 		relevantOffsetEditText = (EditText) findViewById(R.id.relevantOffsetText);
 		MessageEditText = (EditText) findViewById(R.id.messageText);
 		convidEditText = (EditText) findViewById(R.id.ConvidText);
