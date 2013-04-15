@@ -80,19 +80,6 @@ function unsubscribe(){
     window.plugins.hClient.unsubscribe(actor, cb)
 }
 
-function get_messages(){
-    var actor = document.getElementById('actor').value;
-    var nblastmsg = document.getElementById('nblastmsg').value;
-    var cb = function (hMessage) {callback(hMessage)};
-    window.plugins.hClient.getLastMessages(actor, nblastmsg, cb);
-}
-
-function get_relevant_message(){
-    var actor = document.getElementById('actor').value;
-    var cb = function(hMessage){callback(hMessage)}
-    window.plugins.hClient.getRelevantMessage(actor,cb);
-}
-
 function pub_convstate(){
     var actor = document.getElementById('actor').value;
     var convid = document.getElementById('convid').value;
@@ -119,20 +106,6 @@ function set_filter(){
 function get_subscriptions(){
 	var cb = function (hMessage) {callback(hMessage)};
     window.plugins.hClient.getSubscriptions(cb);
-}
-
-function get_thread(){
-    var actor = document.getElementById('actor').value;
-    var convid = prompt('Convid:');
-    var cb = function (hMessage) {callback(hMessage)};
-    window.plugins.hClient.getThread(actor, convid, cb);
-}
-
-function get_threads(){
-    var actor = document.getElementById('actor').value;
-    var convState = prompt('ConvState:');
-    var cb = function (hMessage) {callback(hMessage)};
-    window.plugins.hClient.getThreads(actor, convState, cb);
 }
 
 function clear_divs(){
