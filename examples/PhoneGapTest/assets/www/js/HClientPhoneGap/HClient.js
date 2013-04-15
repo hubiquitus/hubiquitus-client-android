@@ -88,30 +88,6 @@ define(
                 ]);
             },
 
-            getLastMessages:function (actor, nbLastMsg, callback) {
-                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getLastMessages', [
-                    {actor:actor, nbLastMsg:nbLastMsg, callback:String(callback)}
-                ]);
-            },
-
-            getThread:function (actor, convid, callback) {
-                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThread', [
-                    {actor:actor, convid:convid, callback:String(callback)}
-                ]);
-            },
-
-            getThreads:function (actor, convState, callback) {
-                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getThreads', [
-                    {actor:actor, convState:convState, callback:String(callback)}
-                ]);
-            },
-
-            getRelevantMessage:function (actor, callback) {
-                cordova.exec(null, null, 'HClientPhoneGapPlugin', 'getRelevantMessage', [
-                    {actor:actor, callback:String(callback)}
-                ]);
-            },
-
             setFilter:function (filter, callback) {
                 cordova.exec(null, null, 'HClientPhoneGapPlugin', 'setFilter', [
                     {filter:filter, callback:String(callback)}

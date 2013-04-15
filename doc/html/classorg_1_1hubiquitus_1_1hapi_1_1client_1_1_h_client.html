@@ -35,7 +35,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">Hubiquitus Android
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.6.1</span>
    </div>
    <div id="projectbrief">Android client for hubiquitus protocol</div>
   </td>
@@ -54,9 +54,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -100,7 +98,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pac-attribs">Package Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">org.hubiquitus.hapi.client.HClient Class Reference</div>  </div>
 </div><!--header-->
@@ -110,69 +109,59 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><b>MyRunnable</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><b>TransportDelegate</b></td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a9b5a49ac5e1d33c137f326762c0489e3">HClient</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#acbf07e2da514e088fbeb177db582ed69">connect</a> (String publisher, String password, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_options.html">HOptions</a> options)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a33e16647f2395556cf7c7cd47ad63cff"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getFullUrn" ref="a33e16647f2395556cf7c7cd47ad63cff" args="()" -->
+String&#160;</td><td class="memItemRight" valign="bottom"><b>getFullUrn</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae74345fd9d76c91120d54a0c0940283d"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getResource" ref="ae74345fd9d76c91120d54a0c0940283d" args="()" -->
+String&#160;</td><td class="memItemRight" valign="bottom"><b>getResource</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6e9ed4fce64e7f9b161910e6d367aec6">connect</a> (String login, String password, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_options.html">HOptions</a> options, JSONObject context)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a296e3ac57e708a7ccf9a14aa1b6f41a0">connect</a> (String login, String password, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_options.html">HOptions</a> options)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a853bc3be1ab0d6a547ae2b1afb94fa89">disconnect</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#af8f2343d575ac2fc66f5b3c87378cb4c">onStatus</a> (<a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_status_delegate.html">HStatusDelegate</a> statusDelgate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a3b76bf2dc745e134808e20163596d28f">onStatus</a> (<a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_status_delegate.html">HStatusDelegate</a> statusDelegate)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#acc680621e6f8ea625506aad101e2b929">onMessage</a> (<a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a> messageDelegate)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html">ConnectionStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a137a947019f7838baf46a9c8a11cd85d">command</a> (<a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_command.html">HCommand</a> cmd, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae1655f61bde6433fb676ee8a075f10c5">subscribe</a> (String chid, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a5d7ea1fd122631c750b607f2d4581bf3">unsubscribe</a> (String chid, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#adbca7927627d9e5812f8c8b7a159f1aa">publish</a> (<a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> message, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4703707ebb7db0e6d66dbc1acf372a93">getLastMessages</a> (String chid, int nbLastMsg, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a8db6780ce7b84513f8786492edcc3d14">getLastMessages</a> (String chid, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a9bbc649bcf44636e65c82f9cabcee14e">getSubscriptions</a> (<a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a7dee8af039e6c5363f5289720bfa148f">getThread</a> (String chid, String convid, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a219ae5be07df0535dc959a0958d8c707">getThreads</a> (String chid, String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a> commandDelegate)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a34b296fbe225a580f18ca5ae2b08d39c">buildMessage</a> (String chid, String type, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html">HJsonObj</a> payload, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a7a37da07236a0956ed743dab44b1d4a3">buildConvState</a> (String chid, String convid, String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae748da4ff073bd1198ffda5ccfd7683d">buildAck</a> (String chid, String ackid, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_ack_value.html">HAckValue</a> ack, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a96d066ae0700769198b8b2982b78ebc7">buildAlert</a> (String chid, String alert, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a487332350f13015c2f0a0d6c3cbf6e2f">buildMeasure</a> (String chid, String value, String unit, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae660a714dcb3f35f13b7fa10d5d75f14">send</a> (final <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> message, final <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a> messageDelegate)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a10366d343a6fd8126b1cd5c436e43828">subscribe</a> (String actor, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a> messageDelegate)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a8ddb6df1170358bd27c1582dba930413">unsubscribe</a> (String actor, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a> messageDelegate)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aa17c89845e40289a9404be9a9147361e">getSubscriptions</a> (<a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a> messageDelegate)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a3e2adf8e462843cf6739238341cc16bf">setFilter</a> (<a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_condition.html">HCondition</a> filter, <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a> messageDelegate)  throws MissingAttrException</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a1ba8c52fe861ee1f25b841683c5424cc">buildMessage</a> (String actor, String type, Object payload, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a5e2edcfb6a13ddab1fb0ce82ced50056">buildConvState</a> (String actor, String convid, String <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a21a3d947dd246dcf38f5d2408d51f8de">buildAck</a> (String actor, String ref, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_ack_value.html">HAckValue</a> ack, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a51e768b756679d9eb21a48783c56d748">buildAlert</a> (String actor, String alert, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ac0bcf89fe08eede2e133552cf08809c0">buildMeasure</a> (String actor, String value, String unit, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95f92054c5f7fd41faee404c1f49d87a">buildCommand</a> (String actor, String cmd, JSONObject params, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_condition.html">HCondition</a> filter, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aae7d80e92d7d67bed37817ea0f7ac326">buildResult</a> (String actor, String ref, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, String result, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a33878c4959fd86d1a39cffebd502333c">buildResult</a> (String actor, String ref, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, JSONObject result, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#adaad8156df7bb3752fcc32104388c377">buildResult</a> (String actor, String ref, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, JSONArray result, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4250e81095c385af25b30a70331589c4">buildResult</a> (String actor, String ref, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, double result, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4ca5d8531d509923ae326dc318aa5ffc">buildResult</a> (String actor, String ref, <a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95b95119cea50311828a7604aa8a43e8">status</a>, boolean result, <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a> options)  throws MissingAttrException </td></tr>
+<tr><td colspan="2"><h2><a name="pac-attribs"></a>
+Package Attributes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a318929235dae4e8e1b009a124574154e"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::logger" ref="a318929235dae4e8e1b009a124574154e" args="" -->
+final Logger&#160;</td><td class="memItemRight" valign="bottom"><b>logger</b> = LoggerFactory.getLogger(HClient.class)</td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
-<div class="textblock"><dl class="version"><dt><b>Version:</b></dt><dd>0.3 Hubiquitus client, public api </dd></dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00058">58</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-</div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a9b5a49ac5e1d33c137f326762c0489e3"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::HClient" ref="a9b5a49ac5e1d33c137f326762c0489e3" args="()" -->
+<div class="textblock"><dl class="version"><dt><b>Version:</b></dt><dd>0.6 Hubiquitus client, public API </dd></dl>
+</div><hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="a21a3d947dd246dcf38f5d2408d51f8de"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildAck" ref="a21a3d947dd246dcf38f5d2408d51f8de" args="(String actor, String ref, HAckValue ack, HMessageOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a9b5a49ac5e1d33c137f326762c0489e3">org.hubiquitus.hapi.client.HClient.HClient</a> </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00072">72</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
-</div>
-</div>
-<hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="ae748da4ff073bd1198ffda5ccfd7683d"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildAck" ref="ae748da4ff073bd1198ffda5ccfd7683d" args="(String chid, String ackid, HAckValue ack, HMessageOptions options)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae748da4ff073bd1198ffda5ccfd7683d">org.hubiquitus.hapi.client.HClient.buildAck</a> </td>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a21a3d947dd246dcf38f5d2408d51f8de">org.hubiquitus.hapi.client.HClient.buildAck</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
+          <td class="paramname"><em>actor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>ackid</em>, </td>
+          <td class="paramname"><em>ref</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -189,42 +178,40 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Helper to create hack </p>
+<p>Helper to create a hMessage wiht a hAck payload. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
-    <tr><td class="paramname">ackid</td><td>: mandatory </td></tr>
-    <tr><td class="paramname">ack</td><td>: mandatory </td></tr>
-    <tr><td class="paramname">options</td><td></td></tr>
+    <tr><td class="paramname">actor</td><td>: The actor for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">ref</td><td>: The msgid to acknowledged. Mandatory. </td></tr>
+    <tr><td class="paramname">ack</td><td>: The following values are authorized : (1). “recv” : means that the message has been received by the participant (on at least one of its devices). (2). “read” : means that the message has been read by the participant. Mandatory. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>hmessage </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hAck payload. </dd></dl>
 <dl class="exception"><dt><b>Exceptions:</b></dt><dd>
   <table class="exception">
-    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00483">483</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
 </div>
 </div>
-<a class="anchor" id="a96d066ae0700769198b8b2982b78ebc7"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildAlert" ref="a96d066ae0700769198b8b2982b78ebc7" args="(String chid, String alert, HMessageOptions options)" -->
+<a class="anchor" id="a51e768b756679d9eb21a48783c56d748"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildAlert" ref="a51e768b756679d9eb21a48783c56d748" args="(String actor, String alert, HMessageOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a96d066ae0700769198b8b2982b78ebc7">org.hubiquitus.hapi.client.HClient.buildAlert</a> </td>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a51e768b756679d9eb21a48783c56d748">org.hubiquitus.hapi.client.HClient.buildAlert</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
+          <td class="paramname"><em>actor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -241,41 +228,102 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Helper to create halert </p>
+<p>Helper to create a hMessage with a hAlert payload. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
-    <tr><td class="paramname">alert</td><td>: mandatory </td></tr>
-    <tr><td class="paramname">options</td><td></td></tr>
+    <tr><td class="paramname">actor</td><td>: The channel id for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">alert</td><td>: The alert message. Mandatory. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>hmessage </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hAlert payload. </dd></dl>
 <dl class="exception"><dt><b>Exceptions:</b></dt><dd>
   <table class="exception">
-    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00517">517</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
 </div>
 </div>
-<a class="anchor" id="a7a37da07236a0956ed743dab44b1d4a3"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildConvState" ref="a7a37da07236a0956ed743dab44b1d4a3" args="(String chid, String convid, String status, HMessageOptions options)" -->
+<a class="anchor" id="a95f92054c5f7fd41faee404c1f49d87a"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildCommand" ref="a95f92054c5f7fd41faee404c1f49d87a" args="(String actor, String cmd, JSONObject params, HCondition filter, HMessageOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a7a37da07236a0956ed743dab44b1d4a3">org.hubiquitus.hapi.client.HClient.buildConvState</a> </td>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a95f92054c5f7fd41faee404c1f49d87a">org.hubiquitus.hapi.client.HClient.buildCommand</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
+          <td class="paramname"><em>actor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>cmd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_condition.html">HCondition</a>&#160;</td>
+          <td class="paramname"><em>filter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a>&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Helper to create a hMessage with a hCommand payload. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">actor</td><td>: The actor for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">cmd</td><td>: The name of the command. Mandatory. </td></tr>
+    <tr><td class="paramname">params</td><td>: Parameters of the command. Not mandatory. </td></tr>
+    <tr><td class="paramname">filter</td><td>: The filter on the session. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hCommand payload. </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a5e2edcfb6a13ddab1fb0ce82ced50056"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildConvState" ref="a5e2edcfb6a13ddab1fb0ce82ced50056" args="(String actor, String convid, String status, HMessageOptions options)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a5e2edcfb6a13ddab1fb0ce82ced50056">org.hubiquitus.hapi.client.HClient.buildConvState</a> </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>actor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -298,42 +346,40 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Helper to create hconvstate </p>
+<p>Helper to create a hMessage with a hConvState payload. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
-    <tr><td class="paramname">convid</td><td>- conversation id : mandatory </td></tr>
-    <tr><td class="paramname">status</td><td>- status of the conversation </td></tr>
-    <tr><td class="paramname">options</td><td></td></tr>
+    <tr><td class="paramname">actor</td><td>: The channel id for the hMessage. Mandatory </td></tr>
+    <tr><td class="paramname">convid</td><td>: The convid where the status have to be updated. Mandatory </td></tr>
+    <tr><td class="paramname">status</td><td>: Status of the conversation. Mandatory. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>hmessage </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hConvState payload. </dd></dl>
 <dl class="exception"><dt><b>Exceptions:</b></dt><dd>
   <table class="exception">
-    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00448">448</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
 </div>
 </div>
-<a class="anchor" id="a487332350f13015c2f0a0d6c3cbf6e2f"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildMeasure" ref="a487332350f13015c2f0a0d6c3cbf6e2f" args="(String chid, String value, String unit, HMessageOptions options)" -->
+<a class="anchor" id="ac0bcf89fe08eede2e133552cf08809c0"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildMeasure" ref="ac0bcf89fe08eede2e133552cf08809c0" args="(String actor, String value, String unit, HMessageOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a487332350f13015c2f0a0d6c3cbf6e2f">org.hubiquitus.hapi.client.HClient.buildMeasure</a> </td>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ac0bcf89fe08eede2e133552cf08809c0">org.hubiquitus.hapi.client.HClient.buildMeasure</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
+          <td class="paramname"><em>actor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -356,42 +402,40 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Helper to create hmeasure </p>
+<p>Helper to create a hMessage with a hMeasure payload. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
-    <tr><td class="paramname">value</td><td>: mandatory </td></tr>
-    <tr><td class="paramname">unit</td><td>: mandatory </td></tr>
-    <tr><td class="paramname">options</td><td></td></tr>
+    <tr><td class="paramname">actor</td><td>: The actor for the hMessage. Mandatory </td></tr>
+    <tr><td class="paramname">value</td><td>: The value of the measure. Mandatory </td></tr>
+    <tr><td class="paramname">unit</td><td>: The unit of the measure. Mandatory </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not Mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>hmessage </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hMeasure payload. </dd></dl>
 <dl class="exception"><dt><b>Exceptions:</b></dt><dd>
   <table class="exception">
-    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00547">547</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
 </div>
 </div>
-<a class="anchor" id="a34b296fbe225a580f18ca5ae2b08d39c"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildMessage" ref="a34b296fbe225a580f18ca5ae2b08d39c" args="(String chid, String type, HJsonObj payload, HMessageOptions options)" -->
+<a class="anchor" id="a1ba8c52fe861ee1f25b841683c5424cc"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildMessage" ref="a1ba8c52fe861ee1f25b841683c5424cc" args="(String actor, String type, Object payload, HMessageOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a34b296fbe225a580f18ca5ae2b08d39c">org.hubiquitus.hapi.client.HClient.buildMessage</a> </td>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a1ba8c52fe861ee1f25b841683c5424cc">org.hubiquitus.hapi.client.HClient.buildMessage</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
+          <td class="paramname"><em>actor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -402,7 +446,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_json_obj.html">HJsonObj</a>&#160;</td>
+          <td class="paramtype">Object&#160;</td>
           <td class="paramname"><em>payload</em>, </td>
         </tr>
         <tr>
@@ -414,49 +458,373 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>  throws <a class="el" href="classexceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Helper to create hmessage </p>
-<dl class="see"><dt><b>See also:</b></dt><dd>HMessage </dd></dl>
+<p>Helper to create a hMessage. Payload type could be instance of JSONObject(HAlert, HAck, HCommand ...), JSONObject, JSONArray, String, Boolean, Number </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id : mandatory </td></tr>
-    <tr><td class="paramname">type</td><td></td></tr>
-    <tr><td class="paramname">payload</td><td></td></tr>
-    <tr><td class="paramname">options</td><td></td></tr>
+    <tr><td class="paramname">actor</td><td>: The Actor for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">type</td><td>: The type of the hMessage. Not mandatory. </td></tr>
+    <tr><td class="paramname">payload</td><td>: The payload for the hMessage. Not mandatory. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options if any to use for the creation of the hMessage. Not mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>hMessage </dd></dl>
 <dl class="exception"><dt><b>Exceptions:</b></dt><dd>
   <table class="exception">
-    <tr><td class="paramname">MissingAttrException</td><td></td></tr>
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
   </table>
   </dd>
 </dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00406">406</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>a hMessage which can be used with the send method </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a137a947019f7838baf46a9c8a11cd85d"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::command" ref="a137a947019f7838baf46a9c8a11cd85d" args="(HCommand cmd, HCommandDelegate commandDelegate)" -->
+<a class="anchor" id="aae7d80e92d7d67bed37817ea0f7ac326"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildResult" ref="aae7d80e92d7d67bed37817ea0f7ac326" args="(String actor, String ref, ResultStatus status, String result, HMessageOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a137a947019f7838baf46a9c8a11cd85d">org.hubiquitus.hapi.client.HClient.command</a> </td>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aae7d80e92d7d67bed37817ea0f7ac326">org.hubiquitus.hapi.client.HClient.buildResult</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_command.html">HCommand</a>&#160;</td>
-          <td class="paramname"><em>cmd</em>, </td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>actor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>ref</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a>&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>result</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a>&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Helper to create a hMessage with a hResult payload. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">actor</td><td>: The actor for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">ref</td><td>: The id of the message received, for correlation purpose. Mandatory. </td></tr>
+    <tr><td class="paramname">status</td><td>: Result status code. Mandatory. </td></tr>
+    <tr><td class="paramname">result</td><td>: The String result of a command. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hResult payload. </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a33878c4959fd86d1a39cffebd502333c"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildResult" ref="a33878c4959fd86d1a39cffebd502333c" args="(String actor, String ref, ResultStatus status, JSONObject result, HMessageOptions options)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aae7d80e92d7d67bed37817ea0f7ac326">org.hubiquitus.hapi.client.HClient.buildResult</a> </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>actor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>ref</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a>&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>result</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a>&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Helper to create a hMessage with a hResult payload. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">actor</td><td>: The actor for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">ref</td><td>: The id of the message received, for correlation purpose. Mandatory. </td></tr>
+    <tr><td class="paramname">status</td><td>: Result status code. Mandatory. </td></tr>
+    <tr><td class="paramname">result</td><td>: The JSONObject result of a command. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hResult payload. </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="adaad8156df7bb3752fcc32104388c377"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildResult" ref="adaad8156df7bb3752fcc32104388c377" args="(String actor, String ref, ResultStatus status, JSONArray result, HMessageOptions options)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aae7d80e92d7d67bed37817ea0f7ac326">org.hubiquitus.hapi.client.HClient.buildResult</a> </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>actor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>ref</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a>&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">JSONArray&#160;</td>
+          <td class="paramname"><em>result</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a>&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Helper to create a hMessage with a hResult payload. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">actor</td><td>: The actor for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">ref</td><td>: The id of the message received, for correlation purpose. Mandatory. </td></tr>
+    <tr><td class="paramname">status</td><td>: Result status code. Mandatory. </td></tr>
+    <tr><td class="paramname">result</td><td>: The JSONArray result of a command. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hResult payload. </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4250e81095c385af25b30a70331589c4"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildResult" ref="a4250e81095c385af25b30a70331589c4" args="(String actor, String ref, ResultStatus status, double result, HMessageOptions options)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aae7d80e92d7d67bed37817ea0f7ac326">org.hubiquitus.hapi.client.HClient.buildResult</a> </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>actor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>ref</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a>&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>result</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a>&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Helper to create a hMessage with a hResult payload. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">actor</td><td>: The actor for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">ref</td><td>: The id of the message received, for correlation purpose. Mandatory. </td></tr>
+    <tr><td class="paramname">status</td><td>: Result status code. Mandatory. </td></tr>
+    <tr><td class="paramname">result</td><td>: The double result of a command. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hResult payload. </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4ca5d8531d509923ae326dc318aa5ffc"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::buildResult" ref="a4ca5d8531d509923ae326dc318aa5ffc" args="(String actor, String ref, ResultStatus status, boolean result, HMessageOptions options)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a> <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aae7d80e92d7d67bed37817ea0f7ac326">org.hubiquitus.hapi.client.HClient.buildResult</a> </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>actor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>ref</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_result_status.html">ResultStatus</a>&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>result</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message_options.html">HMessageOptions</a>&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Helper to create a hMessage with a hResult payload. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">actor</td><td>: The actor for the hMessage. Mandatory. </td></tr>
+    <tr><td class="paramname">ref</td><td>: The id of the message received, for correlation purpose. Mandatory. </td></tr>
+    <tr><td class="paramname">status</td><td>: Result status code. Mandatory. </td></tr>
+    <tr><td class="paramname">result</td><td>: The boolean result of a command. </td></tr>
+    <tr><td class="paramname">options</td><td>: The options to use if any for the creation of the hMessage. Not mandatory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>A hMessage with a hResult payload. </dd></dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a6e9ed4fce64e7f9b161910e6d367aec6"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::connect" ref="a6e9ed4fce64e7f9b161910e6d367aec6" args="(String login, String password, HOptions options, JSONObject context)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6e9ed4fce64e7f9b161910e6d367aec6">org.hubiquitus.hapi.client.HClient.connect</a> </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>login</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>password</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_options.html">HOptions</a>&#160;</td>
+          <td class="paramname"><em>options</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>context</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -466,29 +834,28 @@ Public Member Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Used to perform a command on an hubiquitus component : a hserver or a hubot. </p>
+<p>Establishes a connection to hNode to allow the reception and sending of messages and commands. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">cmd</td><td>- name of the command </td></tr>
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+    <tr><td class="paramname">login</td><td>: login, mandatory. </td></tr>
+    <tr><td class="paramname">password</td><td>: Mandatory. </td></tr>
+    <tr><td class="paramname">options</td><td>: Complementary values used for the connection to the server. Not mandatory. </td></tr>
+    <tr><td class="paramname">context</td><td>: Not mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>reqid </dd></dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00198">198</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="acbf07e2da514e088fbeb177db582ed69"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::connect" ref="acbf07e2da514e088fbeb177db582ed69" args="(String publisher, String password, HOptions options)" -->
+<a class="anchor" id="a296e3ac57e708a7ccf9a14aa1b6f41a0"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::connect" ref="a296e3ac57e708a7ccf9a14aa1b6f41a0" args="(String login, String password, HOptions options)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#acbf07e2da514e088fbeb177db582ed69">org.hubiquitus.hapi.client.HClient.connect</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a6e9ed4fce64e7f9b161910e6d367aec6">org.hubiquitus.hapi.client.HClient.connect</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>publisher</em>, </td>
+          <td class="paramname"><em>login</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -510,18 +877,15 @@ Public Member Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Connect to server </p>
+<p>Establishes a connection to hNode to allow the reception and sending of messages and commands. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">publisher</td><td>- user jid (ie : my_user/resource) </td></tr>
-    <tr><td class="paramname">password</td><td></td></tr>
-    <tr><td class="paramname">callback</td><td>- client callback to get api notifications </td></tr>
-    <tr><td class="paramname">options</td><td></td></tr>
+    <tr><td class="paramname">publisher</td><td>: user jid (ie : my_user/resource). Mandatory. </td></tr>
+    <tr><td class="paramname">password</td><td>: Mandatory. </td></tr>
+    <tr><td class="paramname">options</td><td>: Complementary values used for the connection to the server. Not mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00083">83</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
@@ -538,211 +902,37 @@ Public Member Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00143">143</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<p>Disconnect the user from the current working session. </p>
 
 </div>
 </div>
-<a class="anchor" id="a4703707ebb7db0e6d66dbc1acf372a93"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getLastMessages" ref="a4703707ebb7db0e6d66dbc1acf372a93" args="(String chid, int nbLastMsg, HCommandDelegate commandDelegate)" -->
+<a class="anchor" id="aa17c89845e40289a9404be9a9147361e"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getSubscriptions" ref="aa17c89845e40289a9404be9a9147361e" args="(HMessageDelegate messageDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4703707ebb7db0e6d66dbc1acf372a93">org.hubiquitus.hapi.client.HClient.getLastMessages</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#aa17c89845e40289a9404be9a9147361e">org.hubiquitus.hapi.client.HClient.getSubscriptions</a> </td>
           <td>(</td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nbLastMsg</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a>&#160;</td>
+          <td class="paramname"><em>messageDelegate</em></td><td>)</td>
+          <td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Demands the hserver a list of the last messages saved for a dedicated channel. The publisher must be in the channel’s participants list.</p>
-<p>Nominal response : an hCallback with an hResult will be performed when the result is available. If the hResult had status 0, the user should expect to receive n calls to hCallback of type hMessage where n is equal to the number of messages retrieved with nbLastMsg as an upper limit. </p>
-<dl class="warning"><dt><b>Warning:</b></dt><dd>HResult result type will be a JSonArray if successful </dd></dl>
+<p>Demands the server a list of the publisher’s subscriptions. Nominal response : a hMessage with a hResult payload contains an array of channel id which are all active. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
-    <tr><td class="paramname">nbLastMsg</td><td></td></tr>
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+    <tr><td class="paramname">messageDelegate</td><td>: A delegate notified when the result is sent by server. Mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00302">302</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a8db6780ce7b84513f8786492edcc3d14"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getLastMessages" ref="a8db6780ce7b84513f8786492edcc3d14" args="(String chid, HCommandDelegate commandDelegate)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a4703707ebb7db0e6d66dbc1acf372a93">org.hubiquitus.hapi.client.HClient.getLastMessages</a> </td>
-          <td>(</td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<dl class="see"><dt><b>See also:</b></dt><dd>getLastMessages(String chid, int nbLastMsg) </dd></dl>
-<dl class="params"><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00318">318</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a9bbc649bcf44636e65c82f9cabcee14e"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getSubscriptions" ref="a9bbc649bcf44636e65c82f9cabcee14e" args="(HCommandDelegate commandDelegate)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a9bbc649bcf44636e65c82f9cabcee14e">org.hubiquitus.hapi.client.HClient.getSubscriptions</a> </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Demands the server a list of the publisher’s subscriptions.</p>
-<p>Nominal response : a hCallback with a hResult will be performed when the result is available with an array of channel id. </p>
-<dl class="params"><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00329">329</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a7dee8af039e6c5363f5289720bfa148f"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getThread" ref="a7dee8af039e6c5363f5289720bfa148f" args="(String chid, String convid, HCommandDelegate commandDelegate)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a7dee8af039e6c5363f5289720bfa148f">org.hubiquitus.hapi.client.HClient.getThread</a> </td>
-          <td>(</td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>convid</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Demands to the hserver the list of messages correlated by the convid value on a dedicated channel chid.</p>
-<p>Nominal response : hResult where the status is 0 with an array of hMessage. </p>
-<dl class="params"><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">chid</td><td>- Channel id. Mandatory </td></tr>
-    <tr><td class="paramname">convid</td><td>- Conversation id. Mandatory </td></tr>
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00342">342</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a219ae5be07df0535dc959a0958d8c707"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::getThreads" ref="a219ae5be07df0535dc959a0958d8c707" args="(String chid, String status, HCommandDelegate commandDelegate)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a219ae5be07df0535dc959a0958d8c707">org.hubiquitus.hapi.client.HClient.getThreads</a> </td>
-          <td>(</td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>status</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Demands to the hserver the list of convid where there is a hConvState with the status value searched on the channel chid.</p>
-<p>Nominal response : hResult where the status is 0 with an array of convid. </p>
-<dl class="params"><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">chid</td><td>- Channel id. Mandatory </td></tr>
-    <tr><td class="paramname">status</td><td>- The status searched. Mandatory </td></tr>
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00372">372</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
 
 </div>
 </div>
@@ -760,27 +950,24 @@ Public Member Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Message delegate receive all incoming HMessage </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">messageDelegate</td><td></td></tr>
+    <tr><td class="paramname">messageDelegate</td><td>Message delegate receive all incoming HMessage </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00180">180</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
 </div>
 </div>
-<a class="anchor" id="af8f2343d575ac2fc66f5b3c87378cb4c"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::onStatus" ref="af8f2343d575ac2fc66f5b3c87378cb4c" args="(HStatusDelegate statusDelgate)" -->
+<a class="anchor" id="a3b76bf2dc745e134808e20163596d28f"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::onStatus" ref="a3b76bf2dc745e134808e20163596d28f" args="(HStatusDelegate statusDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#af8f2343d575ac2fc66f5b3c87378cb4c">org.hubiquitus.hapi.client.HClient.onStatus</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a3b76bf2dc745e134808e20163596d28f">org.hubiquitus.hapi.client.HClient.onStatus</a> </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_status_delegate.html">HStatusDelegate</a>&#160;</td>
-          <td class="paramname"><em>statusDelgate</em></td><td>)</td>
+          <td class="paramname"><em>statusDelegate</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -789,30 +976,28 @@ Public Member Functions</h2></td></tr>
 <p>Status delegate receive all connection status events. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">statusDelgate</td><td></td></tr>
+    <tr><td class="paramname">statusDelegate</td><td>the delegate to call when the status changes </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00172">172</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
-
 </div>
 </div>
-<a class="anchor" id="adbca7927627d9e5812f8c8b7a159f1aa"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::publish" ref="adbca7927627d9e5812f8c8b7a159f1aa" args="(HMessage message, HCommandDelegate commandDelegate)" -->
+<a class="anchor" id="ae660a714dcb3f35f13b7fa10d5d75f14"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::send" ref="ae660a714dcb3f35f13b7fa10d5d75f14" args="(final HMessage message, final HMessageDelegate messageDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#adbca7927627d9e5812f8c8b7a159f1aa">org.hubiquitus.hapi.client.HClient.publish</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae660a714dcb3f35f13b7fa10d5d75f14">org.hubiquitus.hapi.client.HClient.send</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td>
+          <td class="paramtype">final <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_message.html">HMessage</a>&#160;</td>
           <td class="paramname"><em>message</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+          <td class="paramtype">final <a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a>&#160;</td>
+          <td class="paramname"><em>messageDelegate</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -822,17 +1007,55 @@ Public Member Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Perform a publish operation of the provided hMessage to a channel. </p>
+<p>The hAPI sends the hMessage to the hserver which transfer it to the specified actor. The hserver will perform one of the following actions : (1). If the actor is a channel (ie : #channelName) the hserver will perform a publish operation of the provided hMessage to the channel and send an hMessage with hResult payload containing the published message and cmd name set with hsend to acknowledge publishing only if a timeout value has been provided. (2). If the actor is either ‘session’ and payload type is ‘hCommand’ the server will handle it. In other cases, it will send an hMessage with a hResult error NOT_AUTHORIZED. Only if the timeout is provided. (3). If the actor is a jid, hserver will relay the message to the relevant actor. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">message</td><td></td></tr>
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+    <tr><td class="paramname">message</td><td>: The message to send. Mandatory. </td></tr>
+    <tr><td class="paramname">messageDelegate</td><td>: If provided, called by the hAPI when the first message refering to current message arrive . Not mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>reqid </dd></dl>
 
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00266">266</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+</div>
+</div>
+<a class="anchor" id="a3e2adf8e462843cf6739238341cc16bf"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::setFilter" ref="a3e2adf8e462843cf6739238341cc16bf" args="(HCondition filter, HMessageDelegate messageDelegate)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a3e2adf8e462843cf6739238341cc16bf">org.hubiquitus.hapi.client.HClient.setFilter</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_h_condition.html">HCondition</a>&#160;</td>
+          <td class="paramname"><em>filter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a>&#160;</td>
+          <td class="paramname"><em>messageDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Set a filter to be applied to upcoming messages at the session level </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filter</td><td>the filter to apply on the current session managed on the hnode side for this actor </td></tr>
+    <tr><td class="paramname">messageDelegate</td><td>a delegate notified when the command result is issued. Mandatory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -850,90 +1073,94 @@ Public Member Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 <p>Get current connection status </p>
-<dl class="return"><dt><b>Returns:</b></dt><dd></dd></dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00188">188</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>the current connection status </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="ae1655f61bde6433fb676ee8a075f10c5"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::subscribe" ref="ae1655f61bde6433fb676ee8a075f10c5" args="(String chid, HCommandDelegate commandDelegate)" -->
+<a class="anchor" id="a10366d343a6fd8126b1cd5c436e43828"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::subscribe" ref="a10366d343a6fd8126b1cd5c436e43828" args="(String actor, HMessageDelegate messageDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#ae1655f61bde6433fb676ee8a075f10c5">org.hubiquitus.hapi.client.HClient.subscribe</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a10366d343a6fd8126b1cd5c436e43828">org.hubiquitus.hapi.client.HClient.subscribe</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
+          <td class="paramname"><em>actor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a>&#160;</td>
+          <td class="paramname"><em>messageDelegate</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Demands the server a subscription to the channel id. The hAPI performs a hCommand of type hsubscribe. The server will check if not already subscribed and if authorized and subscribe him. </p>
+<p>Demands the server a subscription to the channel id. The hAPI performs a hMessage with a hCommand of type hsubscribe. The server will check if not already subscribed and if authorized and subscribe him. Nominal response : a hMessage with an hResult payload with status 0. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+    <tr><td class="paramname">actor</td><td>: The channel id to subscribe to. (ie : #test”). Mandatory. </td></tr>
+    <tr><td class="paramname">messageDelegate</td><td>: A delegate notified when the result is sent by server. Mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00239">239</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a class="anchor" id="a5d7ea1fd122631c750b607f2d4581bf3"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::unsubscribe" ref="a5d7ea1fd122631c750b607f2d4581bf3" args="(String chid, HCommandDelegate commandDelegate)" -->
+<a class="anchor" id="a8ddb6df1170358bd27c1582dba930413"></a><!-- doxytag: member="org::hubiquitus::hapi::client::HClient::unsubscribe" ref="a8ddb6df1170358bd27c1582dba930413" args="(String actor, HMessageDelegate messageDelegate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a5d7ea1fd122631c750b607f2d4581bf3">org.hubiquitus.hapi.client.HClient.unsubscribe</a> </td>
+          <td class="memname">void <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html#a8ddb6df1170358bd27c1582dba930413">org.hubiquitus.hapi.client.HClient.unsubscribe</a> </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
-          <td class="paramname"><em>chid</em>, </td>
+          <td class="paramname"><em>actor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_command_delegate.html">HCommandDelegate</a>&#160;</td>
-          <td class="paramname"><em>commandDelegate</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="interfaceorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_message_delegate.html">HMessageDelegate</a>&#160;</td>
+          <td class="paramname"><em>messageDelegate</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td>  throws <a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1exceptions_1_1_missing_attr_exception.html">MissingAttrException</a> </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Demands the server an unsubscription to the channel id. The hAPI checks the current publisher’s subscriptions and if he is subscribed performs a hCommand of type hunsubscribe. </p>
+<p>Demands the server an unsubscription to the channel id. The hAPI checks the current publisher’s subscriptions and if he is subscribed performs a hCommand of type hunsubscribe. Nominal response : an hMessage with an hResult where the status 0. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">chid</td><td>- channel id </td></tr>
-    <tr><td class="paramname">commandDelegate</td><td>- a delegate notified when the command result is issued. Can be null </td></tr>
+    <tr><td class="paramname">actor</td><td>: The channel to unsubscribe from. Mandatory. </td></tr>
+    <tr><td class="paramname">messageDelegate</td><td>: A delegate notified when the result is sent by server. Mandatory. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>request id </dd></dl>
-
-<p>Definition at line <a class="el" href="_h_client_8java_source.html#l00253">253</a> of file <a class="el" href="_h_client_8java_source.html">HClient.java</a>.</p>
+<dl class="exception"><dt><b>Exceptions:</b></dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">MissingAttrException</td><td>raised if a mandatory attribute is not well provided </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="_h_client_8java_source.html">HClient.java</a></li>
+<li>hAPI-android/src/main/java/org/hubiquitus/hapi/client/HClient.java</li>
 </ul>
 </div><!-- contents -->
 </div>
@@ -942,7 +1169,7 @@ Public Member Functions</h2></td></tr>
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -953,13 +1180,13 @@ Public Member Functions</h2></td></tr>
 
   <div id="nav-path" class="navpath">
     <ul>
-      <li class="navelem"><a class="el" href="namespaceorg.html">org</a>      </li>
-      <li class="navelem"><a class="el" href="namespaceorg_1_1hubiquitus.html">hubiquitus</a>      </li>
-      <li class="navelem"><a class="el" href="namespaceorg_1_1hubiquitus_1_1hapi.html">hapi</a>      </li>
-      <li class="navelem"><a class="el" href="namespaceorg_1_1hubiquitus_1_1hapi_1_1client.html">client</a>      </li>
+      <li class="navelem"><b>org</b>      </li>
+      <li class="navelem"><b>hubiquitus</b>      </li>
+      <li class="navelem"><b>hapi</b>      </li>
+      <li class="navelem"><b>client</b>      </li>
       <li class="navelem"><a class="el" href="classorg_1_1hubiquitus_1_1hapi_1_1client_1_1_h_client.html">HClient</a>      </li>
 
-    <li class="footer">Generated on Wed Jun 27 2012 11:33:08 for Hubiquitus Android by
+    <li class="footer">Generated on Mon Apr 15 2013 12:15:02 for Hubiquitus Android by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

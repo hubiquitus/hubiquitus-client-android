@@ -5,8 +5,5 @@ var enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status =
     [ "CONNECTED", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html#a12f4de82a0c4a4622b2dcfd07830d28d", null ],
     [ "CONNECTING", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html#a8502808f2a9f5622cff1d98e3bca63ae", null ],
     [ "DISCONNECTED", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html#a3e7ff01639d85518d2016a967c9db2df", null ],
-    [ "DISCONNECTING", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html#a8e054946a18c94586bfa4d97d2fa5df6", null ],
-    [ "REATTACHED", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html#aa196be26828dc1cb181c24d5d0628a6a", null ],
-    [ "REATTACHING", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html#a719dac8663cb6b62caee0318578c1c85", null ],
-    [ "UNKNOWN", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html#ae405e149c82c59fba03ca3e961b37e56", null ]
+    [ "DISCONNECTING", "enumorg_1_1hubiquitus_1_1hapi_1_1h_structures_1_1_connection_status.html#a8e054946a18c94586bfa4d97d2fa5df6", null ]
 ];
