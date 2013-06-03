@@ -91,7 +91,9 @@ public class HClient {
 		return this.transportOptions.getFullUrn();
 	}
 
-
+    public String getBareUrn() {
+		return this.transportOptions.getFullUrn();
+	}
 
 	public String getResource() {
 		return this.transportOptions.getResource();

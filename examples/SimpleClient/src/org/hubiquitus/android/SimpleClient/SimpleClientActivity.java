@@ -29,7 +29,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-import org.apache.http.client.methods.HttpOptions;
 import org.hubiquitus.hapi.client.HClient;
 import org.hubiquitus.hapi.client.HMessageDelegate;
 import org.hubiquitus.hapi.client.HStatusDelegate;
@@ -41,7 +40,6 @@ import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HOptions;
 import org.hubiquitus.hapi.hStructures.HStatus;
 import org.hubiquitus.hapi.hStructures.OperandNames;
-import org.hubiquitus.hapi.transport.HTransportOptions;
 import org.hubiquitus.hapi.transport.socketio.ConnectedCallback;
 import org.hubiquitus.hapi.transport.socketio.HAuthCallback;
 import org.json.JSONArray;
@@ -155,8 +153,8 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 
 		loginEditText.setText("urn:localhost:u1");
 		passwordEditText.setText("urn:localhost:u1");
-		channelIDText.setText("urn:livebattle:pubtwitterchan");
-		gatewaysEditText.setText("http://178.33.105.239:8080");
+		channelIDText.setText("urn:localhost:testChannel");
+		gatewaysEditText.setText("http://10.0.2.2:8080");
 		
 		MessageEditText.setText("");		
 	}
@@ -284,7 +282,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 				try {
 					payload.put("text",MessageEditText.getText().toString());
 					message = client.buildMessage(channelIDText.getText().toString(), "obj", payload, option);
-					System.out.println("laaaaa:  " +message);
 				} catch (Exception e) {
 					logger.error("message: ",e);
 				}
