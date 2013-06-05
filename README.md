@@ -24,8 +24,7 @@ Coming soon (with first stable release)
 #### 2) Import examples
 For android: 
 
-You will find hAPI-android-v0.6.0.jar in the hAPI-android/target.
-You can import the file jar directly to your project.
+You can release and import the jar directly to your project.
 
 For android PhoneGap:
 * Copy the directory hapiPhoneGapPlusin to your project. Add the link source to the directory.
