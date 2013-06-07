@@ -541,75 +541,6 @@ public class HMessage extends JSONObject {
 	}
 
 	/**
-	 * if payload type is HAlert. if not return null.
-	 * @return HAlert copy. NULL if undefined
-	 */
-	public HAlert getPayloadAsHAlert() {
-		try {
-			if (this.getType().toLowerCase().equalsIgnoreCase("halert")) {
-				HAlert halert = new HAlert(this.getJSONObject("payload"));
-				return halert;
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * if payload type is HAck, if not return null.
-	 * @return HAck copy. Null if undefined.
-	 */
-	public HAck getPayloadAsHAck() {
-		try {
-			if (this.getType().toLowerCase().equalsIgnoreCase("hack")) {
-				HAck hack = new HAck(this.getJSONObject("payload"));
-				return hack;
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * if payload is HMeasure, if not return null.
-	 * @return HMeasure copy. Null if undefined.
-	 */
-	public HMeasure getPayloadAsHmeasure() {
-		try {
-			if (this.getType().toLowerCase().equalsIgnoreCase("hmeasure")) {
-				HMeasure hmeasure = new HMeasure(this.getJSONObject("payload"));
-				return hmeasure;
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * if payload is HConvState, if not return null.
-	 * @return HConvState copy. Null if undefined.
-	 */
-	public HConvState getPayloadAsHConvState() {
-		try {
-			if (this.getType().toLowerCase().equalsIgnoreCase("hconvstate")) {
-				HConvState hconvstate = new HConvState(
-						this.getJSONObject("payload"));
-				return hconvstate;
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/**
 	 * if payload is HResult, if not return null.
 	 * @return HResult copy. Null if undefined.
 	 */
@@ -720,54 +651,6 @@ public class HMessage extends JSONObject {
 	}
 	
 	public void setPayload(Double payload) {
-		try {
-			if (payload == null) {
-				this.remove("payload");
-			} else {
-				this.put("payload", payload);
-			}
-		} catch (JSONException e) {
-			logger.warn("message: ", e);
-		}
-	}
-	
-	public void setPayload(HAlert payload) {
-		try {
-			if (payload == null) {
-				this.remove("payload");
-			} else {
-				this.put("payload", payload);
-			}
-		} catch (JSONException e) {
-			logger.warn("message: ", e);
-		}
-	}
-	
-	public void setPayload(HAck payload) {
-		try {
-			if (payload == null) {
-				this.remove("payload");
-			} else {
-				this.put("payload", payload);
-			}
-		} catch (JSONException e) {
-			logger.warn("message: ", e);
-		}
-	}
-	
-	public void setPayload(HMeasure payload) {
-		try {
-			if (payload == null) {
-				this.remove("payload");
-			} else {
-				this.put("payload", payload);
-			}
-		} catch (JSONException e) {
-			logger.warn("message: ", e);
-		}
-	}
-	
-	public void setPayload(HConvState payload) {
 		try {
 			if (payload == null) {
 				this.remove("payload");

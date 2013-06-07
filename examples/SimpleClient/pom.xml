@@ -68,20 +68,19 @@
 		<version>1.2.17</version>
 	</dependency>	
 	 <dependency>
-    	<groupId>org.json.jar</groupId>
-		<artifactId>json-lib</artifactId>
-        <version>0.0.0</version>
-        <scope>system</scope>
-        <systemPath>${basedir}/../external-libs/json-org.jar</systemPath>
-    </dependency>
+	<groupId>org.json</groupId>
+	<artifactId>json</artifactId>
+	<version>20090211</version>
+	</dependency>
+            	
 
 	<dependency>
-                <groupId>org.socket.io</groupId>
-                <artifactId>socket.io</artifactId>
-                <version>0.0.0</version>
-                <scope>system</scope>
-                <systemPath>${basedir}/../external-libs/socketio.jar</systemPath>
-        </dependency>
+         <groupId>org.socket.io</groupId>
+         <artifactId>socket.io</artifactId>
+         <version>0.0.0</version>
+    </dependency>
+    
+    
 	
 	<dependency>
 	<groupId>com.google.android</groupId>

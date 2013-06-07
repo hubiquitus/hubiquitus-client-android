@@ -76,7 +76,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 	private Button unsubscribeButton;
 	private Button sendButton;
 	private Button getSubcriptionButton;
-	private Button pubConvState;
 	private Button setFilterButton;
 	private Button exitButton;
 
@@ -87,8 +86,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 	private EditText timeOutText;
 	private EditText MessageEditText;
 	private EditText relevantOffsetEditText;
-	private EditText convidEditText;
-	private EditText convstateEditText;
 
 	private TextView outputTextArea;
 	private RadioGroup transportRadioGroup;
@@ -112,7 +109,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		initListenerUnsubscribeButton();
 		initListenerSendButton();
 		initListenerGetSubscriptionButton();
-		initListenerPubConvStateButton();
 		initListenerSetFilterButton();
 		initListenerExitButton();
 
@@ -130,7 +126,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		unsubscribeButton = (Button) findViewById(R.id.UnsubscribeButton);
 		sendButton = (Button) findViewById(R.id.SendButton);
 		getSubcriptionButton = (Button) findViewById(R.id.GetSubcriptionButton);
-		pubConvState = (Button) findViewById(R.id.PubConvStateButton);
 		setFilterButton = (Button) findViewById(R.id.SetFilterButton);
 		exitButton = (Button) findViewById(R.id.ExitButton);
 
@@ -142,8 +137,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 		timeOutText = (EditText) findViewById(R.id.timeOutText);
 		relevantOffsetEditText = (EditText) findViewById(R.id.relevantOffsetText);
 		MessageEditText = (EditText) findViewById(R.id.messageText);
-		convidEditText = (EditText) findViewById(R.id.ConvidText);
-		convstateEditText = (EditText) findViewById(R.id.ConvStateText);
 
 		transportRadioGroup = (RadioGroup) findViewById(R.id.transportGroupbutton);
 		messageRadioGroup = (RadioGroup) findViewById(R.id.MessageGroupbutton);
@@ -335,33 +328,6 @@ public class SimpleClientActivity extends Activity  implements HStatusDelegate, 
 			}
 		};
 		getSubcriptionButton.setOnClickListener(listener);
-	}
-	
-	public void initListenerPubConvStateButton() {
-		final SimpleClientActivity outerClass = this;
-		OnClickListener listener = new OnClickListener() {
-			public void onClick(View v) {
-				String actor = channelIDText.getText().toString();
-				String convid = convidEditText.getText().toString();
-				String status = convstateEditText.getText().toString();
-				HMessageOptions msgOptions = new HMessageOptions();
-				
-				RadioButton persistentRadioBtn = (RadioButton) findViewById(messageRadioGroup.getCheckedRadioButtonId());
-				if(persistentRadioBtn.getText().toString().equalsIgnoreCase("Persistent")) {
-					msgOptions.setPersistent(true);
-				} else {
-					msgOptions.setPersistent(false);
-				}
-				
-				try{
-					HMessage pubMsg = client.buildConvState(actor, convid, status, msgOptions);
-					client.send(pubMsg, outerClass);
-				} catch (Exception e) {
-					logger.error("message: ", e);
-				}
-			}
-		};
-		pubConvState.setOnClickListener(listener);
 	}
 	
 	public void initListenerSetFilterButton() {

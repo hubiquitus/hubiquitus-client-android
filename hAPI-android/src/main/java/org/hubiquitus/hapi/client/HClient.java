@@ -34,13 +34,8 @@ import java.util.UUID;
 import org.hubiquitus.hapi.exceptions.MissingAttrException;
 import org.hubiquitus.hapi.hStructures.ConnectionError;
 import org.hubiquitus.hapi.hStructures.ConnectionStatus;
-import org.hubiquitus.hapi.hStructures.HAck;
-import org.hubiquitus.hapi.hStructures.HAckValue;
-import org.hubiquitus.hapi.hStructures.HAlert;
 import org.hubiquitus.hapi.hStructures.HCommand;
 import org.hubiquitus.hapi.hStructures.HCondition;
-import org.hubiquitus.hapi.hStructures.HConvState;
-import org.hubiquitus.hapi.hStructures.HMeasure;
 import org.hubiquitus.hapi.hStructures.HMessage;
 import org.hubiquitus.hapi.hStructures.HMessageOptions;
 import org.hubiquitus.hapi.hStructures.HOptions;
@@ -388,7 +383,6 @@ public class HClient {
 		hmessage.setType(type);
 		if (options != null) {
 			hmessage.setRef(options.getRef());
-			hmessage.setConvid(options.getConvid());
 			hmessage.setPriority(options.getPriority());
 			//override relevance if relevanceOffset is set.
 			if (options.getRelevanceOffset() != null) {
@@ -410,127 +404,6 @@ public class HClient {
 		}
 		hmessage.setPayload(payload);
 		return hmessage;
-	}
-
-	/**
-	 * Helper to create a hMessage with a hConvState payload.
-	 * @param actor : The channel id for the hMessage. Mandatory
-	 * @param convid : The convid where the status have to be updated. Mandatory
-	 * @param status : Status of the conversation. Mandatory.
-	 * @param options : The options to use if any for the creation of the hMessage. Not mandatory.
-	 * @return A hMessage with a hConvState payload.
-	 * @throws MissingAttrException raised if a mandatory attribute is not well provided
-	 */
-	public HMessage buildConvState(String actor, String convid, String status, HMessageOptions options) throws MissingAttrException {
-
-		// check for required attributes
-		if (actor == null || actor.length() <= 0) {
-			throw new MissingAttrException("actor");
-		}
-
-		if (convid == null || convid.length() <= 0) {
-			throw new MissingAttrException("convid");
-		}
-
-		if (status == null || status.length() <= 0) {
-			throw new MissingAttrException("status");
-		}
-
-		HConvState hconvstate = new HConvState();
-		hconvstate.setStatus(status);
-
-		HMessage hmessage = buildMessage(actor, "hConvState", hconvstate, options);
-		hmessage.setConvid(convid);
-
-		return hmessage;
-	}
-
-	/**
-	 * Helper to create a hMessage wiht a hAck payload.
-	 * @param actor : The actor for the hMessage.  Mandatory.
-	 * @param ref : The msgid to acknowledged. Mandatory.
-	 * @param ack : The following values are authorized : 
-	 * (1). “recv” : means that the message has been received by the participant (on at least one of its devices). 
-	 * (2). “read” : means that the message has been read by the participant.
-	 * Mandatory.
-	 * @param options : The options to use if any for the creation of the hMessage. Not mandatory.
-	 * @return A hMessage with a hAck payload.
-	 * @throws MissingAttrException raised if a mandatory attribute is not well provided
-	 */
-	public HMessage buildAck(String actor, String ref, HAckValue ack, HMessageOptions options) throws MissingAttrException {
-		// check for required attributes
-		if (actor == null || actor.length() <= 0) {
-			throw new MissingAttrException("actor");
-		}
-
-		if (ref == null || ref.length() <= 0) {
-			throw new MissingAttrException("ref");
-		}
-		// check for required attributes
-		if (ack == null) {
-			throw new MissingAttrException("ack");
-		}
-
-		options.setRef(ref);
-
-		HAck hack = new HAck();
-		hack.setAck(ack);
-		return buildMessage(actor, "hAck", hack, options);
-	}
-
-	/**
-	 * Helper to create a hMessage with a hAlert payload.
-	 * @param actor : The channel id for the hMessage. Mandatory.
-	 * @param alert : The alert message. Mandatory.
-	 * @param options : The options to use if any for the creation of the hMessage. Not mandatory.
-	 * @return A hMessage with a hAlert payload.
-	 * @throws MissingAttrException raised if a mandatory attribute is not well provided
-	 */
-	public HMessage buildAlert(String actor, String alert, HMessageOptions options) throws MissingAttrException {
-		// check for required attributes
-		if (actor == null || actor.length() <= 0) {
-			throw new MissingAttrException("actor");
-		}
-
-		// check for required attributes
-		if (alert == null || alert.length() <= 0) {
-			throw new MissingAttrException("actor");
-		}
-
-		HAlert halert = new HAlert();
-		halert.setAlert(alert);
-		return buildMessage(actor, "hAlert", halert, options);
-	}
-
-	/**
-	 * Helper to create a hMessage with a hMeasure payload.
-	 * @param actor : The actor for the hMessage. Mandatory
-	 * @param value : The value of the measure. Mandatory
-	 * @param unit : The unit of the measure. Mandatory
-	 * @param options : The options to use if any for the creation of the hMessage. Not Mandatory.
-	 * @return A hMessage with a hMeasure payload. 
-	 * @throws MissingAttrException raised if a mandatory attribute is not well provided
-	 */
-	public HMessage buildMeasure(String actor, String value, String unit, HMessageOptions options) throws MissingAttrException {
-		// check for required attributes
-		if (actor == null || actor.length() <= 0) {
-			throw new MissingAttrException("actor");
-		}
-
-		// check for required attributes
-		if (value == null || value.length() <= 0) {
-			throw new MissingAttrException("value");
-		}
-
-		// check for required attributes
-		if (unit == null || unit.length() <= 0) {
-			throw new MissingAttrException("unit");
-		}
-
-		HMeasure hmeasure = new HMeasure();
-		hmeasure.setValue(value);
-		hmeasure.setUnit(unit);
-		return buildMessage(actor, "hMeasure", hmeasure, options);
 	}
 
 	/**
