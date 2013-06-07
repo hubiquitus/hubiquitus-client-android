@@ -65,7 +65,10 @@ public class HTransportOptions {
 		this.login = login;
 	}
 	
-	
+	public String getBareURN(){
+    		String splitted = fullUrn.split("/")[0];
+    		return splitted;
+    	}
 
 	public String getFullUrn() {
 		return fullUrn;

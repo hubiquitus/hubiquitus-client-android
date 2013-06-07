@@ -350,7 +350,6 @@ public class HClientPhoneGapPlugin extends Plugin implements HStatusDelegate, HM
 	private void setFullUrnAndResource(){
 		if(!isFullJidSet){
 			this.webView.post(new Runnable() {
-				
 				@Override
 				public void run() {
 					sendJavascript("window.plugins.hClient.fullUrn=" +"'"+ hclient.getFullUrn()+"'");
