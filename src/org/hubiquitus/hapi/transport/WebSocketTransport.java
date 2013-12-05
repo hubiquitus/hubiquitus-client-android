@@ -1,7 +1,13 @@
 package org.hubiquitus.hapi.transport;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 
 import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.transport.exception.TransportException;
@@ -20,6 +26,8 @@ import android.util.Log;
  * 
  */
 public class WebSocketTransport extends Transport {
+	
+	private static final String WSS = "wss";
 
 	/**
 	 * Web socket client
@@ -87,8 +95,24 @@ public class WebSocketTransport extends Transport {
 					WebSocketTransport.this.transportListener.onDisconnect();
 				}
 			};
+			
+			if (endpoint.startsWith(WSS)) {
+				SSLContext sslContext = null;
+                sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, null, null);
+
+                SSLSocketFactory factory = sslContext.getSocketFactory();
+                this.webSocketClient.setSocket(factory.createSocket());
+			}
+			
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			Log.e(getClass().getCanonicalName(), e.getMessage());
+		} catch (NoSuchAlgorithmException e) {
+			Log.e(getClass().getCanonicalName(), e.getMessage());
+		} catch (KeyManagementException e) {
+			Log.e(getClass().getCanonicalName(), e.getMessage());
+		} catch (IOException e) {
+			Log.e(getClass().getCanonicalName(), e.getMessage());
 		}
 	}
 
