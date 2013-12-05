@@ -3,7 +3,7 @@ package org.hubiquitus.hapi;
 import org.hubiquitus.hapi.listener.HubiquitusListener;
 import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.transport.Transport;
-import org.hubiquitus.hapi.transport.WebSocketTransport;
+import org.hubiquitus.hapi.transport.XhrTransport;
 import org.hubiquitus.hapi.transport.callback.ReplyCallback;
 import org.hubiquitus.hapi.transport.exception.TransportException;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
@@ -35,7 +35,7 @@ public class Hubiquitus {
 	public Hubiquitus(HubiquitusListener hubiquitusListener) {
 		this.hubiquitusListener = hubiquitusListener;
 		// TODO : select available transport
-		this.transport = new WebSocketTransport(new TransportListener() {
+		this.transport = new XhrTransport(new TransportListener() {
 
 			@Override
 			public void onConnect() {

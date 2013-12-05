@@ -11,7 +11,10 @@ import org.hubiquitus.hapi.message.MessageType;
 import org.hubiquitus.hapi.transport.callback.ReplyCallback;
 import org.hubiquitus.hapi.transport.exception.TransportException;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 /**
  * Transport class
@@ -95,25 +98,36 @@ public abstract class Transport {
 	 *            the response listener
 	 * @return a json object describing the message
 	 * @throws TransportException
+	 * @throws JSONException 
 	 */
 	public JSONObject send(String to, Object content, int timeout,
 			ResponseListener responseListener) throws TransportException {
-		JSONObject jsonMessage = buildMessage(to, content);
-		final String messageId = jsonMessage.getString(ID);
-		this.sendTimeoutTimer = new Timer();
-		this.sendTimeoutTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				ResponseListener responseListener = responseQueue
-						.get(messageId);
-				if (responseListener != null) {
-					JSONObject jsonErr = new JSONObject();
-					jsonErr.put(ERR, TIMEOUT);
-					responseListener.onResponse(jsonErr, null, null);
-					responseQueue.remove(messageId);
+		
+		JSONObject jsonMessage = null;
+		try {
+			jsonMessage = buildMessage(to, content);
+			final String messageId = jsonMessage.getString(ID);
+			this.sendTimeoutTimer = new Timer();
+			this.sendTimeoutTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					ResponseListener responseListener = responseQueue
+							.get(messageId);
+					if (responseListener != null) {
+						JSONObject jsonErr = new JSONObject();
+						try {
+							jsonErr.put(ERR, TIMEOUT);
+						} catch (JSONException e) {
+							Log.e(getClass().getCanonicalName(), e.getMessage());
+						}
+						responseListener.onResponse(jsonErr, null, null);
+						responseQueue.remove(messageId);
+					}
 				}
-			}
-		}, timeout);
+			}, timeout);
+		} catch (JSONException e) {
+			Log.e(getClass().getCanonicalName(), e.getMessage());
+		}
 		return jsonMessage;
 	}
 
@@ -123,8 +137,9 @@ public abstract class Transport {
 	 * @param authData
 	 *            authentication data
 	 * @return the builded message
+	 * @throws JSONException 
 	 */
-	protected JSONObject buildAuthData(JSONObject authData) {
+	protected JSONObject buildAuthData(JSONObject authData) throws JSONException {
 		JSONObject authDataMessage = new JSONObject();
 		authDataMessage.put(TYPE, MessageType.login.name());
 		authDataMessage.put(AUTH_DATA, authData);
@@ -139,8 +154,9 @@ public abstract class Transport {
 	 * @param content
 	 *            the content of the message
 	 * @return the builded message
+	 * @throws JSONException 
 	 */
-	protected JSONObject buildMessage(String to, Object content) {
+	protected JSONObject buildMessage(String to, Object content) throws JSONException {
 		JSONObject message = new JSONObject();
 		message.put(TO, to);
 		message.put(ID, UUID.randomUUID().toString());
@@ -162,9 +178,10 @@ public abstract class Transport {
 	 * @param payload
 	 *            the payload of the message
 	 * @return
+	 * @throws JSONException 
 	 */
 	protected JSONObject buildResponse(String from, String messageId,
-			Object err, Object content) {
+			Object err, Object content) throws JSONException {
 		JSONObject response = new JSONObject();
 		response.put(TYPE, MessageType.response.name());
 		response.put(ID, messageId);
@@ -183,9 +200,10 @@ public abstract class Transport {
 	 * 
 	 * @param jsonMessage
 	 *            a json message
+	 * @throws JSONException 
 	 */
-	protected void handleMessage(JSONObject jsonMessage) {
-
+	protected void handleMessage(JSONObject jsonMessage) throws JSONException {
+		
 		JSONObject jsonPayload = null;
 		String messageId = null;
 		String from = null;
@@ -223,12 +241,15 @@ public abstract class Transport {
 				transportListener.onMessage(from, content, new ReplyCallback() {
 					@Override
 					public void reply(Object err, Object content) {
-						JSONObject response = buildResponse(finalFrom,
-								finalMessageId, err, content);
 						try {
+							JSONObject response = buildResponse(finalFrom,
+								finalMessageId, err, content);
+						
 							Transport.this.send(response);
 						} catch (TransportException e) {
-							e.printStackTrace();
+							Log.e(getClass().getCanonicalName(), e.getMessage());
+						} catch (JSONException e) {
+							Log.e(getClass().getCanonicalName(), e.getMessage());
 						}
 					}
 				});

@@ -8,7 +8,10 @@ import org.hubiquitus.hapi.transport.exception.TransportException;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 /**
  * Web socket transport class
@@ -54,14 +57,24 @@ public class WebSocketTransport extends Transport {
 
 				@Override
 				public void onOpen(ServerHandshake arg0) {
-					JSONObject authDataMessage = buildAuthData(authData);
-					this.send(authDataMessage.toString());
+					JSONObject authDataMessage = null;
+					try {
+						authDataMessage = buildAuthData(authData);
+						this.send(authDataMessage.toString());
+					} catch (JSONException e) {
+						Log.e(getClass().getCanonicalName(), e.getMessage());
+					}
 				}
 
 				@Override
 				public void onMessage(String mesage) {
-					JSONObject jsonMessage = new JSONObject(mesage);
-					WebSocketTransport.this.handleMessage(jsonMessage);
+					JSONObject jsonMessage = null;
+					try {
+						jsonMessage = new JSONObject(mesage);
+						WebSocketTransport.this.handleMessage(jsonMessage);
+					} catch (JSONException e) {
+						Log.e(getClass().getCanonicalName(), e.getMessage());
+					}
 				}
 
 				@Override
@@ -83,7 +96,9 @@ public class WebSocketTransport extends Transport {
 	public void connect(String endpoint, JSONObject authData) {
 		this.authData = authData;
 		if (this.webSocketClient == null) {
-			this.initSocket(endpoint);
+			StringBuilder sb = new StringBuilder();
+			sb.append(endpoint).append("/websocket");
+			this.initSocket(sb.toString());
 			this.webSocketClient.connect();
 		}
 	}
@@ -96,7 +111,11 @@ public class WebSocketTransport extends Transport {
 			throw new TransportException("webSocketClient is null");
 		}
 		this.webSocketClient.send(jsonMessage.toString());
-		this.responseQueue.put(jsonMessage.getString(ID), responseListener);
+		try {
+			this.responseQueue.put(jsonMessage.getString(ID), responseListener);
+		} catch (JSONException e) {
+			Log.e(getClass().getCanonicalName(), e.getMessage());
+		}
 		return jsonMessage;
 	}
 	
