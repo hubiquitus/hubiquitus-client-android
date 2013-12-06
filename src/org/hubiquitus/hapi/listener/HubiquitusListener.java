@@ -1,6 +1,6 @@
 package org.hubiquitus.hapi.listener;
 
-import org.hubiquitus.hapi.transport.callback.ReplyCallback;
+import org.hubiquitus.hapi.message.Request;
 
 public interface HubiquitusListener {
 
@@ -8,7 +8,7 @@ public interface HubiquitusListener {
 	
 	void onDisconnect();
 	
-	void onMessage(String from, Object content, ReplyCallback replyCallback);
+	void onMessage(Request request);
 
 	void onError(String message);
 	

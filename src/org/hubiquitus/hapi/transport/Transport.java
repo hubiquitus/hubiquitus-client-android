@@ -7,7 +7,9 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 import org.hubiquitus.hapi.listener.ResponseListener;
+import org.hubiquitus.hapi.message.Message;
 import org.hubiquitus.hapi.message.MessageType;
+import org.hubiquitus.hapi.message.Request;
 import org.hubiquitus.hapi.transport.callback.ReplyCallback;
 import org.hubiquitus.hapi.transport.exception.TransportException;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
@@ -29,6 +31,7 @@ public abstract class Transport {
 	protected static final String TO = "to";
 	protected static final String FROM = "from";
 	protected static final String PAYLOAD = "payload";
+	protected static final String CB = "cb";
 	protected static final String ID = "id";
 	protected static final String DATE = "date";
 	protected static final String CONTENT = "content";
@@ -98,14 +101,14 @@ public abstract class Transport {
 	 *            the response listener
 	 * @return a json object describing the message
 	 * @throws TransportException
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	public JSONObject send(String to, Object content, int timeout,
 			ResponseListener responseListener) throws TransportException {
-		
+
 		JSONObject jsonMessage = null;
 		try {
-			jsonMessage = buildMessage(to, content);
+			jsonMessage = buildMessage(to, content, responseListener != null);
 			final String messageId = jsonMessage.getString(ID);
 			this.sendTimeoutTimer = new Timer();
 			this.sendTimeoutTimer.schedule(new TimerTask() {
@@ -120,7 +123,7 @@ public abstract class Transport {
 						} catch (JSONException e) {
 							Log.e(getClass().getCanonicalName(), e.getMessage());
 						}
-						responseListener.onResponse(jsonErr, null, null);
+						responseListener.onResponse(jsonErr, null);
 						responseQueue.remove(messageId);
 					}
 				}
@@ -137,9 +140,10 @@ public abstract class Transport {
 	 * @param authData
 	 *            authentication data
 	 * @return the builded message
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
-	protected JSONObject buildAuthData(JSONObject authData) throws JSONException {
+	protected JSONObject buildAuthData(JSONObject authData)
+			throws JSONException {
 		JSONObject authDataMessage = new JSONObject();
 		authDataMessage.put(TYPE, MessageType.login.name());
 		authDataMessage.put(AUTH_DATA, authData);
@@ -153,46 +157,81 @@ public abstract class Transport {
 	 *            the recipient of the message
 	 * @param content
 	 *            the content of the message
+	 * @param cb
+	 *            true if callback needed
 	 * @return the builded message
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
-	protected JSONObject buildMessage(String to, Object content) throws JSONException {
+	protected JSONObject buildMessage(String to, Object content, boolean cb)
+			throws JSONException {
 		JSONObject message = new JSONObject();
 		message.put(TO, to);
 		message.put(ID, UUID.randomUUID().toString());
 		message.put(DATE, new Date().getTime());
-		message.put(TYPE, MessageType.message.name());
-		JSONObject jsonContent = new JSONObject();
-		jsonContent.put(CONTENT, content);
-		message.put(PAYLOAD, jsonContent);
+		message.put(TYPE, MessageType.req.name());
+		message.put(CONTENT, content);
+		if (cb) {
+			message.put(CB, cb);
+		}
 		return message;
 	}
 
 	/**
-	 * Build a hubiquitus response message
+	 * Builds a hubiquitus response object
 	 * 
 	 * @param from
 	 *            recipient of the message
 	 * @param messageId
 	 *            the message id of the message
-	 * @param payload
-	 *            the payload of the message
+	 * @param err
+	 *            the error
+	 * @param content
+	 *            the content of the message
 	 * @return
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	protected JSONObject buildResponse(String from, String messageId,
 			Object err, Object content) throws JSONException {
 		JSONObject response = new JSONObject();
-		response.put(TYPE, MessageType.response.name());
+		response.put(TYPE, MessageType.res.name());
 		response.put(ID, messageId);
 		response.put(TO, from);
-		JSONObject jsonContent = new JSONObject();
-		jsonContent.put(CONTENT, content);
-		response.put(PAYLOAD, jsonContent);
-		JSONObject jsonErr = new JSONObject();
-		jsonErr.put(ERR, err);
-		response.put(PAYLOAD, jsonErr);
+		response.put(CONTENT, content);
+		response.put(ERR, err);
 		return response;
+	}
+
+	/**
+	 * Build a hubiquitus request response object
+	 * 
+	 * @param from
+	 *            recipient of the message
+	 * @param content
+	 *            the content of the message
+	 * @param messageId
+	 *            the message id of the message
+	 * @return
+	 */
+	private Request buildRequest(final String from, Object content,
+			final String messageId) {
+		Request request = new Request();
+		request.setContent(content);
+		request.setFrom(from);
+		request.setReplyCallback(new ReplyCallback() {
+			@Override
+			public void reply(Object err, Object content) {
+				try {
+					JSONObject response = buildResponse(from, messageId, err,
+							content);
+					Transport.this.send(response);
+				} catch (TransportException e) {
+					Log.e(getClass().getCanonicalName(), e.getMessage());
+				} catch (JSONException e) {
+					Log.e(getClass().getCanonicalName(), e.getMessage());
+				}
+			}
+		});
+		return request;
 	}
 
 	/**
@@ -200,11 +239,10 @@ public abstract class Transport {
 	 * 
 	 * @param jsonMessage
 	 *            a json message
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	protected void handleMessage(JSONObject jsonMessage) throws JSONException {
 		
-		JSONObject jsonPayload = null;
 		String messageId = null;
 		String from = null;
 		Object err = null, content = null;
@@ -214,16 +252,13 @@ public abstract class Transport {
 		if (jsonMessage.has(FROM)) {
 			from = jsonMessage.getString(FROM);
 		}
-		if (jsonMessage.has(PAYLOAD)) {
-			jsonPayload = jsonMessage.getJSONObject(PAYLOAD);
-			if (jsonPayload.has(ERR)) {
-				err = jsonPayload.get(ERR);
+		if (jsonMessage.has(CONTENT)) {
+			content = jsonMessage.get(CONTENT);
+			if (jsonMessage.has(ERR)) {
+				err = jsonMessage.get(ERR);
 				if (err == JSONObject.NULL) {
 					err = null;
 				}
-			}
-			if (jsonPayload.has(CONTENT)) {
-				content = jsonPayload.get(CONTENT);
 			}
 		}
 
@@ -235,30 +270,18 @@ public abstract class Transport {
 			case login:
 				this.transportListener.onConnect();
 				break;
-			case message:
-				final String finalFrom = from,
-				finalMessageId = messageId;
-				transportListener.onMessage(from, content, new ReplyCallback() {
-					@Override
-					public void reply(Object err, Object content) {
-						try {
-							JSONObject response = buildResponse(finalFrom,
-								finalMessageId, err, content);
-						
-							Transport.this.send(response);
-						} catch (TransportException e) {
-							Log.e(getClass().getCanonicalName(), e.getMessage());
-						} catch (JSONException e) {
-							Log.e(getClass().getCanonicalName(), e.getMessage());
-						}
-					}
-				});
+			case req:
+				Request request = buildRequest(from, content, messageId);
+				transportListener.onMessage(request);
 				break;
-			case response:
+			case res:
 				ResponseListener responseListener = responseQueue
 						.get(messageId);
 				if (responseListener != null) {
-					responseListener.onResponse(err, from, content);
+					Message message = new Message();
+					message.setContent(content);
+					message.setFrom(from);
+					responseListener.onResponse(err, message);
 					responseQueue.remove(messageId);
 				}
 				break;

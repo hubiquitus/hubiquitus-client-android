@@ -5,15 +5,18 @@ import java.util.TimerTask;
 
 import org.hubiquitus.hapi.listener.HubiquitusListener;
 import org.hubiquitus.hapi.listener.ResponseListener;
-import org.hubiquitus.hapi.transport.callback.ReplyCallback;
+import org.hubiquitus.hapi.message.Message;
+import org.hubiquitus.hapi.message.Request;
 import org.hubiquitus.hapi.transport.exception.TransportException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.TextView;
 
 /**
  * Hubiquitus connection test activity
@@ -32,8 +35,38 @@ public class MainActivity extends Activity implements HubiquitusListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		initConnection();
+	}
+	
+	private void setStatusText(final String status) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				TextView textView = (TextView) findViewById(R.id.status);
+				textView.setText(status);
+			}
+		});
+	}
+	
+	private void setResponseText(final String response) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				TextView textView = (TextView) findViewById(R.id.response);
+				textView.setText(response);
+			}
+		});
+	}
+	
+	private void setRequestText(final String request) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				TextView textView = (TextView) findViewById(R.id.request);
+				textView.setText(request);
+			}
+		});
 	}
 
 	@Override
@@ -48,7 +81,7 @@ public class MainActivity extends Activity implements HubiquitusListener {
 	 */
 	private void initConnection() {
 
-		hubiquitus = new Hubiquitus(this);
+		hubiquitus = new Hubiquitus(this, new Handler());
 
 		JSONObject authData = new JSONObject();
 		try {
@@ -71,7 +104,7 @@ public class MainActivity extends Activity implements HubiquitusListener {
 					e.printStackTrace();
 				}
 			}
-		}, 30000);
+		}, 5000);
 	}
 
 	@Override
@@ -79,10 +112,11 @@ public class MainActivity extends Activity implements HubiquitusListener {
 		if (BuildConfig.DEBUG) {
 			Log.d(getClass().getCanonicalName(), "Connected");
 		}
+		setStatusText("Connected");
 		try {
-			hubiquitus.send("ping", "PING", 5000, new ResponseListener() {
+			hubiquitus.send("ping", "PING", new ResponseListener() {
 				@Override
-				public void onResponse(Object err, String from, Object content) {
+				public void onResponse(Object err, Message message) {
 					if (err != null) {
 						if (BuildConfig.DEBUG) {
 							StringBuilder sb = new StringBuilder();
@@ -93,10 +127,13 @@ public class MainActivity extends Activity implements HubiquitusListener {
 						if (BuildConfig.DEBUG) {
 							StringBuilder sb = new StringBuilder();
 							sb.append("onResponse : ")
-									.append(content.toString())
-									.append(" from ").append(from);
+									.append(message.getContent().toString())
+									.append(" from ").append(message.getFrom());
 							Log.d(getClass().getCanonicalName(), sb.toString());
 						}
+					}
+					if (message != null) {
+						setResponseText(message.toString());
 					}
 				}
 			});
@@ -110,16 +147,20 @@ public class MainActivity extends Activity implements HubiquitusListener {
 		if (BuildConfig.DEBUG) {
 			Log.d(getClass().getCanonicalName(), "Disconnected");
 		}
+		setStatusText("Disconnected");
 	}
 
 	@Override
-	public void onMessage(String from, Object content,
-			ReplyCallback replyCallback) {
+	public void onMessage(Request request) {
 		if (BuildConfig.DEBUG) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("onMessage : ").append(content.toString())
-					.append(" from ").append(from);
+			sb.append("onMessage : ").append(request.getContent())
+					.append(" from ").append(request.getFrom());
 			Log.d(getClass().getCanonicalName(), sb.toString());
+			
+			setRequestText(request.toString());
+			
+			request.getReplyCallback().reply(null, "PING PONG");
 		}
 	}
 
@@ -131,5 +172,6 @@ public class MainActivity extends Activity implements HubiquitusListener {
 			Log.d(getClass().getCanonicalName(), sb.toString());
 		}
 	}
+	
 
 }

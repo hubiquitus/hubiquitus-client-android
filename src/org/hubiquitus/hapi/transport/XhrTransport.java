@@ -49,12 +49,13 @@ public class XhrTransport extends Transport {
 	
 	public XhrTransport(TransportListener transportListener) {
 		super(transportListener);
-		this.serverId = TransportUtils.getServerId();
-		this.sessionId = TransportUtils.getSessionId();
 	}
 
 	@Override
 	public void connect(String endpoint, JSONObject authData) {
+		
+		this.serverId = TransportUtils.getServerId();
+		this.sessionId = TransportUtils.getSessionId();
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(endpoint).append("/").append(this.serverId).append("/").append(this.sessionId);
@@ -213,7 +214,6 @@ public class XhrTransport extends Transport {
 								Log.e(getClass().getCanonicalName(), e.getMessage());
 							}
 						}
-						
 					}
 				
 				} catch (IOException e) {

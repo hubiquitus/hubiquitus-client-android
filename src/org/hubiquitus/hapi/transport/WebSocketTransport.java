@@ -75,10 +75,11 @@ public class WebSocketTransport extends Transport {
 				}
 
 				@Override
-				public void onMessage(String mesage) {
+				public void onMessage(String message) {
+					
 					JSONObject jsonMessage = null;
 					try {
-						jsonMessage = new JSONObject(mesage);
+						jsonMessage = new JSONObject(message);
 						WebSocketTransport.this.handleMessage(jsonMessage);
 					} catch (JSONException e) {
 						Log.e(getClass().getCanonicalName(), e.getMessage());
@@ -88,6 +89,7 @@ public class WebSocketTransport extends Transport {
 				@Override
 				public void onError(Exception arg0) {
 					WebSocketTransport.this.transportListener.onError(arg0.getMessage());
+					arg0.printStackTrace();
 				}
 
 				@Override
@@ -97,6 +99,7 @@ public class WebSocketTransport extends Transport {
 			};
 			
 			if (endpoint.startsWith(WSS)) {
+				
 				SSLContext sslContext = null;
                 sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, null, null);
