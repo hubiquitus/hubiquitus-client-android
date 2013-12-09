@@ -9,12 +9,17 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
 
 import android.util.Log;
 
 public class ServiceManager {
+	
+	public enum Method {
+		POST, GET
+	}
 	
 	public static ServiceResponse initSerConnectionService(String serverUrl) throws ClientProtocolException, IOException {
 		
@@ -29,7 +34,7 @@ public class ServiceManager {
 	}
 	
 
-	public static ServiceResponse requestService(String serverUrl, String service,
+	public static ServiceResponse requestService(String serverUrl, String service, Method method,
 			JSONObject request) throws ClientProtocolException, IOException {
 
 		final HttpClient httpClient = ConnexionService.getConnexionService()
@@ -37,22 +42,37 @@ public class ServiceManager {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(serverUrl).append(service);
-		HttpPost httpost = new HttpPost(sb.toString());
-		if (request != null) {
+		
+		HttpRequestBase httpRequest = null;
+		switch (method) {
+		case GET:
+			httpRequest = new HttpGet(sb.toString());
+			break;
+		case POST:
+			httpRequest = new HttpPost(sb.toString());
+			if (request != null) {
 
-			StringEntity entity = new StringEntity("["
-					+ JSONObject.quote(request.toString()) + "]");
-			httpost.setEntity(entity);
-			httpost.setHeader("Content-Type", "text/plain");
+				StringEntity entity = new StringEntity("["
+						+ JSONObject.quote(request.toString()) + "]");
+				((HttpPost) httpRequest).setEntity(entity);
+				httpRequest.setHeader("Content-Type", "text/plain");
+			}
+			break;
+		default:
+			break;
 		}
-
+		
 		ServiceResponse serviceResponse = null;
-		HttpResponse httpResponse = httpClient.execute(httpost);
-		try {
-			serviceResponse = readResponse(httpResponse);
-		} catch (IOException e) {
-			Log.e("ServiceManager", e.getMessage());
+		
+		if (httpRequest != null) {
+			HttpResponse httpResponse = httpClient.execute(httpRequest);
+			try {
+				serviceResponse = readResponse(httpResponse);
+			} catch (IOException e) {
+				Log.e("ServiceManager", e.getMessage());
+			}
 		}
+		
 		return serviceResponse;
 	}
 

@@ -11,6 +11,12 @@ public interface TransportListener {
 	
 	void onMessage(Request request);
 	
+	void onWebSocketSupported();
+	
+	void onWebSocketReady();
+	
+	void onXhrClosed();
+	
 	void onError(String message);
 	
 }

@@ -29,6 +29,7 @@ import android.util.Log;
 public class XhrTransport extends Transport {
 	
 	private static final String SOCKJS_START_MESSAGE = "a";
+	private static final String INFO = "/info";
 	private static final String XHR = "/xhr";
 	private static final String XHR_SEND = "/xhr_send";
 	
@@ -39,6 +40,8 @@ public class XhrTransport extends Transport {
 	private String fullUrl;
 	
 	private boolean isConnected;
+	
+	private boolean close = false;
 	
 	/**
 	 * Poll thread
@@ -52,7 +55,7 @@ public class XhrTransport extends Transport {
 	}
 
 	@Override
-	public void connect(String endpoint, JSONObject authData) {
+	public void connect(final String endpoint, JSONObject authData) {
 		
 		this.serverId = TransportUtils.getServerId();
 		this.sessionId = TransportUtils.getSessionId();
@@ -74,10 +77,15 @@ public class XhrTransport extends Transport {
 			public void run() {
 				
 				try {
-					ServiceResponse responseConnect = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, null);
+					ServiceResponse responseConnect = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
 					if (responseConnect.getStatus() == 200) {
-						ServiceResponse responseAuth = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, authDataMessage);
+						ServiceResponse responseAuth = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, authDataMessage);
 						if (responseAuth.getStatus() == 204) {
+							// Test if web socket is supported
+							ServiceResponse responseWSSupported = ServiceManager.requestService(endpoint, INFO, ServiceManager.Method.GET, null);
+							if (parseWebSocketSupported(responseWSSupported)) {
+								XhrTransport.this.transportListener.onWebSocketSupported();
+							}
 							isConnected = true;
 							pollThread = new PollThread();
 							pollThread.start();
@@ -91,12 +99,31 @@ public class XhrTransport extends Transport {
 					}
 				} catch (ClientProtocolException e) {
 					Log.e(getClass().getCanonicalName(), e.getMessage());
+					e.printStackTrace();
 				} catch (IOException e) {
 					Log.e(getClass().getCanonicalName(), e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		}).start();
 		
+	}
+	
+	private boolean parseWebSocketSupported(ServiceResponse response) {
+		String text = response.getText();
+		if (text != null) {
+			try {
+				JSONObject jsonObject = new JSONObject(text);
+				if (jsonObject.has("websocket")) {
+					return jsonObject.getBoolean("websocket");
+				}
+			} catch (JSONException e) {
+				Log.e(getClass().getCanonicalName(), e.getMessage());
+				e.printStackTrace();
+			}
+			
+		}
+		return false;
 	}
 
 	@Override
@@ -160,6 +187,10 @@ public class XhrTransport extends Transport {
 		e.printStackTrace();
 	}
 	
+	public void closeConnection() {
+		this.close = true;
+	}
+	
 	/**
 	 * Thread used for xhr-polling
 	 * 
@@ -175,10 +206,16 @@ public class XhrTransport extends Transport {
 				
 				try {
 					
+					if (close) {
+						XhrTransport.this.transportListener.onXhrClosed();
+						isConnected = false;
+						break;
+					}
+					
 					if (!queue.isEmpty()) {
 						if (queue.size() == 1) {
 							Message message = queue.poll();
-							ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, message.getJsonContent());
+							ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND,ServiceManager.Method.POST, message.getJsonContent());
 							if (message.getResponseListener() != null) {
 								XhrTransport.this.responseQueue.put(message.getJsonContent().getString(ID), message.getResponseListener());
 							}
@@ -187,19 +224,18 @@ public class XhrTransport extends Transport {
 							Iterator<Message> iter = queue.iterator();
 							while (iter.hasNext()) {
 								Message message = iter.next();
-								ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, message.getJsonContent());
+								ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, message.getJsonContent());
 								if (message.getResponseListener() != null) {
 									XhrTransport.this.responseQueue.put(message.getJsonContent().getString(ID), message.getResponseListener());
 								}
 								iter.remove();
 							}
 						}
-						
 					}
 					
 					else {
 					
-						ServiceResponse response = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, null);
+						ServiceResponse response = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
 						String text = response.getText();
 						
 						if (text.startsWith(SOCKJS_START_MESSAGE)) {
@@ -233,4 +269,5 @@ public class XhrTransport extends Transport {
 		}
 		
 	}
+	
 }
