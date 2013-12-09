@@ -65,6 +65,7 @@ public class WebSocketTransport extends Transport {
 
 				@Override
 				public void onOpen(ServerHandshake arg0) {
+					WebSocketTransport.this.transportListener.onWebSocketReady();
 					JSONObject authDataMessage = null;
 					try {
 						authDataMessage = buildAuthData(authData);
@@ -135,7 +136,7 @@ public class WebSocketTransport extends Transport {
 			ResponseListener responseListener) throws TransportException {
 		JSONObject jsonMessage = super.send(to, content, timeout, responseListener);
 		if (this.webSocketClient == null) {
-			throw new TransportException("webSocketClient is null");
+			throw new TransportException("webSocketClient is null in send");
 		}
 		this.webSocketClient.send(jsonMessage.toString());
 		try {

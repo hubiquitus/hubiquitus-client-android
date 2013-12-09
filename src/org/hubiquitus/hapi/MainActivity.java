@@ -1,8 +1,5 @@
 package org.hubiquitus.hapi;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.hubiquitus.hapi.listener.HubiquitusListener;
 import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.message.Message;
@@ -15,7 +12,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -24,7 +23,7 @@ import android.widget.TextView;
  * @author t.bourgeois
  *
  */
-public class MainActivity extends Activity implements HubiquitusListener {
+public class MainActivity extends Activity implements HubiquitusListener, OnClickListener {
 
 	/**
 	 * Hubiquitus object
@@ -36,9 +35,62 @@ public class MainActivity extends Activity implements HubiquitusListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		initView();
 		initConnection();
 	}
 	
+	@Override
+	protected void onDestroy() {
+		if (hubiquitus != null) {
+			try {
+				hubiquitus.disconnect();
+			} catch (TransportException e) {
+				e.printStackTrace();
+			}
+		}
+		super.onDestroy();
+	}
+	
+	/**
+	 * Initializes the view
+	 */
+	private void initView() {
+		Button btnDisconnect = (Button) findViewById(R.id.btn_disconnect);
+		Button btnSend = (Button) findViewById(R.id.btn_send);
+		
+		btnDisconnect.setOnClickListener(this);
+		btnSend.setOnClickListener(this);
+	}
+	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_disconnect:
+			try {
+				if (hubiquitus != null) {
+					hubiquitus.disconnect();
+				}
+			} catch (TransportException e) {
+				e.printStackTrace();
+			}
+			break;
+		case R.id.btn_send:
+			try {
+				hubiquitus.send("ping", "PING", new ResponseListener() {
+					@Override
+					public void onResponse(Object err, Message message) {
+						onResponseHandler(err, message);
+					}
+				});
+			} catch (TransportException e) {
+				e.printStackTrace();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
 	private void setStatusText(final String status) {
 		runOnUiThread(new Runnable() {
 			@Override
@@ -69,13 +121,6 @@ public class MainActivity extends Activity implements HubiquitusListener {
 		});
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
-
-		return true;
-	}
-
 	/**
 	 * Initializes the connection
 	 */
@@ -92,61 +137,15 @@ public class MainActivity extends Activity implements HubiquitusListener {
 		
 		hubiquitus.connect("http://192.168.2.105:8888/hubiquitus",
 				authData);
-		
-		// Disconnect
-		Timer disconnectTimer = new Timer();
-		disconnectTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				try {
-					hubiquitus.disconnect();
-				} catch (TransportException e) {
-					e.printStackTrace();
-				}
-			}
-		}, 5000);
 	}
 
 	@Override
 	public void onConnect() {
-		if (BuildConfig.DEBUG) {
-			Log.d(getClass().getCanonicalName(), "Connected");
-		}
 		setStatusText("Connected");
-		try {
-			hubiquitus.send("ping", "PING", new ResponseListener() {
-				@Override
-				public void onResponse(Object err, Message message) {
-					if (err != null) {
-						if (BuildConfig.DEBUG) {
-							StringBuilder sb = new StringBuilder();
-							sb.append("onResponse error : ").append(err);
-							Log.d(getClass().getCanonicalName(), sb.toString());
-						}
-					} else {
-						if (BuildConfig.DEBUG) {
-							StringBuilder sb = new StringBuilder();
-							sb.append("onResponse : ")
-									.append(message.getContent().toString())
-									.append(" from ").append(message.getFrom());
-							Log.d(getClass().getCanonicalName(), sb.toString());
-						}
-					}
-					if (message != null) {
-						setResponseText(message.toString());
-					}
-				}
-			});
-		} catch (TransportException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
-		}
 	}
 
 	@Override
 	public void onDisconnect() {
-		if (BuildConfig.DEBUG) {
-			Log.d(getClass().getCanonicalName(), "Disconnected");
-		}
 		setStatusText("Disconnected");
 	}
 
@@ -157,11 +156,9 @@ public class MainActivity extends Activity implements HubiquitusListener {
 			sb.append("onMessage : ").append(request.getContent())
 					.append(" from ").append(request.getFrom());
 			Log.d(getClass().getCanonicalName(), sb.toString());
-			
-			setRequestText(request.toString());
-			
-			request.getReplyCallback().reply(null, "PING PONG");
 		}
+		setRequestText(request.toString());
+		request.getReplyCallback().reply(null, "PING PONG");
 	}
 
 	@Override
@@ -170,6 +167,27 @@ public class MainActivity extends Activity implements HubiquitusListener {
 			StringBuilder sb = new StringBuilder();
 			sb.append("onError : ").append(message);
 			Log.d(getClass().getCanonicalName(), sb.toString());
+		}
+	}
+	
+	private void onResponseHandler(Object err, Message message) {
+		if (err != null) {
+			if (BuildConfig.DEBUG) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("onResponse error : ").append(err);
+				Log.d(getClass().getCanonicalName(), sb.toString());
+			}
+		} else {
+			if (BuildConfig.DEBUG) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("onResponse : ")
+						.append(message.getContent().toString())
+						.append(" from ").append(message.getFrom());
+				Log.d(getClass().getCanonicalName(), sb.toString());
+			}
+		}
+		if (message != null) {
+			setResponseText(message.toString());
 		}
 	}
 	
