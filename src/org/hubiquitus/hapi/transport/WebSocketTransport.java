@@ -65,7 +65,6 @@ public class WebSocketTransport extends Transport {
 
 				@Override
 				public void onOpen(ServerHandshake arg0) {
-					WebSocketTransport.this.transportListener.onWebSocketReady();
 					JSONObject authDataMessage = null;
 					try {
 						authDataMessage = buildAuthData(authData);
@@ -125,7 +124,7 @@ public class WebSocketTransport extends Transport {
 		this.authData = authData;
 		if (this.webSocketClient == null) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(endpoint).append("/websocket");
+			sb.append(endpoint).append("/websocket"); //.append("/").append(serverId).append("/").append(sessionId);;
 			this.initSocket(sb.toString());
 			this.webSocketClient.connect();
 		}

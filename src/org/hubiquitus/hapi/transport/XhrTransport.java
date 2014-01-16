@@ -33,9 +33,6 @@ public class XhrTransport extends Transport {
 	private static final String XHR = "/xhr";
 	private static final String XHR_SEND = "/xhr_send";
 	
-	private String serverId;
-	private String sessionId;
-	
 	private JSONObject authDataMessage;
 	private String fullUrl;
 	
@@ -57,11 +54,11 @@ public class XhrTransport extends Transport {
 	@Override
 	public void connect(final String endpoint, JSONObject authData) {
 		
-		this.serverId = TransportUtils.getServerId();
-		this.sessionId = TransportUtils.getSessionId();
+		serverId = TransportUtils.getServerId();
+		sessionId = TransportUtils.getSessionId();
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(endpoint).append("/").append(this.serverId).append("/").append(this.sessionId);
+		sb.append(endpoint).append("/").append(serverId).append("/").append(sessionId);
 		
 		this.fullUrl = sb.toString();
 		
@@ -138,6 +135,8 @@ public class XhrTransport extends Transport {
 		Message message = new Message();
 		message.setJsonContent(jsonObject);
 		queue.add(message);
+		
+		handleQueueMessages();
 	}
 	
 	@Override
@@ -149,11 +148,62 @@ public class XhrTransport extends Transport {
 		Message message = new Message();
 		message.setJsonContent(jsonMessage);
 		message.setResponseListener(responseListener);
+		
 		queue.add(message);
-			
+		
+		handleQueueMessages();
+		
 		return jsonMessage;
 	}
 	
+	/**
+	 * Handler for messages to send
+	 */
+	private void handleQueueMessages() {
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+		
+				if (!queue.isEmpty()) {
+					
+					try {
+					
+					if (queue.size() == 1) {
+						
+						Message message = queue.poll();
+						
+						if (message.getResponseListener() != null) {
+							XhrTransport.this.responseQueue.put(message.getJsonContent().getString(ID), message.getResponseListener());
+						}
+						
+						ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND,ServiceManager.Method.POST, message.getJsonContent());
+					}
+					else {
+						Iterator<Message> iter = queue.iterator();
+						while (iter.hasNext()) {
+							Message message = iter.next();
+							
+							if (message.getResponseListener() != null) {
+								XhrTransport.this.responseQueue.put(message.getJsonContent().getString(ID), message.getResponseListener());
+							}
+							
+							ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, message.getJsonContent());
+							iter.remove();
+						}
+					}
+					
+					} catch (JSONException e) {
+						Log.e(getClass().getCanonicalName(), e.getMessage());
+					} catch (IOException e) {
+						Log.e(getClass().getCanonicalName(), e.getMessage());
+					}
+				}
+			}
+		}).start();
+		
+	}
+
 	/**
 	 * Extracts a json object from 
 	 * @param text the text to parse
@@ -212,49 +262,23 @@ public class XhrTransport extends Transport {
 						break;
 					}
 					
-					if (!queue.isEmpty()) {
-						if (queue.size() == 1) {
-							Message message = queue.poll();
-							ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND,ServiceManager.Method.POST, message.getJsonContent());
-							if (message.getResponseListener() != null) {
-								XhrTransport.this.responseQueue.put(message.getJsonContent().getString(ID), message.getResponseListener());
-							}
-						}
-						else {
-							Iterator<Message> iter = queue.iterator();
-							while (iter.hasNext()) {
-								Message message = iter.next();
-								ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, message.getJsonContent());
-								if (message.getResponseListener() != null) {
-									XhrTransport.this.responseQueue.put(message.getJsonContent().getString(ID), message.getResponseListener());
+					ServiceResponse response = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
+					String text = response.getText();
+					
+					if (text.startsWith(SOCKJS_START_MESSAGE)) {
+						try {
+							List<JSONObject> jsonObjects = extractJSON(text.replaceFirst(SOCKJS_START_MESSAGE, ""));
+							if (jsonObjects != null) {
+								for (JSONObject jsonObject : jsonObjects) {
+									XhrTransport.this.handleMessage(jsonObject);
 								}
-								iter.remove();
 							}
-						}
-					}
-					
-					else {
-					
-						ServiceResponse response = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
-						String text = response.getText();
-						
-						if (text.startsWith(SOCKJS_START_MESSAGE)) {
-							try {
-								List<JSONObject> jsonObjects = extractJSON(text.replaceFirst(SOCKJS_START_MESSAGE, ""));
-								if (jsonObjects != null) {
-									for (JSONObject jsonObject : jsonObjects) {
-										XhrTransport.this.handleMessage(jsonObject);
-									}
- 								}
-							} catch (JSONException e) {
-								Log.e(getClass().getCanonicalName(), e.getMessage());
-							}
+						} catch (JSONException e) {
+							Log.e(getClass().getCanonicalName(), e.getMessage());
 						}
 					}
 				
 				} catch (IOException e) {
-					handlerPollError(e);
-				} catch (JSONException e) {
 					handlerPollError(e);
 				}
 				

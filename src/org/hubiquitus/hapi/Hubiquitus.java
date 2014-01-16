@@ -176,8 +176,8 @@ public class Hubiquitus implements TransportListener {
 	 */
 	public void send(String to, Object content,
 			ResponseListener responseListener) throws TransportException {
-		this.transport.send(to, content, defaultSendTimeout, responseListener);
 		Log.d(getClass().getCanonicalName(), "Hubiquitus send via " + this.transport);
+		this.transport.send(to, content, defaultSendTimeout, responseListener);
 	}
 	
 	/**
@@ -265,7 +265,6 @@ public class Hubiquitus implements TransportListener {
 				
 				@Override
 				public void onConnect() {
-					Log.d(getClass().getCanonicalName(),"Switch to web socket");
 					if (!Hubiquitus.this.isConnected) {
 						Hubiquitus.this.removeReconnectionHandler();
 						Hubiquitus.this.hubiquitusListener.onConnect();

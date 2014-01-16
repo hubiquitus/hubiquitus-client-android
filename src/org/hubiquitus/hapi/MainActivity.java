@@ -135,7 +135,7 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 			Log.e(getClass().getCanonicalName(), e.getMessage());
 		}
 		
-		hubiquitus.connect("http://192.168.2.105:8888/hubiquitus",
+		hubiquitus.connect("http://192.168.2.98:8888/hubiquitus",
 				authData);
 	}
 
