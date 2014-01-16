@@ -35,8 +35,12 @@ public abstract class Transport {
 	protected static final String ID = "id";
 	protected static final String DATE = "date";
 	protected static final String CONTENT = "content";
+	protected static final String CODE = "code";
 	protected static final String ERR = "err";
 	protected static final String TIMEOUT = "TIMEOUT";
+	
+	protected static String serverId;
+	protected static String sessionId;
 
 	/**
 	 * Response message queue
@@ -118,8 +122,10 @@ public abstract class Transport {
 							.get(messageId);
 					if (responseListener != null) {
 						JSONObject jsonErr = new JSONObject();
+						JSONObject jsonCode = new JSONObject();
 						try {
-							jsonErr.put(ERR, TIMEOUT);
+							jsonCode.put(CODE, TIMEOUT);
+							jsonErr.put(ERR, CODE);
 						} catch (JSONException e) {
 							Log.e(getClass().getCanonicalName(), e.getMessage());
 						}
@@ -269,12 +275,16 @@ public abstract class Transport {
 			switch (MessageType.valueOf(mesageType)) {
 			case login:
 				this.transportListener.onConnect();
+				if (this instanceof WebSocketTransport) {
+					this.transportListener.onWebSocketReady();
+				}
 				break;
 			case req:
 				Request request = buildRequest(from, content, messageId);
 				transportListener.onMessage(request);
 				break;
 			case res:
+				
 				ResponseListener responseListener = responseQueue
 						.get(messageId);
 				if (responseListener != null) {
