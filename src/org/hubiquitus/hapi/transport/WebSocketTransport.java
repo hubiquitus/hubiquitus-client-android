@@ -68,7 +68,9 @@ public class WebSocketTransport extends Transport {
 					JSONObject authDataMessage = null;
 					try {
 						authDataMessage = buildAuthData(authData);
-						this.send(authDataMessage.toString());
+						
+						WebSocketTransport.this.transportListener.onWebSocketReady();
+						//this.send(authDataMessage.toString());
 					} catch (JSONException e) {
 						Log.e(getClass().getCanonicalName(), e.getMessage());
 					}
@@ -124,7 +126,7 @@ public class WebSocketTransport extends Transport {
 		this.authData = authData;
 		if (this.webSocketClient == null) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(endpoint).append("/websocket"); //.append("/").append(serverId).append("/").append(sessionId);;
+			sb.append(endpoint).append("/").append(serverId).append("/").append(sessionId).append("/websocket");
 			this.initSocket(sb.toString());
 			this.webSocketClient.connect();
 		}

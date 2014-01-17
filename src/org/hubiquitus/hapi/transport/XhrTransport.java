@@ -60,6 +60,8 @@ public class XhrTransport extends Transport {
 		StringBuilder sb = new StringBuilder();
 		sb.append(endpoint).append("/").append(serverId).append("/").append(sessionId);
 		
+		Log.d("DEBUG", "Connect to xhr : " + sb.toString());
+		
 		this.fullUrl = sb.toString();
 		
 		try {

@@ -126,7 +126,7 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 	 */
 	private void initConnection() {
 
-		hubiquitus = new Hubiquitus(this, new Handler());
+		hubiquitus = new Hubiquitus(this);
 
 		JSONObject authData = new JSONObject();
 		try {
@@ -141,11 +141,13 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 
 	@Override
 	public void onConnect() {
+		Log.d("DEBUG", "onConnect");
 		setStatusText("Connected");
 	}
 
 	@Override
 	public void onDisconnect() {
+		Log.d("DEBUG", "onDisconnect");
 		setStatusText("Disconnected");
 	}
 
