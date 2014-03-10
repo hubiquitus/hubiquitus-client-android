@@ -11,12 +11,10 @@ public interface TransportListener {
 	
 	void onMessage(Request request);
 	
-	void onWebSocketSupported();
+	void onWebSocketPingTimeout();
 	
-	void onWebSocketReady();
+	void OnWebSocketReady();
 	
-	void onXhrClosed();
-	
-	void onError(String message);
+	void onError(Object message);
 	
 }
