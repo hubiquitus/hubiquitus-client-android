@@ -77,6 +77,7 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 		case R.id.btn_send:
 			try {
 				hubiquitus.send("ping", "PING", new ResponseListener() {
+
 					@Override
 					public void onResponse(JSONObject err, Message message) {
 						onResponseHandler(err, message);
@@ -141,11 +142,13 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 
 	@Override
 	public void onConnect() {
+		Log.d("DEBUG", "onConnect");
 		setStatusText("Connected");
 	}
 
 	@Override
 	public void onDisconnect() {
+		Log.d("DEBUG", "onDisconnect");
 		setStatusText("Disconnected");
 	}
 
@@ -159,6 +162,15 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 		}
 		setRequestText(request.toString());
 		request.getReplyCallback().reply(null, "PING PONG");
+	}
+
+	@Override
+	public void onError(Object message) {
+		if (BuildConfig.DEBUG) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("onError : ").append(message);
+			Log.d(getClass().getCanonicalName(), sb.toString());
+		}
 	}
 	
 	private void onResponseHandler(Object err, Message message) {
@@ -179,15 +191,6 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 		}
 		if (message != null) {
 			setResponseText(message.toString());
-		}
-	}
-
-	@Override
-	public void onError(Object message) {
-		if (BuildConfig.DEBUG) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("onError : ").append(message);
-			Log.d(getClass().getCanonicalName(), sb.toString());
 		}
 	}
 

@@ -263,11 +263,9 @@ public abstract class Transport {
 			}
 			if (jsonMessage.has(CONTENT)) {
 				content = jsonMessage.get(CONTENT);
-				if (jsonMessage.has(ERR)) {
-					if (!jsonMessage.isNull(ERR)) {
-						err = jsonMessage.getJSONObject(ERR);
-					}
-				}
+			}
+			if (jsonMessage.has(ERR) && !jsonMessage.isNull(ERR)) {
+				err = jsonMessage.getJSONObject(ERR);
 			}
 			if (jsonMessage.has(TYPE)) {
 	

@@ -186,7 +186,14 @@ public class WebSocketTransport extends Transport {
 		if (this.webSocketClient == null) {
 			throw new TransportException("webSocketClient is null in send");
 		}
-		this.webSocketClient.send(jsonMessage.toString());
+		
+		try {
+			this.webSocketClient.send(jsonMessage.toString());
+		} catch (Exception e) {
+			Log.e(getClass().getCanonicalName(), e.getMessage());
+			transportListener.onError(e.getMessage());
+		}
+		
 		try {
 			this.responseQueue.put(jsonMessage.getString(ID), responseListener);
 		} catch (JSONException e) {
