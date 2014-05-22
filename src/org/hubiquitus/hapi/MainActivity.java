@@ -193,6 +193,5 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 			setResponseText(message.toString());
 		}
 	}
-	
 
 }

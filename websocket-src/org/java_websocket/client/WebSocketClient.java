@@ -198,7 +198,7 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
 		int port = uri.getPort();
 		if( port == -1 ) {
 			String scheme = uri.getScheme();
-			if( scheme.equals( "wss" ) ) {
+			if( scheme.equals( "wss" ) || scheme.equals( "https" )) {
 				return WebSocket.DEFAULT_WSS_PORT;
 			} else if( scheme.equals( "ws" ) ) {
 				return WebSocket.DEFAULT_PORT;
