@@ -77,8 +77,9 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 		case R.id.btn_send:
 			try {
 				hubiquitus.send("ping", "PING", new ResponseListener() {
+
 					@Override
-					public void onResponse(Object err, Message message) {
+					public void onResponse(JSONObject err, Message message) {
 						onResponseHandler(err, message);
 					}
 				});
@@ -126,7 +127,7 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 	 */
 	private void initConnection() {
 
-		hubiquitus = new Hubiquitus(this);
+		hubiquitus = new Hubiquitus(this, new Handler());
 
 		JSONObject authData = new JSONObject();
 		try {
@@ -164,7 +165,7 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 	}
 
 	@Override
-	public void onError(String message) {
+	public void onError(Object message) {
 		if (BuildConfig.DEBUG) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("onError : ").append(message);
