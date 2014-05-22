@@ -10,6 +10,6 @@ public interface HubiquitusListener {
 	
 	void onMessage(Request request);
 
-	void onError(String message);
+	void onError(Object message);
 	
 }

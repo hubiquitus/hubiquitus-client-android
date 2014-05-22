@@ -29,11 +29,12 @@ import android.util.Log;
 public class XhrTransport extends Transport {
 	
 	private static final String SOCKJS_START_MESSAGE = "a";
-	private static final String INFO = "/info";
+	
+	private static final String HB_ARRAY = "[\"hb\"]";
+	
 	private static final String XHR = "/xhr";
 	private static final String XHR_SEND = "/xhr_send";
 	
-	private JSONObject authDataMessage;
 	private String fullUrl;
 	
 	private boolean isConnected;
@@ -52,7 +53,9 @@ public class XhrTransport extends Transport {
 	}
 
 	@Override
-	public void connect(final String endpoint, JSONObject authData) {
+	public void connect(final String endpoint, JSONObject authDataObject) {
+		
+		super.connect(endpoint, authData);
 		
 		serverId = TransportUtils.getServerId();
 		sessionId = TransportUtils.getSessionId();
@@ -60,15 +63,10 @@ public class XhrTransport extends Transport {
 		StringBuilder sb = new StringBuilder();
 		sb.append(endpoint).append("/").append(serverId).append("/").append(sessionId);
 		
-		Log.d("DEBUG", "Connect to xhr : " + sb.toString());
-		
 		this.fullUrl = sb.toString();
+		this.authData = authDataObject;
 		
-		try {
-			authDataMessage = buildAuthData(authData);
-		} catch (JSONException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
-		}
+		Log.d("DEBUG", "XHR connect to " + endpoint + " with " + authDataObject);
 		
 		new Thread(new Runnable() {
 			
@@ -78,13 +76,8 @@ public class XhrTransport extends Transport {
 				try {
 					ServiceResponse responseConnect = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
 					if (responseConnect.getStatus() == 200) {
-						ServiceResponse responseAuth = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, authDataMessage);
+						ServiceResponse responseAuth = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, buildAuthData(authData));
 						if (responseAuth.getStatus() == 204) {
-							// Test if web socket is supported
-							ServiceResponse responseWSSupported = ServiceManager.requestService(endpoint, INFO, ServiceManager.Method.GET, null);
-							if (parseWebSocketSupported(responseWSSupported)) {
-								XhrTransport.this.transportListener.onWebSocketSupported();
-							}
 							isConnected = true;
 							pollThread = new PollThread();
 							pollThread.start();
@@ -102,33 +95,24 @@ public class XhrTransport extends Transport {
 				} catch (IOException e) {
 					Log.e(getClass().getCanonicalName(), e.getMessage());
 					e.printStackTrace();
+				} catch (JSONException e) {
+					Log.e(getClass().getCanonicalName(), e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		}).start();
 		
 	}
-	
-	private boolean parseWebSocketSupported(ServiceResponse response) {
-		String text = response.getText();
-		if (text != null) {
-			try {
-				JSONObject jsonObject = new JSONObject(text);
-				if (jsonObject.has("websocket")) {
-					return jsonObject.getBoolean("websocket");
-				}
-			} catch (JSONException e) {
-				Log.e(getClass().getCanonicalName(), e.getMessage());
-				e.printStackTrace();
-			}
-			
-		}
-		return false;
-	}
 
 	@Override
 	public void disconnect() throws TransportException {
 		isConnected = false;
-		XhrTransport.this.transportListener.onDisconnect();
+		this.transportListener.onDisconnect();
+	}
+	
+	@Override
+	public void silentDisconnect() throws TransportException {
+		isConnected = false;
 	}
 
 	@Override
@@ -211,16 +195,22 @@ public class XhrTransport extends Transport {
 	 * @param text the text to parse
 	 * @return the parsed json object
 	 * @throws JSONException
+	 * @throws IOException 
 	 */
-	private List<JSONObject> extractJSON(String text) throws JSONException {
+	private List<JSONObject> extractJSON(String text) throws JSONException, IOException {
 		
 		JSONArray jsonArray = new JSONArray(text);
 		
 		if (jsonArray.length() > 0) {
 			List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
 			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
-				jsonObjects.add(jsonObject);
+				if (HB.equals(jsonArray.getString(i))) {
+					handleMessage(HB);
+				}
+				else {
+					JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
+					jsonObjects.add(jsonObject);
+				}
 			}
 			return jsonObjects;
 		}
@@ -234,6 +224,7 @@ public class XhrTransport extends Transport {
 	private void handlerPollError(Exception e) {
 		XhrTransport.this.transportListener.onError(e.getMessage());
 		XhrTransport.this.transportListener.onDisconnect();
+		XhrTransport.this.authentified = false;
 		isConnected = false;
 		Log.e(getClass().getCanonicalName(), e.getMessage());
 		e.printStackTrace();
@@ -259,7 +250,6 @@ public class XhrTransport extends Transport {
 				try {
 					
 					if (close) {
-						XhrTransport.this.transportListener.onXhrClosed();
 						isConnected = false;
 						break;
 					}
@@ -268,11 +258,20 @@ public class XhrTransport extends Transport {
 					String text = response.getText();
 					
 					if (text.startsWith(SOCKJS_START_MESSAGE)) {
+						
+						Log.d("DEBUG", "SOCKJS MESSAGE => " + text);
+						
 						try {
-							List<JSONObject> jsonObjects = extractJSON(text.replaceFirst(SOCKJS_START_MESSAGE, ""));
-							if (jsonObjects != null) {
-								for (JSONObject jsonObject : jsonObjects) {
-									XhrTransport.this.handleMessage(jsonObject);
+							String stripText = text.replaceFirst(SOCKJS_START_MESSAGE, "");
+							if (HB_ARRAY.equals(stripText)) {
+								XhrTransport.this.handleMessage(HB);
+							}
+							else {
+								List<JSONObject> jsonObjects = extractJSON(stripText);
+								if (jsonObjects != null) {
+									for (JSONObject jsonObject : jsonObjects) {
+										XhrTransport.this.handleMessage(jsonObject.toString());
+									}
 								}
 							}
 						} catch (JSONException e) {
