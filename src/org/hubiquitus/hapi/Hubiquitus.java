@@ -174,6 +174,9 @@ public class Hubiquitus implements TransportListener {
 	 * @return
 	 */
 	private boolean parseWebSocketSupported(ServiceResponse response) {
+		if (response == null) {
+			return false;
+		}
 		String text = response.getText();
 		if (text != null) {
 			try {
@@ -378,6 +381,10 @@ public class Hubiquitus implements TransportListener {
 	public boolean isConnected() {
 		return State.CONNECTED.equals(state);
 	}
+	
+	public boolean isConnecting() {
+		return State.CONNECTING.equals(state);
+	}
 
 	@Override
 	public void onError(Object message) {
@@ -403,6 +410,10 @@ public class Hubiquitus implements TransportListener {
 
 	@Override
 	public void OnWebSocketReady() {
+		// It appears sometimes the transport is not a WebSocketTransport
+		if (!(this.transport instanceof WebSocketTransport)) {
+			return;
+		}
 		if (this.authCallback != null) {
 			this.authCallback.onAuthentication(this.authData, new ConnectCallback() {
 				@Override

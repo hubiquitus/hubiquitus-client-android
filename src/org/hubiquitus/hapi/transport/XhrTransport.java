@@ -75,7 +75,7 @@ public class XhrTransport extends Transport {
 				
 				try {
 					ServiceResponse responseConnect = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
-					if (responseConnect.getStatus() == 200) {
+					if (responseConnect != null && responseConnect.getStatus() == 200) {
 						ServiceResponse responseAuth = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, buildAuthData(authData));
 						if (responseAuth.getStatus() == 204) {
 							isConnected = true;
@@ -255,30 +255,31 @@ public class XhrTransport extends Transport {
 					}
 					
 					ServiceResponse response = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
-					String text = response.getText();
-					
-					if (text.startsWith(SOCKJS_START_MESSAGE)) {
+					if (response != null) {
+						String text = response.getText();
 						
-						Log.d("DEBUG", "SOCKJS MESSAGE => " + text);
-						
-						try {
-							String stripText = text.replaceFirst(SOCKJS_START_MESSAGE, "");
-							if (HB_ARRAY.equals(stripText)) {
-								XhrTransport.this.handleMessage(HB);
-							}
-							else {
-								List<JSONObject> jsonObjects = extractJSON(stripText);
-								if (jsonObjects != null) {
-									for (JSONObject jsonObject : jsonObjects) {
-										XhrTransport.this.handleMessage(jsonObject.toString());
+						if (text.startsWith(SOCKJS_START_MESSAGE)) {
+							
+							Log.d("DEBUG", "SOCKJS MESSAGE => " + text);
+							
+							try {
+								String stripText = text.replaceFirst(SOCKJS_START_MESSAGE, "");
+								if (HB_ARRAY.equals(stripText)) {
+									XhrTransport.this.handleMessage(HB);
+								}
+								else {
+									List<JSONObject> jsonObjects = extractJSON(stripText);
+									if (jsonObjects != null) {
+										for (JSONObject jsonObject : jsonObjects) {
+											XhrTransport.this.handleMessage(jsonObject.toString());
+										}
 									}
 								}
+							} catch (JSONException e) {
+								Log.e(getClass().getCanonicalName(), e.getMessage());
 							}
-						} catch (JSONException e) {
-							Log.e(getClass().getCanonicalName(), e.getMessage());
 						}
 					}
-				
 				} catch (IOException e) {
 					handlerPollError(e);
 				}

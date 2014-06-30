@@ -65,10 +65,12 @@ public class ServiceManager {
 		ServiceResponse serviceResponse = null;
 		
 		if (httpRequest != null) {
-			HttpResponse httpResponse = httpClient.execute(httpRequest);
 			try {
+				HttpResponse httpResponse = httpClient.execute(httpRequest);
 				serviceResponse = readResponse(httpResponse);
 			} catch (IOException e) {
+				Log.e("ServiceManager", e.getMessage());
+			} catch (IllegalStateException e) {
 				Log.e("ServiceManager", e.getMessage());
 			}
 		}
