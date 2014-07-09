@@ -77,7 +77,7 @@ public class XhrTransport extends Transport {
 					ServiceResponse responseConnect = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
 					if (responseConnect != null && responseConnect.getStatus() == 200) {
 						ServiceResponse responseAuth = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, buildAuthData(authData));
-						if (responseAuth.getStatus() == 204) {
+						if (responseAuth != null && responseAuth.getStatus() == 204) {
 							isConnected = true;
 							pollThread = new PollThread();
 							pollThread.start();
