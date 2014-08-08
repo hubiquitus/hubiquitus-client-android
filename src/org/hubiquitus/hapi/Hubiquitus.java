@@ -162,6 +162,7 @@ public class Hubiquitus implements TransportListener {
 					Hubiquitus.this.onTransportSet();
 					Hubiquitus.this.transport.setHandler(Hubiquitus.this.handler);
 				} catch (IOException e) {
+					hubiquitusListener.onError(e.getMessage());
 					Log.e(getClass().getCanonicalName(), e.getMessage());
 				}
 			}
