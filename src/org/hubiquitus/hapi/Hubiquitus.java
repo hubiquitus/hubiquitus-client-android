@@ -162,7 +162,7 @@ public class Hubiquitus implements TransportListener {
 					Hubiquitus.this.onTransportSet();
 					Hubiquitus.this.transport.setHandler(Hubiquitus.this.handler);
 				} catch (IOException e) {
-					hubiquitusListener.onError(e.getMessage());
+					Hubiquitus.this.onError(e.getMessage());
 					Log.e(getClass().getCanonicalName(), e.getMessage());
 				}
 			}
@@ -395,6 +395,7 @@ public class Hubiquitus implements TransportListener {
 		}
 		
 		this.state = State.ERROR;
+		this.transport = null;
 		this.hubiquitusListener.onError(message);
 	}
 
