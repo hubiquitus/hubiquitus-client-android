@@ -27,7 +27,7 @@ import android.util.Log;
  * 
  */
 public class Hubiquitus implements TransportListener {
-	
+
 	/**
 	 * Urn constant
 	 */
@@ -40,19 +40,19 @@ public class Hubiquitus implements TransportListener {
 	 * Info request constant
 	 */
 	private static final String INFO = "/info";
-	
+
 	/**
 	 * Boolean checking if a connection has been attempted or not
 	 */
 	private boolean connectAttempt = false;
-	
+
 	/**
 	 * Delay for next reconnection try
 	 */
 	private static final int reconnectDelay = 3000;
 
 	/**
-	 * Default send timeout 
+	 * Default send timeout
 	 */
 	private static final int defaultSendTimeout = 30000;
 
@@ -64,7 +64,7 @@ public class Hubiquitus implements TransportListener {
 	 * Authentication data
 	 */
 	private JSONObject authData;
-	
+
 	/**
 	 * Hubiquitus data transport
 	 */
@@ -94,29 +94,33 @@ public class Hubiquitus implements TransportListener {
 	 * Reconnect task
 	 */
 	private Runnable task;
-	
+
 	private enum State {
 		CONNECTING, CONNECTED, DISCONNECTED, ERROR
 	}
-	
+
 	private State state;
 
-	
 	/**
 	 * Constructor
-	 * @param hubiquitusListener hubiquitus listener
+	 * 
+	 * @param hubiquitusListener
+	 *            hubiquitus listener
 	 */
 	public Hubiquitus(HubiquitusListener hubiquitusListener, Handler handler) {
 		this.hubiquitusListener = hubiquitusListener;
 		this.handler = handler;
 		this.autoReconnect = false;
 	}
-	
+
 	/**
 	 * Constructor
-	 * @param hubiquitusListener hubiquitus listener
+	 * 
+	 * @param hubiquitusListener
+	 *            hubiquitus listener
 	 */
-	public Hubiquitus(HubiquitusListener hubiquitusListener, Handler handler, AuthCallback authCallback) {
+	public Hubiquitus(HubiquitusListener hubiquitusListener, Handler handler,
+			AuthCallback authCallback) {
 		this.hubiquitusListener = hubiquitusListener;
 		this.handler = handler;
 		this.authCallback = authCallback;
@@ -125,53 +129,61 @@ public class Hubiquitus implements TransportListener {
 
 	/**
 	 * Constructor
-	 * @param hubiquitusListener hubiquitus listener
-	 * @param handler handler used for reconnection task
+	 * 
+	 * @param hubiquitusListener
+	 *            hubiquitus listener
+	 * @param handler
+	 *            handler used for reconnection task
 	 */
-	public Hubiquitus(HubiquitusListener hubiquitusListener, Handler handler, boolean autoReconnect) {
+	public Hubiquitus(HubiquitusListener hubiquitusListener, Handler handler,
+			boolean autoReconnect) {
 		this.hubiquitusListener = hubiquitusListener;
 		this.handler = handler;
 		if (autoReconnect) {
 			this.autoReconnect = true;
-		}
-		else {
+		} else {
 			this.autoReconnect = false;
 		}
 	}
-	
+
 	/**
 	 * Iniatializes transport
 	 */
 	private void initTransport() {
-		/** Test XHR
-		//Hubiquitus.this.transport = new XhrTransport(Hubiquitus.this);
-		//Hubiquitus.this.onTransportSet();
-		//Hubiquitus.this.transport.setHandler(Hubiquitus.this.handler);
+		/**
+		 * Test XHR //Hubiquitus.this.transport = new
+		 * XhrTransport(Hubiquitus.this); //Hubiquitus.this.onTransportSet();
+		 * //Hubiquitus.this.transport.setHandler(Hubiquitus.this.handler);
 		 **/
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					ServiceResponse responseWSSupported = ServiceManager.requestService(endpoint, Hubiquitus.INFO, ServiceManager.Method.GET, null);
+					ServiceResponse responseWSSupported = ServiceManager
+							.requestService(endpoint, Hubiquitus.INFO,
+									ServiceManager.Method.GET, null);
 					if (parseWebSocketSupported(responseWSSupported)) {
-						Hubiquitus.this.transport = new WebSocketTransport(Hubiquitus.this);
-					}
-					else {
-						Hubiquitus.this.transport = new XhrTransport(Hubiquitus.this);
+						Hubiquitus.this.transport = new WebSocketTransport(
+								Hubiquitus.this);
+					} else {
+						Hubiquitus.this.transport = new XhrTransport(
+								Hubiquitus.this);
 					}
 					Hubiquitus.this.onTransportSet();
-					Hubiquitus.this.transport.setHandler(Hubiquitus.this.handler);
+					Hubiquitus.this.transport
+							.setHandler(Hubiquitus.this.handler);
 				} catch (IOException e) {
-					//Call the onError,if the listener does not know that there is an error and waits for the transport to be connected indefinitely.
+					// Call onError to prevent waiting indefinitely
 					Hubiquitus.this.onError(e.getMessage());
 					Log.e(getClass().getCanonicalName(), e.getMessage());
 				}
 			}
 		}).start();
 	}
-	
+
 	/**
 	 * Parse the supported websocket request
+	 * 
 	 * @param response
 	 * @return
 	 */
@@ -190,11 +202,11 @@ public class Hubiquitus implements TransportListener {
 				Log.e(getClass().getCanonicalName(), e.getMessage());
 				e.printStackTrace();
 			}
-			
+
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Handler called when transport set
 	 */
@@ -212,50 +224,51 @@ public class Hubiquitus implements TransportListener {
 	 *            endpoint
 	 * @param authData
 	 *            authentication data
-	 * @throws TransportException 
+	 * @throws TransportException
 	 */
 	public void connect(final String endpoint, final JSONObject authData) {
 		this.state = State.CONNECTING;
 		this.endpoint = endpoint;
 		this.authData = authData;
 		this.shouldReconnect = true;
-		
+
 		Log.d("DEBUG", "Hubiquitus connect");
-		
+
 		if (this.transport != null) {
 			connectAttempt = false;
 			authConnect(endpoint, authData);
-		}
-		else {
+		} else {
 			connectAttempt = true;
 			initTransport();
 		}
 	}
-	
+
 	private void authConnect(String endpoint, JSONObject authData) {
-		
+
 		Log.d("DEBUG", "Hubiquitus authConnect");
-		
+
 		if (this.authCallback != null) {
-			this.authCallback.onAuthentication(this.authData, new ConnectCallback() {
-				@Override
-				public void connect(String urn, String password) {
-					try {
-						JSONObject authData = new JSONObject();
-						authData.put(URN, urn);
-						authData.put(TICKET, password);
-						Hubiquitus.this.transport.connect(Hubiquitus.this.endpoint, authData);
-					} catch (JSONException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
-					}
-				}
-			});
-		}
-		else {
+			this.authCallback.onAuthentication(this.authData,
+					new ConnectCallback() {
+						@Override
+						public void connect(String urn, String password) {
+							try {
+								JSONObject authData = new JSONObject();
+								authData.put(URN, urn);
+								authData.put(TICKET, password);
+								Hubiquitus.this.transport.connect(
+										Hubiquitus.this.endpoint, authData);
+							} catch (JSONException e) {
+								Log.e(getClass().getCanonicalName(),
+										e.getMessage());
+							}
+						}
+					});
+		} else {
 			this.transport.connect(endpoint, authData);
 		}
 	}
-	
+
 	/**
 	 * Initializes the reconnection handler
 	 */
@@ -267,7 +280,7 @@ public class Hubiquitus implements TransportListener {
 		};
 		handler.postDelayed(task, reconnectDelay);
 	}
-	
+
 	/**
 	 * Runs the reconnection task
 	 */
@@ -275,7 +288,7 @@ public class Hubiquitus implements TransportListener {
 		Hubiquitus.this.connect(endpoint, authData);
 		handler.postDelayed(task, reconnectDelay);
 	}
-	
+
 	/**
 	 * Removes the reconnection handler pending tasks
 	 */
@@ -287,6 +300,7 @@ public class Hubiquitus implements TransportListener {
 
 	/**
 	 * Disconnect from hubiquitus endpoint
+	 * 
 	 * @throws TransportException
 	 */
 	public void disconnect() throws TransportException {
@@ -305,14 +319,15 @@ public class Hubiquitus implements TransportListener {
 	 *            content of the message
 	 * @param responseListener
 	 *            response listener
-	 * @throws TransportException 
+	 * @throws TransportException
 	 */
 	public void send(String to, Object content,
 			ResponseListener responseListener) throws TransportException {
-		Log.d(getClass().getCanonicalName(), "Hubiquitus send via " + this.transport + " : " + content + " => " + to);
+		Log.d(getClass().getCanonicalName(), "Hubiquitus send via "
+				+ this.transport + " : " + content + " => " + to);
 		this.transport.send(to, content, defaultSendTimeout, responseListener);
 	}
-	
+
 	/**
 	 * Send a hubiquitus message
 	 * 
@@ -320,10 +335,11 @@ public class Hubiquitus implements TransportListener {
 	 *            recipient of the message
 	 * @param content
 	 *            content of the message
-	 * @throws TransportException 
+	 * @throws TransportException
 	 */
 	public void send(String to, Object content) throws TransportException {
-		Log.d(getClass().getCanonicalName(), "Hubiquitus send via " + this.transport + " : " + content + " => " + to);
+		Log.d(getClass().getCanonicalName(), "Hubiquitus send via "
+				+ this.transport + " : " + content + " => " + to);
 		this.transport.send(to, content, defaultSendTimeout, null);
 	}
 
@@ -338,20 +354,19 @@ public class Hubiquitus implements TransportListener {
 	 *            timeout of the message
 	 * @param responseListener
 	 *            response listener
-	 * @throws TransportException 
+	 * @throws TransportException
 	 */
 	public void send(String to, Object content, int timeout,
 			ResponseListener responseListener) throws TransportException {
-		Log.d(getClass().getCanonicalName(), "Hubiquitus send via " + this.transport + " : " + content + " => " + to);
+		Log.d(getClass().getCanonicalName(), "Hubiquitus send via "
+				+ this.transport + " : " + content + " => " + to);
 		if (this.transport != null) {
 			this.transport.send(to, content, timeout, responseListener);
-		}
-		else {
+		} else {
 			onError("Transport is null");
 		}
 	}
-	
-	
+
 	/**
 	 * Transport listener implementation
 	 */
@@ -367,39 +382,38 @@ public class Hubiquitus implements TransportListener {
 
 	@Override
 	public void onDisconnect() {
-		
+
 		if (State.ERROR.equals(state) || State.DISCONNECTED.equals(state)) {
 			return;
 		}
-		
+
 		this.state = State.DISCONNECTED;
-		
+
 		this.hubiquitusListener.onDisconnect();
 		if (this.autoReconnect && this.shouldReconnect) {
 			this.initReconnectionHandler();
 		}
 	}
-	
+
 	public boolean isConnected() {
 		return State.CONNECTED.equals(state);
 	}
-	
+
 	public boolean isConnecting() {
 		return State.CONNECTING.equals(state);
 	}
 
 	@Override
 	public void onError(Object message) {
-		
+
 		if (State.ERROR.equals(this.state) || State.DISCONNECTED.equals(state)) {
 			return;
 		}
-		
+
 		this.state = State.ERROR;
-		//If the transport fail to determine if websocket is available, XHR is used.
-		//But if it fail as there is no internet connection or a bad one,  the app will use XHR even 
-		//if websocket is available .As the websocket support isn't checked after transport instantiation.
-		this.transport = null;   
+		// To avoid being stuck with XHR, clear the transport so Hubiquitus will
+		// retry with a Websocket
+		this.transport = null;
 		this.hubiquitusListener.onError(message);
 	}
 
@@ -407,7 +421,7 @@ public class Hubiquitus implements TransportListener {
 	public void onMessage(Request request) {
 		this.hubiquitusListener.onMessage(request);
 	}
-	
+
 	@Override
 	public void onWebSocketPingTimeout() {
 		this.transport = new XhrTransport(this);
@@ -421,31 +435,48 @@ public class Hubiquitus implements TransportListener {
 			return;
 		}
 		if (this.authCallback != null) {
-			this.authCallback.onAuthentication(this.authData, new ConnectCallback() {
-				@Override
-				public void connect(String urn, String password) {
-					try {
-						JSONObject authData = new JSONObject();
-						authData.put(URN, urn);
-						authData.put(TICKET, password);
-						Log.d("DEBUG", "WebsocketClient? " + ((WebSocketTransport) Hubiquitus.this.transport).getWebSocketClient());
-						Log.d("DEBUG", "BuildAuthData? " + Hubiquitus.this.transport.buildAuthData(authData));
-						if (((WebSocketTransport) Hubiquitus.this.transport).getWebSocketClient() != null &&
-								((WebSocketTransport) Hubiquitus.this.transport).getWebSocketClient().isOpen()) {
-							((WebSocketTransport) Hubiquitus.this.transport).getWebSocketClient().send(Hubiquitus.this.transport.buildAuthData(authData).toString());
+			this.authCallback.onAuthentication(this.authData,
+					new ConnectCallback() {
+						@Override
+						public void connect(String urn, String password) {
+							try {
+								JSONObject authData = new JSONObject();
+								authData.put(URN, urn);
+								authData.put(TICKET, password);
+								Log.d("DEBUG",
+										"WebsocketClient? "
+												+ ((WebSocketTransport) Hubiquitus.this.transport)
+														.getWebSocketClient());
+								Log.d("DEBUG",
+										"BuildAuthData? "
+												+ Hubiquitus.this.transport
+														.buildAuthData(authData));
+								if (((WebSocketTransport) Hubiquitus.this.transport)
+										.getWebSocketClient() != null
+										&& ((WebSocketTransport) Hubiquitus.this.transport)
+												.getWebSocketClient().isOpen()) {
+									((WebSocketTransport) Hubiquitus.this.transport)
+											.getWebSocketClient().send(
+													Hubiquitus.this.transport
+															.buildAuthData(
+																	authData)
+															.toString());
+								} else {
+									Hubiquitus.this
+											.onError("Websocket null or closed");
+								}
+							} catch (JSONException e) {
+								Log.e(getClass().getCanonicalName(),
+										e.getMessage());
+							}
 						}
-						else {
-							Hubiquitus.this.onError("Websocket null or closed");
-						}
-					} catch (JSONException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
-					}
-				}
-			});
-		}
-		else {
+					});
+		} else {
 			try {
-				((WebSocketTransport) Hubiquitus.this.transport).getWebSocketClient().send(Hubiquitus.this.transport.buildAuthData(authData).toString());
+				((WebSocketTransport) Hubiquitus.this.transport)
+						.getWebSocketClient().send(
+								Hubiquitus.this.transport.buildAuthData(
+										authData).toString());
 			} catch (JSONException e) {
 				Log.e(getClass().getCanonicalName(), e.getMessage());
 			}
