@@ -162,6 +162,7 @@ public class Hubiquitus implements TransportListener {
 					Hubiquitus.this.onTransportSet();
 					Hubiquitus.this.transport.setHandler(Hubiquitus.this.handler);
 				} catch (IOException e) {
+					//Call the onError,if the listener does not know that there is an error and waits for the transport to be connected indefinitely.
 					Hubiquitus.this.onError(e.getMessage());
 					Log.e(getClass().getCanonicalName(), e.getMessage());
 				}
@@ -395,7 +396,10 @@ public class Hubiquitus implements TransportListener {
 		}
 		
 		this.state = State.ERROR;
-		this.transport = null;
+		//If the transport fail to determine if websocket is available, XHR is used.
+		//But if it fail as there is no internet connection or a bad one,  the app will use XHR even 
+		//if websocket is available .As the websocket support isn't checked after transport instantiation.
+		this.transport = null;   
 		this.hubiquitusListener.onError(message);
 	}
 
