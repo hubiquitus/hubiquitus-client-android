@@ -1,6 +1,0 @@
-<ivy-module version="2.0">
-	<info organisation="org.apache" module="ant-ivy"/>
-	<dependencies>
-		<dependency org="org.java-websocket" name="Java-WebSocket" rev="1.3.0"/>
-	</dependencies>
-</ivy-module>
