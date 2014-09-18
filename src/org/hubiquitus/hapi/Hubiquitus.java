@@ -256,8 +256,12 @@ public class Hubiquitus implements TransportListener {
 								JSONObject authData = new JSONObject();
 								authData.put(URN, urn);
 								authData.put(TICKET, password);
-								Hubiquitus.this.transport.connect(
-										Hubiquitus.this.endpoint, authData);
+								if (Hubiquitus.this.transport != null) {
+                                    synchronized (Hubiquitus.this.transport) {
+                                        Hubiquitus.this.transport.connect(
+                                                Hubiquitus.this.endpoint, authData);
+                                    }
+                                }
 							} catch (JSONException e) {
 								Log.e(getClass().getCanonicalName(),
 										e.getMessage());
@@ -411,8 +415,16 @@ public class Hubiquitus implements TransportListener {
 		}
 
 		this.state = State.ERROR;
+
 		// To avoid being stuck with XHR, clear the transport so Hubiquitus will
 		// retry with a Websocket
+		if (this.transport != null) {
+            try {
+                this.transport.silentDisconnect();
+            } catch (TransportException e) {
+                Log.e(getClass().getCanonicalName(), e.getMessage());
+            }
+        }
 		this.transport = null;
 		this.hubiquitusListener.onError(message);
 	}
@@ -443,28 +455,31 @@ public class Hubiquitus implements TransportListener {
 								JSONObject authData = new JSONObject();
 								authData.put(URN, urn);
 								authData.put(TICKET, password);
-								Log.d("DEBUG",
-										"WebsocketClient? "
-												+ ((WebSocketTransport) Hubiquitus.this.transport)
-														.getWebSocketClient());
-								Log.d("DEBUG",
-										"BuildAuthData? "
-												+ Hubiquitus.this.transport
-														.buildAuthData(authData));
-								if (((WebSocketTransport) Hubiquitus.this.transport)
-										.getWebSocketClient() != null
-										&& ((WebSocketTransport) Hubiquitus.this.transport)
-												.getWebSocketClient().isOpen()) {
-									((WebSocketTransport) Hubiquitus.this.transport)
-											.getWebSocketClient().send(
-													Hubiquitus.this.transport
-															.buildAuthData(
-																	authData)
-															.toString());
-								} else {
-									Hubiquitus.this
-											.onError("Websocket null or closed");
-								}
+								synchronized (Hubiquitus.this) {
+                                    if (Hubiquitus.this.transport == null) return;
+                                    Log.d("DEBUG",
+                                            "WebsocketClient? "
+                                                    + ((WebSocketTransport) Hubiquitus.this.transport)
+                                                    .getWebSocketClient());
+                                    Log.d("DEBUG",
+                                            "BuildAuthData? "
+                                                    + Hubiquitus.this.transport
+                                                    .buildAuthData(authData));
+                                    if (((WebSocketTransport) Hubiquitus.this.transport)
+                                            .getWebSocketClient() != null
+                                            && ((WebSocketTransport) Hubiquitus.this.transport)
+                                            .getWebSocketClient().isOpen()) {
+                                        ((WebSocketTransport) Hubiquitus.this.transport)
+                                                .getWebSocketClient().send(
+                                                Hubiquitus.this.transport
+                                                        .buildAuthData(
+                                                                authData)
+                                                        .toString());
+                                    } else {
+                                        Hubiquitus.this
+                                                .onError("Websocket null or closed");
+                                    }
+                                }
 							} catch (JSONException e) {
 								Log.e(getClass().getCanonicalName(),
 										e.getMessage());
