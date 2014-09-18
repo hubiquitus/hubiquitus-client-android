@@ -4,23 +4,22 @@ import org.hubiquitus.hapi.transport.callback.ReplyCallback;
 
 /**
  * Models representing a request message
- * 
- * @author t.bourgeois
  *
+ * @author t.bourgeois
  */
 public class Request extends Message {
-	
-	/**
-	 * The reply callback
-	 */
-	private ReplyCallback replyCallback;
 
-	public ReplyCallback getReplyCallback() {
-		return replyCallback;
-	}
+    /**
+     * The reply callback
+     */
+    private ReplyCallback replyCallback;
 
-	public void setReplyCallback(ReplyCallback replyCallback) {
-		this.replyCallback = replyCallback;
-	}
+    public ReplyCallback getReplyCallback() {
+        return replyCallback;
+    }
+
+    public void setReplyCallback(ReplyCallback replyCallback) {
+        this.replyCallback = replyCallback;
+    }
 
 }

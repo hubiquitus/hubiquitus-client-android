@@ -6,6 +6,6 @@ import org.json.JSONObject;
 
 public interface ResponseListener {
 
-	void onResponse(JSONObject err, Message message);
-	
+    void onResponse(JSONObject err, Message message);
+
 }

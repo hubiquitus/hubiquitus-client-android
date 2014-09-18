@@ -4,31 +4,31 @@ import org.hubiquitus.hapi.listener.ResponseListener;
 import org.json.JSONObject;
 
 public class Message {
-	
-	private JSONObject jsonContent;
-	
-	private ResponseListener responseListener;
 
-	public JSONObject getJsonContent() {
-		return jsonContent;
-	}
+    private JSONObject jsonContent;
 
-	public void setJsonContent(JSONObject jsonContent) {
-		this.jsonContent = jsonContent;
-	}
+    private ResponseListener responseListener;
 
-	@Override
-	public String toString() {
-		return "Message [jsonContent=" + jsonContent + ", responseListener="
-				+ responseListener + "]";
-	}
+    public JSONObject getJsonContent() {
+        return jsonContent;
+    }
 
-	public ResponseListener getResponseListener() {
-		return responseListener;
-	}
+    public void setJsonContent(JSONObject jsonContent) {
+        this.jsonContent = jsonContent;
+    }
 
-	public void setResponseListener(ResponseListener responseListener) {
-		this.responseListener = responseListener;
-	}
-	
+    @Override
+    public String toString() {
+        return "Message [jsonContent=" + jsonContent + ", responseListener="
+                + responseListener + "]";
+    }
+
+    public ResponseListener getResponseListener() {
+        return responseListener;
+    }
+
+    public void setResponseListener(ResponseListener responseListener) {
+        this.responseListener = responseListener;
+    }
+
 }

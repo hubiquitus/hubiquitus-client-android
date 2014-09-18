@@ -4,6 +4,6 @@ import org.json.JSONObject;
 
 public interface AuthCallback {
 
-	void onAuthentication(JSONObject authData, ConnectCallback callback);
-	
+    void onAuthentication(JSONObject authData, ConnectCallback callback);
+
 }
