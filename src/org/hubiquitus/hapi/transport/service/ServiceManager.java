@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.hubiquitus.hapi.transport.Transport;
 import org.json.JSONObject;
 
 import android.util.Log;
@@ -51,11 +52,18 @@ public class ServiceManager {
 		case POST:
 			httpRequest = new HttpPost(sb.toString());
 			if (request != null) {
+                StringEntity entity;
+                if (request.has(Transport.HB) && Transport.HB.equals(request.optString(Transport.HB))) {
+                    //Object send from XHR Transport for sending heartbeat : new JSONObject().put(Transport.HB,Transport.HB)
+                    entity = new StringEntity(Transport.HB);
+                } else {
+                    entity = new StringEntity("["
+                            + JSONObject.quote(request.toString()) + "]");
 
-				StringEntity entity = new StringEntity("["
-						+ JSONObject.quote(request.toString()) + "]");
-				((HttpPost) httpRequest).setEntity(entity);
-				httpRequest.setHeader("Content-Type", "text/plain");
+                }
+                ((HttpPost) httpRequest).setEntity(entity);
+                httpRequest.setHeader("Content-Type", "text/plain");
+
 			}
 			break;
 		default:

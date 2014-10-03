@@ -53,7 +53,7 @@ public abstract class Transport {
 	protected static final String AUTHTIMEOUT = "AUTHTIMEOUT";
 	protected static final String HBTIMEOUT = "HBTIMEOUT";
 	protected static final String HEARTBEAT_FREQUENCY = "heartbeatFreq";
-	protected static final String HB = "hb";
+	public static final String HB = "hb";
 	/**
 	 * Server id value
 	 */
@@ -180,6 +180,14 @@ public abstract class Transport {
 	protected abstract void send(JSONObject jsonObject)
 			throws TransportException;
 
+    /**
+     * Send the hb message in response of the hb received from the gateway
+     *
+     * @throws TransportException
+     */
+    protected abstract void sendHeartBeat()
+            throws TransportException;
+
 	/**
 	 * Send a hubiquitus message
 	 * 
@@ -241,8 +249,15 @@ public abstract class Transport {
 		if (HB.equals(stringMessage)) {
 				
 			Log.d("DEBUG", "handle hb message : " + stringMessage);
-			
-			lastHeartbeat = new Date().getTime();
+
+            //Respond to the hb message
+            try {
+                sendHeartBeat();
+            } catch (TransportException e) {
+                Log.d(getClass().getCanonicalName(), "hb response error\r\n"+e.getMessage());
+            }
+
+            lastHeartbeat = new Date().getTime();
 		}
 		
 		else {
