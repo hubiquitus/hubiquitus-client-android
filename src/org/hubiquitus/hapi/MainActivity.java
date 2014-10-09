@@ -64,8 +64,9 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 	
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btn_disconnect:
+		// Note: don't use switch here.
+		// The newest ADT versions don't declare R resources as final in library projects.
+		if (v.getId() == R.id.btn_disconnect) {
 			try {
 				if (hubiquitus != null) {
 					hubiquitus.disconnect();
@@ -73,8 +74,7 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 			} catch (TransportException e) {
 				e.printStackTrace();
 			}
-			break;
-		case R.id.btn_send:
+		} else if (v.getId() == R.id.btn_send) {
 			try {
 				hubiquitus.send("ping", "PING", new ResponseListener() {
 
@@ -86,9 +86,6 @@ public class MainActivity extends Activity implements HubiquitusListener, OnClic
 			} catch (TransportException e) {
 				e.printStackTrace();
 			}
-			break;
-		default:
-			break;
 		}
 	}
 

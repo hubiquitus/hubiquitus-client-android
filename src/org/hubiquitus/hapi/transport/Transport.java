@@ -87,6 +87,8 @@ public abstract class Transport {
 	
 	protected boolean disconnected = true;
 	
+	private Runnable checkConnectionRunnable;
+	
 	/**
 	 * Constructor
 	 * 
@@ -96,6 +98,13 @@ public abstract class Transport {
 	public Transport(TransportListener transportListener) {
 		this.transportListener = transportListener;
 		this.responseQueue = new HashMap<String, ResponseListener>();
+		this.checkConnectionRunnable = new Runnable() {
+			
+			@Override
+			public void run() {
+				checkConnection();
+			}
+		};
 	}
 	
 	private void checkConnection() {
@@ -116,12 +125,9 @@ public abstract class Transport {
 			}
 		}
 		else {
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					checkConnection();
-				}
-			}, heartbeatFreq);
+			// Remove any scheduled runnable to avoid several threads to do the same thing
+			handler.removeCallbacks(checkConnectionRunnable);
+			handler.postDelayed(checkConnectionRunnable, heartbeatFreq);
 		}
 	}
 
@@ -297,12 +303,9 @@ public abstract class Transport {
 						this.transportListener.OnWebSocketReady();
 					}
 					this.heartbeatFreq = jsonMessage.getInt(HEARTBEAT_FREQUENCY);
-					this.handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							checkConnection();
-						}
-					}, this.heartbeatFreq);
+					// Remove any scheduled runnable to avoid several threads to do the same thing
+					this.handler.removeCallbacks(checkConnectionRunnable);
+					this.handler.postDelayed(checkConnectionRunnable, this.heartbeatFreq);
 					break;
 				case REQ:
 					Request request = buildRequest(from, content, messageId);
