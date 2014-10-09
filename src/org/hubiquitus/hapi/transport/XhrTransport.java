@@ -141,8 +141,17 @@ public class XhrTransport extends Transport {
 		
 		return jsonMessage;
 	}
-	
-	/**
+
+    @Override
+    protected void sendHeartBeat() throws TransportException {
+        try {
+            send(new JSONObject().put(Transport.HB,Transport.HB));
+        } catch (JSONException e) {
+            Log.e(getClass().getCanonicalName(),"Unable to create json HeartBeat message");
+        }
+    }
+
+    /**
 	 * Handler for messages to send
 	 */
 	private void handleQueueMessages() {

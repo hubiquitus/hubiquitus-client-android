@@ -210,7 +210,15 @@ public class WebSocketTransport extends Transport {
 		this.webSocketClient.send(jsonObject.toString());
 	}
 
-	@Override
+    @Override
+    protected void sendHeartBeat() throws TransportException {
+        if (this.webSocketClient == null) {
+            throw new TransportException("webSocketClient is null");
+        }
+        this.webSocketClient.send(Transport.HB);
+    }
+
+    @Override
 	public void disconnect() throws TransportException {
 		if (this.webSocketClient == null) {
 			throw new TransportException("webSocketClient is null");
