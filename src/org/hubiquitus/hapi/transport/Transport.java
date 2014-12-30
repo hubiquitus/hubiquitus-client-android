@@ -1,13 +1,9 @@
 package org.hubiquitus.hapi.transport;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import android.os.Handler;
+import android.util.Log;
 
+import org.hubiquitus.hapi.BuildConfig;
 import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.message.Message;
 import org.hubiquitus.hapi.message.MessageType;
@@ -18,8 +14,13 @@ import org.hubiquitus.hapi.transport.listener.TransportListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.Handler;
-import android.util.Log;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 
 /**
  * Transport class
@@ -246,7 +247,7 @@ public abstract class Transport {
 	/**
 	 * Handler for json messages
 	 * 
-	 * @param jsonMessage
+	 * @param stringMessage
 	 *            a json message
 	 * @throws JSONException
 	 */
@@ -254,14 +255,17 @@ public abstract class Transport {
 		
 		if (HB.equals(stringMessage)) {
 				
-			Log.d("DEBUG", "handle hb message : " + stringMessage);
+			if (BuildConfig.DEBUG) Log.d("DEBUG", "handle hb message : " + stringMessage);
 
             //Respond to the hb message
+            // TODO Comment this for Hubiquitus < 0.9
+            /*
             try {
                 sendHeartBeat();
             } catch (TransportException e) {
                 Log.d(getClass().getCanonicalName(), "hb response error\r\n"+e.getMessage());
             }
+            */
 
             lastHeartbeat = new Date().getTime();
 		}
@@ -269,8 +273,8 @@ public abstract class Transport {
 		else {
 			
 			JSONObject jsonMessage = new JSONObject(stringMessage);
-		
-			Log.d("DEBUG", "handle json message : " + jsonMessage.toString());
+
+            if (BuildConfig.DEBUG) Log.d("DEBUG", "handle json message : " + jsonMessage.toString());
 			
 			String messageId = null;
 			String from = null;
