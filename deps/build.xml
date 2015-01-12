@@ -1,5 +1,0 @@
-<project xmlns:ivy="antlib:org.apache.ivy.ant" default="download-libs">
-	<target name="download-libs" description="Download dependencies">
-		<ivy:retrieve pattern="libs/[artifact]-[type]-[revision].[ext]"/>
-	</target>
-</project>
