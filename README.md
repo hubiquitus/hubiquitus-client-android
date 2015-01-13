@@ -1,38 +1,42 @@
 # Hubiquitus Android
-Hubiquitus client API for Android. Should be used with a hNode.
-Currently allows to do pubsub with an xmpp server. More information on [hubiquitus](www.hubiquitus.com)
+This is the Hubiquitus client API for Android. It should be used with a hNode.
+It currently allows to do pubsub with an xmpp server. For more information, please visit [hubiquitus.com](www.hubiquitus.com).
 
 ## Third party libraries
-This project currently relies on
-* Socket.io-java-client : Socket io. Using this [fork](https://github.com/Gottox/socket.io-java-client)
-* PhoneGap : PhoneGap for android. See [here](http://phonegap.com/) for more informations
+This project currently relies on:
+* `Socket.io-java-client` for Socket I/O, using this [fork](https://github.com/Gottox/socket.io-java-client).
 
-## How to use it
+## Integration
 
-### As an Android project
-Coming soon (with first stable release)
+1. Download and import this project into Android Studio.
+2. Launch the `assemble` and `uploadArchives` targets (from Android Studio via the Gradle view or a build configuration, or via the command line). The resulting archive will be deployed in your local Maven repository (.m2).
+3. In your main project, import the Hubiquitus API by adding in your build.gradle:
 
-### As a PhoneGap Plugin
-Coming soon (with first stable release)
+* Your local Maven repository:
 
-## How to test it
+```
+allprojects {
+	repositories {
+		...
+		mavenLocal()
+		...
+	}
+}
+```
 
-#### 1) clone git project
+* The dependency to the Hubiquitus API:
 
-    git clone git://github.com/hubiquitus/hubiquitus-android.git
-    
-#### 2) Import examples
-For android: 
+```
+dependencies {
+	...
+	compile 'com.hubiquitus:android-sdk:0.9.1'
+	...
+}
+```
 
-You can release and import the jar directly to your project.
+## Usage
 
-For android PhoneGap:
-* Copy the directory hapiPhoneGapPlusin to your project. Add the link source to the directory.
-* Copy the directory examples/PhoneGapTest/assets/www/js/HClientPhoneGap to yourproject/assets/www/
-
-
-#### 3) config AndroidManifest.xml
-Add "android:name="org.hubiquitus.hapi.util.MyApplication" in "Application".
+TBD
 
 ## Licensing
 (The MIT License)

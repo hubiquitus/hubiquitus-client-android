@@ -259,13 +259,11 @@ public abstract class Transport {
 
             //Respond to the hb message
             // TODO Comment this for Hubiquitus < 0.9
-            /*
             try {
                 sendHeartBeat();
             } catch (TransportException e) {
                 Log.d(getClass().getCanonicalName(), "hb response error\r\n"+e.getMessage());
             }
-            */
 
             lastHeartbeat = new Date().getTime();
 		}
