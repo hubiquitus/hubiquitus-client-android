@@ -209,25 +209,20 @@ public class WebSocketTransport extends Transport {
     }
 
     @Override
-	public void disconnect() throws TransportException {
-		if (this.webSocketClient == null) {
-			throw new TransportException("webSocketClient is null");
+	public void disconnect() {
+		if (this.webSocketClient != null) {
+            this.webSocketClient.close();
+            this.webSocketClient = null;
 		}
-		this.webSocketClient.close();
-		
-		Log.d("DEBUG", "WebSocketTransport onDisconnect");
-		
 		this.transportListener.onDisconnect();
-		this.webSocketClient = null;
 	}
 	
 	@Override
-	public void silentDisconnect() throws TransportException {
-		if (this.webSocketClient == null) {
-			throw new TransportException("webSocketClient is null");
+	public void silentDisconnect() {
+		if (this.webSocketClient != null) {
+            this.webSocketClient.close();
+            this.webSocketClient = null;
 		}
-		this.webSocketClient.close();
-		this.webSocketClient = null;
 	}
 
 	/**

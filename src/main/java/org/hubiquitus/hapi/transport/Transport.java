@@ -119,7 +119,7 @@ public abstract class Transport {
 			try {
 				Transport.this.disconnect();
 				Transport.this.transportListener.onError(Transport.this.buildErrorMessage(HBTIMEOUT));
-			} catch (TransportException | JSONException e) {
+			} catch (JSONException e) {
 				Log.w(getClass().getCanonicalName(), e);
 			}
         }
@@ -163,17 +163,13 @@ public abstract class Transport {
 
 	/**
 	 * Disconnect from endpoint
-	 * 
-	 * @throws TransportException
 	 */
-	public abstract void disconnect() throws TransportException;
+	public abstract void disconnect();
 	
 	/**
 	 * Disconnect from endpoint
-	 * 
-	 * @throws TransportException
 	 */
-	public abstract void silentDisconnect() throws TransportException;
+	public abstract void silentDisconnect();
 
 	/**
 	 * Send a hubiquitus message

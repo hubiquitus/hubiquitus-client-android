@@ -97,13 +97,13 @@ public class XhrTransport extends Transport {
 	}
 
 	@Override
-	public void disconnect() throws TransportException {
+	public void disconnect() {
 		isConnected = false;
 		this.transportListener.onDisconnect();
 	}
 	
 	@Override
-	public void silentDisconnect() throws TransportException {
+	public void silentDisconnect() {
 		isConnected = false;
 	}
 

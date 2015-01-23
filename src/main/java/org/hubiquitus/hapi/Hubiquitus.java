@@ -308,7 +308,7 @@ public class Hubiquitus implements TransportListener {
 	 * 
 	 * @throws TransportException
 	 */
-	synchronized public void disconnect() throws TransportException {
+	synchronized public void disconnect() {
 		this.shouldReconnect = false;
 		if (this.transport != null) {
 			this.transport.silentDisconnect();
@@ -419,11 +419,7 @@ public class Hubiquitus implements TransportListener {
 		// retry with a Websocket
         synchronized (this) {
             if (this.transport != null) {
-                try {
-                    this.transport.silentDisconnect();
-                } catch (TransportException e) {
-                    Log.w(getClass().getCanonicalName(), e);
-                }
+                this.transport.silentDisconnect();
                 this.transport = null;
             }
         }
