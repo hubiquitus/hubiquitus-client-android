@@ -119,12 +119,10 @@ public abstract class Transport {
 			try {
 				Transport.this.disconnect();
 				Transport.this.transportListener.onError(Transport.this.buildErrorMessage(HBTIMEOUT));
-			} catch (TransportException e) {
-				Log.d(getClass().getCanonicalName(), e.getMessage());
-			} catch (JSONException e) {
-				Log.d(getClass().getCanonicalName(), e.getMessage());
+			} catch (TransportException | JSONException e) {
+				Log.w(getClass().getCanonicalName(), e);
 			}
-		}
+        }
 		else {
 			// Remove any scheduled runnable to avoid several threads to do the same thing
 			handler.removeCallbacks(checkConnectionRunnable);
@@ -155,7 +153,7 @@ public abstract class Transport {
 						jsonCode.put(CODE, AUTHTIMEOUT);
 						jsonErr.put(ERR, jsonCode);
 					} catch (JSONException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
+						Log.w(getClass().getCanonicalName(), e);
 					}
 					Transport.this.transportListener.onError(jsonErr);
 				}
@@ -230,7 +228,7 @@ public abstract class Transport {
 							jsonCode.put(CODE, TIMEOUT);
 							jsonErr.put(ERR, jsonCode);
 						} catch (JSONException e) {
-							Log.e(getClass().getCanonicalName(), e.getMessage());
+							Log.w(getClass().getCanonicalName(), e);
 						}
 						responseListener.onResponse(jsonErr, null);
 						responseQueue.remove(messageId);
@@ -238,7 +236,7 @@ public abstract class Transport {
 				}
 			}, timeout);
 		} catch (JSONException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
+			Log.w(getClass().getCanonicalName(), e);
 		}
 		return jsonMessage;
 	}
@@ -262,7 +260,7 @@ public abstract class Transport {
             try {
                 sendHeartBeat();
             } catch (TransportException e) {
-                Log.d(getClass().getCanonicalName(), "hb response error\r\n"+e.getMessage());
+                Log.w(getClass().getCanonicalName(), "hb response error", e);
             }
 
             lastHeartbeat = new Date().getTime();
@@ -447,12 +445,10 @@ public abstract class Transport {
 					JSONObject response = buildResponse(from, messageId, err,
 							content);
 					Transport.this.send(response);
-				} catch (TransportException e) {
-					Log.e(getClass().getCanonicalName(), e.getMessage());
-				} catch (JSONException e) {
-					Log.e(getClass().getCanonicalName(), e.getMessage());
+				} catch (TransportException | JSONException e) {
+					Log.w(getClass().getCanonicalName(), e);
 				}
-			}
+            }
 		});
 		return request;
 	}

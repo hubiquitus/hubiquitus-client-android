@@ -1,12 +1,7 @@
 package org.hubiquitus.hapi.transport;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import android.util.Log;
 
-import org.apache.http.client.ClientProtocolException;
 import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.transport.exception.TransportException;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
@@ -18,7 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Xhr transport class
@@ -89,17 +88,10 @@ public class XhrTransport extends Transport {
 					else {
 						XhrTransport.this.transportListener.onError("Can't connect to host");
 					}
-				} catch (ClientProtocolException e) {
-					Log.e(getClass().getCanonicalName(), e.getMessage());
-					e.printStackTrace();
-				} catch (IOException e) {
-					Log.e(getClass().getCanonicalName(), e.getMessage());
-					e.printStackTrace();
-				} catch (JSONException e) {
-					Log.e(getClass().getCanonicalName(), e.getMessage());
-					e.printStackTrace();
+				} catch (IOException | JSONException e) {
+					Log.w(getClass().getCanonicalName(), e);
 				}
-			}
+            }
 		}).start();
 		
 	}
@@ -188,12 +180,10 @@ public class XhrTransport extends Transport {
 						}
 					}
 					
-					} catch (JSONException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
-					} catch (IOException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
+					} catch (JSONException | IOException e) {
+						Log.w(getClass().getCanonicalName(), e);
 					}
-				}
+                }
 			}
 		}).start();
 		
@@ -231,11 +221,11 @@ public class XhrTransport extends Transport {
 	 * @param e the raised exception
 	 */
 	private void handlerPollError(Exception e) {
-		XhrTransport.this.transportListener.onError(e.getMessage());
+		XhrTransport.this.transportListener.onError(e.getMessage() != null ? e.getMessage() : "");
 		XhrTransport.this.transportListener.onDisconnect();
 		XhrTransport.this.authentified = false;
 		isConnected = false;
-		Log.e(getClass().getCanonicalName(), e.getMessage());
+		Log.w(getClass().getCanonicalName(), e);
 		e.printStackTrace();
 	}
 	
@@ -285,7 +275,7 @@ public class XhrTransport extends Transport {
 									}
 								}
 							} catch (JSONException e) {
-								Log.e(getClass().getCanonicalName(), e.getMessage());
+								Log.w(getClass().getCanonicalName(), e);
 							}
 						}
 					}

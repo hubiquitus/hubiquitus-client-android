@@ -95,7 +95,7 @@ public class WebSocketTransport extends Transport {
 							}
 						}, PING_TIMEOUT);
 					} catch (JSONException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
+						Log.w(getClass().getCanonicalName(), e);
 					}
 				}
 
@@ -104,7 +104,7 @@ public class WebSocketTransport extends Transport {
 					try {
 						WebSocketTransport.this.handleMessage(message);
 					} catch (JSONException | IOException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
+						Log.w(getClass().getCanonicalName(), e);
 					}
                 }
 
@@ -150,7 +150,7 @@ public class WebSocketTransport extends Transport {
 			}
 			
 		} catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException | IOException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
+			Log.w(getClass().getCanonicalName(), e);
 		}
     }
 
@@ -180,14 +180,14 @@ public class WebSocketTransport extends Transport {
 		try {
 			this.webSocketClient.send(jsonMessage.toString());
 		} catch (Exception e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
-			transportListener.onError(e.getMessage());
+			Log.w(getClass().getCanonicalName(), e);
+			transportListener.onError(e.getMessage() != null ? e.getMessage() : "");
 		}
 		
 		try {
 			this.responseQueue.put(jsonMessage.getString(ID), responseListener);
 		} catch (JSONException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
+			Log.w(getClass().getCanonicalName(), e);
 		}
 		return jsonMessage;
 	}

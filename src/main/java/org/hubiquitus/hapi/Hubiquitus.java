@@ -1,6 +1,7 @@
 package org.hubiquitus.hapi;
 
-import java.io.IOException;
+import android.os.Handler;
+import android.util.Log;
 
 import org.hubiquitus.hapi.listener.HubiquitusListener;
 import org.hubiquitus.hapi.listener.ResponseListener;
@@ -17,8 +18,7 @@ import org.hubiquitus.hapi.transport.service.ServiceResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.Handler;
-import android.util.Log;
+import java.io.IOException;
 
 /**
  * Hubiquitus main file
@@ -172,8 +172,8 @@ public class Hubiquitus implements TransportListener {
                     }
                 } catch (IOException e) {
 					// Call onError to prevent waiting indefinitely
-					Hubiquitus.this.onError(e.getMessage());
-					Log.e(getClass().getCanonicalName(), e.getMessage());
+					Hubiquitus.this.onError(e.getMessage() != null ? e.getMessage() : "");
+					Log.w(getClass().getCanonicalName(), e);
 				}
 			}
 		}).start();
@@ -198,7 +198,7 @@ public class Hubiquitus implements TransportListener {
 					return jsonObject.getBoolean("websocket");
 				}
 			} catch (JSONException e) {
-				Log.e(getClass().getCanonicalName(), e.getMessage());
+				Log.w(getClass().getCanonicalName(), e);
 				e.printStackTrace();
 			}
 
@@ -261,8 +261,7 @@ public class Hubiquitus implements TransportListener {
                                     }
                                 }
 							} catch (JSONException e) {
-								Log.e(getClass().getCanonicalName(),
-										e.getMessage());
+								Log.w(getClass().getCanonicalName(), e);
 							}
 						}
 					});
@@ -423,7 +422,7 @@ public class Hubiquitus implements TransportListener {
                 try {
                     this.transport.silentDisconnect();
                 } catch (TransportException e) {
-                    Log.e(getClass().getCanonicalName(), e.getMessage());
+                    Log.w(getClass().getCanonicalName(), e);
                 }
                 this.transport = null;
             }
@@ -483,8 +482,7 @@ public class Hubiquitus implements TransportListener {
                                     }
                                 }
 							} catch (JSONException e) {
-								Log.e(getClass().getCanonicalName(),
-										e.getMessage());
+								Log.w(getClass().getCanonicalName(), e);
 							}
 						}
 					});
@@ -495,7 +493,7 @@ public class Hubiquitus implements TransportListener {
 								Hubiquitus.this.transport.buildAuthData(
 										authData).toString());
 			} catch (JSONException e) {
-				Log.e(getClass().getCanonicalName(), e.getMessage());
+				Log.w(getClass().getCanonicalName(), e);
 			}
 		}
 	}
