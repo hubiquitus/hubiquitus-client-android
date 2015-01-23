@@ -3,7 +3,6 @@ package org.hubiquitus.hapi.transport;
 import android.os.Handler;
 import android.util.Log;
 
-import org.hubiquitus.hapi.BuildConfig;
 import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.message.Message;
 import org.hubiquitus.hapi.message.MessageType;
@@ -249,8 +248,6 @@ public abstract class Transport {
 		
 		if (HB.equals(stringMessage)) {
 				
-			if (BuildConfig.DEBUG) Log.d("DEBUG", "handle hb message : " + stringMessage);
-
             //Respond to the hb message
             // TODO Comment this for Hubiquitus < 0.9
             try {
@@ -266,8 +263,6 @@ public abstract class Transport {
 			
 			JSONObject jsonMessage = new JSONObject(stringMessage);
 
-            if (BuildConfig.DEBUG) Log.d("DEBUG", "handle json message : " + jsonMessage.toString());
-			
 			String messageId = null;
 			String from = null;
 			JSONObject err = null;
