@@ -1,5 +1,15 @@
 package org.hubiquitus.hapi.transport;
 
+import android.util.Log;
+
+import org.hubiquitus.hapi.listener.ResponseListener;
+import org.hubiquitus.hapi.transport.exception.TransportException;
+import org.hubiquitus.hapi.transport.listener.TransportListener;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,16 +24,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
-import org.hubiquitus.hapi.listener.ResponseListener;
-import org.hubiquitus.hapi.transport.exception.TransportException;
-import org.hubiquitus.hapi.transport.listener.TransportListener;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.util.Log;
 
 /**
  * Web socket transport class
@@ -91,7 +91,7 @@ public class WebSocketTransport extends Transport {
 							@Override
 							public void run() {
 								WebSocketTransport.this.transportListener.onWebSocketPingTimeout();
-								WebSocketTransport.this.webSocketClient.close(CLOSE_PING_TIMEOUT_CODE);
+								close(CLOSE_PING_TIMEOUT_CODE);
 							}
 						}, PING_TIMEOUT);
 					} catch (JSONException e) {
@@ -103,12 +103,10 @@ public class WebSocketTransport extends Transport {
 				public void onMessage(String message) {
 					try {
 						WebSocketTransport.this.handleMessage(message);
-					} catch (JSONException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
-					} catch (IOException e) {
+					} catch (JSONException | IOException e) {
 						Log.e(getClass().getCanonicalName(), e.getMessage());
 					}
-				}
+                }
 
 				@Override
 				public void onError(Exception arg0) {
@@ -143,7 +141,7 @@ public class WebSocketTransport extends Transport {
 							throws CertificateException {}
 				};
 				
-				SSLContext sslContext = null;
+				SSLContext sslContext;
                 sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, new TrustManager[] {tm}, null);
                 
@@ -151,16 +149,10 @@ public class WebSocketTransport extends Transport {
                 this.webSocketClient.setSocket(factory.createSocket());
 			}
 			
-		} catch (URISyntaxException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
-		} catch (NoSuchAlgorithmException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
-		} catch (KeyManagementException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
-		} catch (IOException e) {
+		} catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException | IOException e) {
 			Log.e(getClass().getCanonicalName(), e.getMessage());
 		}
-	}
+    }
 
 	public WebSocketClient getWebSocketClient() {
 		return this.webSocketClient;
@@ -171,9 +163,7 @@ public class WebSocketTransport extends Transport {
 		super.connect(endpoint, authData);
 		this.authData = authData;
 		if (this.webSocketClient == null) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(endpoint).append("/websocket");
-			this.initSocket(sb.toString());
+            this.initSocket(endpoint + "/websocket");
 			this.webSocketClient.connect();
 		}
 	}
