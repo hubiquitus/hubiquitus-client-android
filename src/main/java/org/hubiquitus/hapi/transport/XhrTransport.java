@@ -226,7 +226,6 @@ public class XhrTransport extends Transport {
 		XhrTransport.this.authentified = false;
 		isConnected = false;
 		Log.w(getClass().getCanonicalName(), e);
-		e.printStackTrace();
 	}
 	
 	public void closeConnection() {
