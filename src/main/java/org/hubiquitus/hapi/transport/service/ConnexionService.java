@@ -97,7 +97,7 @@ public class ConnexionService {
 					registry);
 			
 		} catch(Exception e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
+			Log.w(getClass().getCanonicalName(), e);
 		}
 	}
 

@@ -3,7 +3,6 @@ package org.hubiquitus.hapi.transport;
 import android.os.Handler;
 import android.util.Log;
 
-import org.hubiquitus.hapi.BuildConfig;
 import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.message.Message;
 import org.hubiquitus.hapi.message.MessageType;
@@ -119,12 +118,10 @@ public abstract class Transport {
 			try {
 				Transport.this.disconnect();
 				Transport.this.transportListener.onError(Transport.this.buildErrorMessage(HBTIMEOUT));
-			} catch (TransportException e) {
-				Log.d(getClass().getCanonicalName(), e.getMessage());
 			} catch (JSONException e) {
-				Log.d(getClass().getCanonicalName(), e.getMessage());
+				Log.w(getClass().getCanonicalName(), e);
 			}
-		}
+        }
 		else {
 			// Remove any scheduled runnable to avoid several threads to do the same thing
 			handler.removeCallbacks(checkConnectionRunnable);
@@ -155,7 +152,7 @@ public abstract class Transport {
 						jsonCode.put(CODE, AUTHTIMEOUT);
 						jsonErr.put(ERR, jsonCode);
 					} catch (JSONException e) {
-						Log.e(getClass().getCanonicalName(), e.getMessage());
+						Log.w(getClass().getCanonicalName(), e);
 					}
 					Transport.this.transportListener.onError(jsonErr);
 				}
@@ -165,17 +162,13 @@ public abstract class Transport {
 
 	/**
 	 * Disconnect from endpoint
-	 * 
-	 * @throws TransportException
 	 */
-	public abstract void disconnect() throws TransportException;
+	public abstract void disconnect();
 	
 	/**
 	 * Disconnect from endpoint
-	 * 
-	 * @throws TransportException
 	 */
-	public abstract void silentDisconnect() throws TransportException;
+	public abstract void silentDisconnect();
 
 	/**
 	 * Send a hubiquitus message
@@ -230,7 +223,7 @@ public abstract class Transport {
 							jsonCode.put(CODE, TIMEOUT);
 							jsonErr.put(ERR, jsonCode);
 						} catch (JSONException e) {
-							Log.e(getClass().getCanonicalName(), e.getMessage());
+							Log.w(getClass().getCanonicalName(), e);
 						}
 						responseListener.onResponse(jsonErr, null);
 						responseQueue.remove(messageId);
@@ -238,7 +231,7 @@ public abstract class Transport {
 				}
 			}, timeout);
 		} catch (JSONException e) {
-			Log.e(getClass().getCanonicalName(), e.getMessage());
+			Log.w(getClass().getCanonicalName(), e);
 		}
 		return jsonMessage;
 	}
@@ -255,14 +248,12 @@ public abstract class Transport {
 		
 		if (HB.equals(stringMessage)) {
 				
-			if (BuildConfig.DEBUG) Log.d("DEBUG", "handle hb message : " + stringMessage);
-
             //Respond to the hb message
             // TODO Comment this for Hubiquitus < 0.9
             try {
                 sendHeartBeat();
             } catch (TransportException e) {
-                Log.d(getClass().getCanonicalName(), "hb response error\r\n"+e.getMessage());
+                Log.w(getClass().getCanonicalName(), "hb response error", e);
             }
 
             lastHeartbeat = new Date().getTime();
@@ -272,8 +263,6 @@ public abstract class Transport {
 			
 			JSONObject jsonMessage = new JSONObject(stringMessage);
 
-            if (BuildConfig.DEBUG) Log.d("DEBUG", "handle json message : " + jsonMessage.toString());
-			
 			String messageId = null;
 			String from = null;
 			JSONObject err = null;
@@ -447,12 +436,10 @@ public abstract class Transport {
 					JSONObject response = buildResponse(from, messageId, err,
 							content);
 					Transport.this.send(response);
-				} catch (TransportException e) {
-					Log.e(getClass().getCanonicalName(), e.getMessage());
-				} catch (JSONException e) {
-					Log.e(getClass().getCanonicalName(), e.getMessage());
+				} catch (TransportException | JSONException e) {
+					Log.w(getClass().getCanonicalName(), e);
 				}
-			}
+            }
 		});
 		return request;
 	}

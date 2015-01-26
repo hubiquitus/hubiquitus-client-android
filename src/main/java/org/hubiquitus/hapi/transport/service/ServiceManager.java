@@ -1,8 +1,6 @@
 package org.hubiquitus.hapi.transport.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -14,7 +12,9 @@ import org.apache.http.entity.StringEntity;
 import org.hubiquitus.hapi.transport.Transport;
 import org.json.JSONObject;
 
-import android.util.Log;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class ServiceManager {
 	
@@ -76,12 +76,10 @@ public class ServiceManager {
 			try {
 				HttpResponse httpResponse = httpClient.execute(httpRequest);
 				serviceResponse = readResponse(httpResponse);
-			} catch (IOException e) {
-				Log.e("ServiceManager", e.getMessage());
-			} catch (IllegalStateException e) {
-				Log.e("ServiceManager", e.getMessage());
+			} catch (IOException | IllegalStateException e) {
+				Log.w(ServiceManager.class.getCanonicalName(), e);
 			}
-		}
+        }
 		
 		return serviceResponse;
 	}
