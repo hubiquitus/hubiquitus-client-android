@@ -4,7 +4,8 @@ It currently allows to do pubsub with an xmpp server. For more information, plea
 
 ## Third party libraries
 This project currently relies on:
-* `Socket.io-java-client` for Socket I/O, using this [fork](https://github.com/Gottox/socket.io-java-client).
+
+* [`Java-WebSocket`](https://github.com/TooTallNate/Java-WebSocket).
 
 ## Integration
 
@@ -29,7 +30,7 @@ allprojects {
 ```
 dependencies {
 	...
-	compile 'com.hubiquitus:android-sdk:0.9.1'
+	compile 'com.hubiquitus:android-sdk:0.9.2'
 	...
 }
 ```

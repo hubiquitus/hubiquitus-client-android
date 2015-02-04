@@ -2,99 +2,79 @@ package org.hubiquitus.hapi.transport.service;
 
 /**
  * Service response class
- * 
- * @author t.bourgeois
  *
+ * @author t.bourgeois
  */
 public class ServiceResponse {
 
-	/**
-	 * The status of the response
-	 */
-	private int status;
-	/**
-	 * The text of the response
-	 */
-	private String text;
-	
-	/**
-	 * Default constructor
-	 */
-	public ServiceResponse() {}
-	
-	/**
-	 * Constructor
-	 * @param status the status of the response
-	 * @param text
-	 */
-	public ServiceResponse(int status, String text) {
-		this.status = status;
-		this.text = text;
-	}
+    private int mStatus;
+    private String mText;
 
-	/**
-	 * Getter for status 
-	 * @return
-	 */
-	public int getStatus() {
-		return status;
-	}
-	
-	/**
-	 * Setter for the status
-	 * @param status
-	 */
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public ServiceResponse() {
+    }
 
-	/**
-	 * Getter for the text
-	 * @return
-	 */
-	public String getText() {
-		return text;
-	}
+    /**
+     * @param status the status of the response
+     * @param text   response mText
+     */
+    public ServiceResponse(int status, String text) {
+        this.mStatus = status;
+        this.mText = text;
+    }
 
-	/**
-	 * Setter for the text
-	 * @param text
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
+    public int getStatus() {
+        return mStatus;
+    }
 
-	@Override
-	public String toString() {
-		return "ServiceResponse [status=" + status + ", text=" + text + "]";
-	}
+    public void setStatus(int mStatus) {
+        this.mStatus = mStatus;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + status;
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
-		return result;
-	}
+    /**
+     * @return the text content of the response
+     */
+    public String getText() {
+        return mText;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ServiceResponse other = (ServiceResponse) obj;
-		if (status != other.status)
-			return false;
-		if (text == null) {
-			if (other.text != null)
-				return false;
-		} else if (!text.equals(other.text))
-			return false;
-		return true;
-	}
-	
+    /**
+     * @param text the text content of the response
+     */
+    public void setText(String text) {
+        this.mText = text;
+    }
+
+    @Override
+    public String toString() {
+        return "ServiceResponse [status=" + mStatus + ", text=" + mText + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + mStatus;
+        result = prime * result + ((mText == null) ? 0 : mText.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ServiceResponse other = (ServiceResponse) obj;
+        if (mStatus != other.mStatus)
+            return false;
+        if (mText == null) {
+            if (other.mText != null)
+                return false;
+        } else if (!mText.equals(other.mText))
+            return false;
+        return true;
+    }
+
 }
