@@ -5,7 +5,7 @@ It currently allows to do pubsub with an xmpp server. For more information, plea
 ## Third party libraries
 This project currently relies on:
 
-* [`Java-WebSocket`](https://github.com/TooTallNate/Java-WebSocket).
+* [`Java-WebSocket`](https://github.com/TooTallNate/Java-WebSocket)
 
 ## Integration
 

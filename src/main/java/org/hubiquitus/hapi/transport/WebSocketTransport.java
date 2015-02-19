@@ -127,7 +127,7 @@ public class WebSocketTransport extends Transport {
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e(getClass().getCanonicalName(), this + " Transport error ==> close socket");
+                    Log.e(getClass().getCanonicalName(), this + " Transport error ==> close socket" + e);
                     //Doesn't notify the transport listener, it will be at socket close with the BuggyClose code
                     close(CloseFrame.BUGGYCLOSE);
                 }
