@@ -1,11 +1,15 @@
 package org.hubiquitus.hapi.transport;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.hubiquitus.hapi.listener.ResponseListener;
-import org.hubiquitus.hapi.transport.exception.TransportException;
+import org.hubiquitus.hapi.message.MessageType;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
+import org.hubiquitus.hapi.transport.utils.MessageBuilder;
+import org.hubiquitus.hapi.utils.InternalErrorCodes;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +21,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -26,212 +31,256 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * Web socket transport class
- * 
- * @author teabow
- * 
+ * Created by m.Ruetsch on 03/02/15.
  */
 public class WebSocketTransport extends Transport {
 
-	/**
-	 * Constant for websocket secure
-	 */
-	private static final String WSS = "wss";
-	private static final String HTTPS = "https";
+    private static final String WSS = "wss";
+    private static final String HTTPS = "https";
 
-	/**
-	 * Web socket client
-	 */
-	private WebSocketClient webSocketClient;
-	/**
-	 * Ping timeout timer
-	 */
-	private Timer pingTimeoutTimer;
-	/**
-	 * Ping timeout
-	 */
-	private static final int PING_TIMEOUT = 3000;
-	/**
-	 * Close socket ping timeout code
-	 */
-	private static final int CLOSE_PING_TIMEOUT_CODE = 987654321;
+    private static final int CLOSE_PING_TIMEOUT_CODE = 2000; //WS standard codes are between 1000 & 1016
+    private static final int PING_TIMEOUT = 3000;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param transportListener
-	 *            transport listener
-	 */
-	public WebSocketTransport(TransportListener transportListener) {
-		super(transportListener);
-	}
 
-	/**
-	 * Initialize the socket
-	 * 
-	 * @param endpoint
-	 *            endpoint
-	 */
-	private void initSocket(String endpoint) {
+    private WebSocketClient mWebSocketClient;
+    private Timer mPingTimeoutTimer;
 
-		URI endpointURI;
-		
-		try {
-			endpointURI = new URI(endpoint);
 
-			this.webSocketClient = new WebSocketClient(endpointURI) {
+    public WebSocketTransport(TransportListener transportListener) {
+        super(transportListener);
+    }
 
-				@Override
-				public void onOpen(ServerHandshake arg0) {
-					
-					try {
-						this.send(buildNegotiateMessage().toString());
-						WebSocketTransport.this.pingTimeoutTimer = new Timer();
-						WebSocketTransport.this.pingTimeoutTimer.schedule(new TimerTask() {
-							@Override
-							public void run() {
-								WebSocketTransport.this.transportListener.onWebSocketPingTimeout();
-								close(CLOSE_PING_TIMEOUT_CODE);
-							}
-						}, PING_TIMEOUT);
-					} catch (JSONException e) {
-						Log.w(getClass().getCanonicalName(), e);
-					}
-				}
+    public boolean isWebSocketClosed() {
+        return mWebSocketClient == null || mWebSocketClient.isClosed();
+    }
 
-				@Override
-				public void onMessage(String message) {
-					try {
-						WebSocketTransport.this.handleMessage(message);
-					} catch (JSONException | IOException e) {
-						Log.w(getClass().getCanonicalName(), e);
-					}
+    @Override
+    public boolean isReady() {
+        return mWebSocketClient != null && mWebSocketClient.isOpen() && mIsAuthenticated;
+    }
+
+    // ========== Transport Implementation ============
+
+    private void initSocket(String endpoint) {
+        if (mDebugLog) {
+            Log.d(getClass().getCanonicalName(), this + " init websocket, endpoint =" + endpoint);
+        }
+
+        URI endpointURI;
+
+        try {
+            endpointURI = new URI(endpoint);
+
+            this.mWebSocketClient = new WebSocketClient(endpointURI) {
+
+                @Override
+                public void onOpen(ServerHandshake handshake) {
+                    if (mDebugLog) {
+                        Log.d(getClass().getCanonicalName(), this + " init websocket onOpen");
+                    }
+
+                    try {
+                        send(MessageBuilder.buildNegotiateMessage().toString());
+
+                        mPingTimeoutTimer = new Timer();
+                        mPingTimeoutTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                Log.e(getClass().getCanonicalName(), this + " ping timeout ==> close socket");
+                                close(CLOSE_PING_TIMEOUT_CODE);
+                            }
+                        }, PING_TIMEOUT);
+                    } catch (JSONException e) {
+                        if (mTransportListener != null) {
+                            mTransportListener.onError(InternalErrorCodes.CONNECTION_FAILED, null);
+                        }
+                        Log.w(getClass().getCanonicalName(), e);
+                    }
                 }
 
-				@Override
-				public void onError(Exception arg0) {
-					WebSocketTransport.this.transportListener.onError(arg0.getMessage());
-					arg0.printStackTrace();
-				}
+                @Override
+                public void onMessage(String message) {
+                    try {
+                        if (!HB.equals(message)) {
+                            JSONObject object = new JSONObject(message);
+                            String messageType = object.optString(MessageBuilder.TYPE);
+                            if (!TextUtils.isEmpty(messageType) && MessageType.NEGOTIATE.equals(MessageType.valueOf(messageType.toUpperCase(Locale.US)))) {
 
-				@Override
-				public void onClose(int arg0, String arg1, boolean arg2) {
-					if (arg0 != CLOSE_PING_TIMEOUT_CODE) {
-						WebSocketTransport.this.authentified = false;
-						WebSocketTransport.this.transportListener.onDisconnect();
-					}
-				}
-			};
-			
-			if (endpoint.startsWith(WSS) || endpoint.startsWith(HTTPS)) {
-				
-				TrustManager tm = new X509TrustManager() {
-					
-					@Override
-					public X509Certificate[] getAcceptedIssuers() {
-						return null;
-					}
-					
-					@Override
-					public void checkServerTrusted(X509Certificate[] chain, String authType)
-							throws CertificateException {}
-					
-					@Override
-					public void checkClientTrusted(X509Certificate[] chain, String authType)
-							throws CertificateException {}
-				};
-				
-				SSLContext sslContext;
+                                //Cancel the ping timeOut task
+                                if (mDebugLog) {
+                                    Log.d(getClass().getCanonicalName(), this + " websocket cancelPingTimeOutTimer");
+                                }
+
+                                if (mPingTimeoutTimer != null) {
+                                    mPingTimeoutTimer.cancel();
+                                }
+
+                                onWebSocketReady();
+                            }
+                        }
+
+                        handleMessage(message);
+                    } catch (JSONException e) {
+                        Log.w(getClass().getCanonicalName(), e);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e(getClass().getCanonicalName(), this + " Transport error ==> close socket" + e);
+                    //Doesn't notify the transport listener, it will be at socket close with the BuggyClose code
+                    close(CloseFrame.BUGGYCLOSE);
+                }
+
+                @Override
+                public void onClose(int code, String reason, boolean remote) {
+                    if (mDebugLog) {
+                        Log.d(getClass().getCanonicalName(), this + " websocket onClose code=" + code + " reason=" + reason + " remote=" + remote);
+                    }
+
+                    mIsAuthenticated = false;
+                    if (mTransportListener != null) {
+
+                        //If the socket close is normal (disconnect was called) we only notify with onDisconnect
+                        if (code == CloseFrame.NORMAL) {
+                            mTransportListener.onDisconnect();
+                        } else {
+                            mTransportListener.onError(InternalErrorCodes.UNEXPECTED_TRANSPORT_CLOSE, reason);
+                        }
+                    }
+                }
+            };
+
+            if (endpoint.startsWith(WSS) || endpoint.startsWith(HTTPS)) {
+
+                TrustManager tm = new X509TrustManager() {
+
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] chain, String authType)
+                            throws CertificateException {
+                    }
+
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] chain, String authType)
+                            throws CertificateException {
+                    }
+                };
+
+                SSLContext sslContext;
                 sslContext = SSLContext.getInstance("TLS");
-                sslContext.init(null, new TrustManager[] {tm}, null);
-                
+                sslContext.init(null, new TrustManager[]{tm}, null);
+
                 SSLSocketFactory factory = sslContext.getSocketFactory();
-                this.webSocketClient.setSocket(factory.createSocket());
-			}
-			
-		} catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException | IOException e) {
-			Log.w(getClass().getCanonicalName(), e);
-		}
-    }
+                mWebSocketClient.setSocket(factory.createSocket());
+            }
 
-	public WebSocketClient getWebSocketClient() {
-		return this.webSocketClient;
-	}
-
-	@Override
-	public void connect(String endpoint, JSONObject authData) {
-		super.connect(endpoint, authData);
-		this.authData = authData;
-		if (this.webSocketClient == null) {
-            this.initSocket(endpoint + "/websocket");
-			this.webSocketClient.connect();
-		}
-	}
-
-	@Override
-	public JSONObject send(String to, Object content, int timeout,
-			ResponseListener responseListener) throws TransportException {
-		JSONObject jsonMessage = super.send(to, content, timeout,
-				responseListener);
-		if (this.webSocketClient == null) {
-			throw new TransportException("webSocketClient is null in send");
-		}
-		
-		try {
-			this.webSocketClient.send(jsonMessage.toString());
-		} catch (Exception e) {
-			Log.w(getClass().getCanonicalName(), e);
-			transportListener.onError(e.getMessage() != null ? e.getMessage() : "");
-		}
-		
-		try {
-			this.responseQueue.put(jsonMessage.getString(ID), responseListener);
-		} catch (JSONException e) {
-			Log.w(getClass().getCanonicalName(), e);
-		}
-		return jsonMessage;
-	}
-
-	@Override
-	protected void send(JSONObject jsonObject) throws TransportException {
-		if (this.webSocketClient == null) {
-			throw new TransportException("webSocketClient is null");
-		}
-		this.webSocketClient.send(jsonObject.toString());
-	}
-
-    @Override
-    protected void sendHeartBeat() throws TransportException {
-        if (this.webSocketClient == null) {
-            throw new TransportException("webSocketClient is null");
+        } catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException | IOException e) {
+            if (mTransportListener != null) {
+                mTransportListener.onError(InternalErrorCodes.INIT_TRANSPORT, e);
+            }
         }
-        this.webSocketClient.send(Transport.HB);
+    }
+
+    private void onWebSocketReady() {
+        if (mDebugLog) {
+            Log.d(getClass().getCanonicalName(), this + " Connect with " + mWebSocketClient + " " + mAuthData);
+        }
+
+        //When the socket is ready (after successful handshaking) the client send authentication data
+        if (mWebSocketClient != null && !mWebSocketClient.isClosed()) {
+            try {
+                mWebSocketClient.send(MessageBuilder.buildAuthMessage(mAuthData).toString());
+            } catch (JSONException e) {
+                if (mTransportListener != null) {
+                    mTransportListener.onError(InternalErrorCodes.AUTHENTICATION_FAILED, e);
+                }
+            }
+        } else {
+            if (mTransportListener != null) {
+                mTransportListener.onError(InternalErrorCodes.EMPTY_TRANSPORT, null);
+            }
+        }
     }
 
     @Override
-	public void disconnect() {
-		if (this.webSocketClient != null) {
-            this.webSocketClient.close();
-            this.webSocketClient = null;
-		}
-		this.transportListener.onDisconnect();
-	}
-	
-	@Override
-	public void silentDisconnect() {
-		if (this.webSocketClient != null) {
-            this.webSocketClient.close();
-            this.webSocketClient = null;
-		}
-	}
+    public void connect(String endpoint, JSONObject authData) {
+        super.connect(endpoint, authData);
 
-	/**
-	 * Cancels the ping timeout timer.
-	 */
-	void cancelPingTimeout() {
-		if (this.pingTimeoutTimer != null) {
-			this.pingTimeoutTimer.cancel();
-		}
-	}
+        if (mWebSocketClient == null && mTransportListener != null) {
+            initSocket(endpoint + "/websocket");
+            mWebSocketClient.connect();
+        } else {
+            Log.e(getClass().getCanonicalName(), this + " shouldn't reuse transport");
+        }
+    }
 
+    @Override
+    public JSONObject send(String to, Object content, int timeout, ResponseListener responseListener) {
+        JSONObject jsonMessage = super.send(to, content, timeout, responseListener);
+
+        send(jsonMessage);
+        return jsonMessage;
+    }
+
+    @Override
+    public void send(JSONObject jsonObject) {
+        if (mWebSocketClient == null) {
+            //Should never be here, hubiquitus performs check before calling the transport send.
+            if (mDebugLog) {
+                Log.d(getClass().getCanonicalName(), this + " websocket client is null in send");
+            }
+            if (mTransportListener != null) {
+                mTransportListener.onError(InternalErrorCodes.EMPTY_TRANSPORT, null);
+            }
+            return;
+        }
+        try {
+            mWebSocketClient.send(jsonObject.toString());
+        } catch (Exception e) {
+            if (mTransportListener != null) {
+                mTransportListener.onError(InternalErrorCodes.TRANSPORT_NOT_READY, e);
+            }
+        }
+    }
+
+    @Override
+    protected void sendHeartBeat() {
+        if (mWebSocketClient == null) {
+            if (mTransportListener != null) {
+                mTransportListener.onError(InternalErrorCodes.EMPTY_TRANSPORT, null);
+            }
+            return;
+        }
+        mWebSocketClient.send(Transport.HB);
+    }
+
+    @Override
+    protected void disconnect() {
+        if (mDebugLog) Log.d(getClass().getCanonicalName(), this + " websocket disconnect");
+
+        if (mTransportListener != null) {
+            mTransportListener.onDisconnect();
+        }
+        silentDisconnect();
+    }
+
+    @Override
+    public void silentDisconnect() {
+        super.silentDisconnect();
+        if (mDebugLog) Log.d(getClass().getCanonicalName(), this + " websocket silent disconnect");
+
+        mIsAuthenticated = false;
+        //The transport listener is set to null here to avoid have multiple transport
+        //calling the same TransportListener of the Hubiquitus instance
+        mTransportListener = null;
+        if (mWebSocketClient != null) {
+            mWebSocketClient.close();
+            mWebSocketClient = null;
+        }
+    }
 }

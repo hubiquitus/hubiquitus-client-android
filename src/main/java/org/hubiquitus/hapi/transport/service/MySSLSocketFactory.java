@@ -1,8 +1,9 @@
 package org.hubiquitus.hapi.transport.service;
 
+import org.apache.http.conn.ssl.SSLSocketFactory;
+
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -15,42 +16,40 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.http.conn.ssl.SSLSocketFactory;
+class MySSLSocketFactory extends SSLSocketFactory {
+    private SSLContext mSslContext = SSLContext.getInstance("TLS");
 
-public class MySSLSocketFactory extends SSLSocketFactory {
-	SSLContext sslContext = SSLContext.getInstance("TLS");
+    public MySSLSocketFactory(KeyStore keyStore)
+            throws NoSuchAlgorithmException, KeyManagementException,
+            KeyStoreException, UnrecoverableKeyException {
 
-	public MySSLSocketFactory(KeyStore truststore)
-			throws NoSuchAlgorithmException, KeyManagementException,
-			KeyStoreException, UnrecoverableKeyException {
-		super(truststore);
+        super(keyStore);
 
-		TrustManager tm = new X509TrustManager() {
-			public void checkClientTrusted(X509Certificate[] chain,
-					String authType) throws CertificateException {
-			}
+        TrustManager tm = new X509TrustManager() {
+            public void checkClientTrusted(X509Certificate[] chain, String authType)
+                    throws CertificateException {
+            }
 
-			public void checkServerTrusted(X509Certificate[] chain,
-					String authType) throws CertificateException {
-			}
+            public void checkServerTrusted(X509Certificate[] chain, String authType)
+                    throws CertificateException {
+            }
 
-			public X509Certificate[] getAcceptedIssuers() {
-				return null;
-			}
-		};
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        };
 
-		sslContext.init(null, new TrustManager[] { tm }, null);
-	}
+        mSslContext.init(null, new TrustManager[]{tm}, null);
+    }
 
-	@Override
-	public Socket createSocket(Socket socket, String host, int port,
-			boolean autoClose) throws IOException, UnknownHostException {
-		return sslContext.getSocketFactory().createSocket(socket, host, port,
-				autoClose);
-	}
+    @Override
+    public Socket createSocket(Socket socket, String host, int port, boolean autoClose)
+            throws IOException {
+        return mSslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
+    }
 
-	@Override
-	public Socket createSocket() throws IOException {
-		return sslContext.getSocketFactory().createSocket();
-	}
+    @Override
+    public Socket createSocket() throws IOException {
+        return mSslContext.getSocketFactory().createSocket();
+    }
 }

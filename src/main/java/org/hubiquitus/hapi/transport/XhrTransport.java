@@ -1,297 +1,272 @@
 package org.hubiquitus.hapi.transport;
 
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
+import org.apache.http.HttpStatus;
 import org.hubiquitus.hapi.listener.ResponseListener;
-import org.hubiquitus.hapi.transport.exception.TransportException;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
-import org.hubiquitus.hapi.transport.model.Message;
 import org.hubiquitus.hapi.transport.service.ServiceManager;
 import org.hubiquitus.hapi.transport.service.ServiceResponse;
+import org.hubiquitus.hapi.transport.utils.MessageBuilder;
 import org.hubiquitus.hapi.transport.utils.TransportUtils;
+import org.hubiquitus.hapi.utils.InternalErrorCodes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Xhr transport class
- * 
- * @author t.bourgeois
- *
+ * Created by m.Ruetsch on 04/02/15.
  */
 public class XhrTransport extends Transport {
-	
-	private static final String SOCKJS_START_MESSAGE = "a";
-	
-	private static final String HB_ARRAY = "[\"hb\"]";
-	
-	private static final String XHR = "/xhr";
-	private static final String XHR_SEND = "/xhr_send";
-	
-	private String fullUrl;
-	
-	private boolean isConnected;
-	
-	private boolean close = false;
-	
-	/**
-	 * Poll thread
-	 */
-	private PollThread pollThread;
-	
-	private ConcurrentLinkedQueue<Message> queue = new ConcurrentLinkedQueue<Message>();
-	
-	public XhrTransport(TransportListener transportListener) {
-		super(transportListener);
-	}
+    private static final String SOCKJS_START_MESSAGE = "a";
+    private static final String HB_ARRAY = "[\"hb\"]";
+    private static final String XHR = "/xhr";
+    private static final String XHR_SEND = "/xhr_send";
 
-	@Override
-	public void connect(final String endpoint, JSONObject authDataObject) {
-		
-		super.connect(endpoint, authData);
-		
-		serverId = TransportUtils.getServerId();
-		sessionId = TransportUtils.getSessionId();
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(endpoint).append("/").append(serverId).append("/").append(sessionId);
-		
-		this.fullUrl = sb.toString();
-		this.authData = authDataObject;
-		
-		Log.d("DEBUG", "XHR connect to " + endpoint + " with " + authDataObject);
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				try {
-					ServiceResponse responseConnect = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
-					if (responseConnect != null && responseConnect.getStatus() == 200) {
-						ServiceResponse responseAuth = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, buildAuthData(authData));
-						if (responseAuth != null && responseAuth.getStatus() == 204) {
-							isConnected = true;
-							pollThread = new PollThread();
-							pollThread.start();
-						}
-						else {
-							XhrTransport.this.transportListener.onError("Authentication failed");
-						}
-					}
-					else {
-						XhrTransport.this.transportListener.onError("Can't connect to host");
-					}
-				} catch (IOException | JSONException e) {
-					Log.w(getClass().getCanonicalName(), e);
-				}
-            }
-		}).start();
-		
-	}
+    private String mFullUrl;
 
-	@Override
-	public void disconnect() {
-		isConnected = false;
-		this.transportListener.onDisconnect();
-	}
-	
-	@Override
-	public void silentDisconnect() {
-		isConnected = false;
-	}
+    private boolean mIsConnected = false;
+    private boolean mIsClosed = false;
 
-	@Override
-	protected void send(JSONObject jsonObject) throws TransportException {
-		
-		Message message = new Message();
-		message.setJsonContent(jsonObject);
-		queue.add(message);
-		
-		handleQueueMessages();
-	}
-	
-	@Override
-	public JSONObject send(String to, Object content, int timeout,
-			ResponseListener responseListener) throws TransportException {
-		
-		JSONObject jsonMessage = super.send(to, content, timeout, responseListener);
-			
-		Message message = new Message();
-		message.setJsonContent(jsonMessage);
-		message.setResponseListener(responseListener);
-		
-		queue.add(message);
-		
-		handleQueueMessages();
-		
-		return jsonMessage;
-	}
+    private PollThread mPollThread;
+    private Handler mNetworkHandler;
+
+
+    public XhrTransport(TransportListener transportListener) {
+        super(transportListener);
+    }
 
     @Override
-    protected void sendHeartBeat() throws TransportException {
+    public boolean isReady() {
+        return mIsConnected && !mIsClosed && mPollThread != null && mNetworkHandler != null && mIsAuthenticated;
+    }
+
+    @Override
+    public void connect(final String endpoint, final JSONObject authData) {
+        super.connect(endpoint, authData);
+
+
+        String serverId = TransportUtils.getServerId();
+        String sessionId = TransportUtils.getSessionId();
+        mFullUrl = endpoint + "/" + serverId + "/" + sessionId;
+
+        if (mDebugLog) {
+            Log.d(getClass().getCanonicalName(), this + " connect to " + endpoint + " fullUrl=" + mFullUrl);
+        }
+
+        //Start a new handler thread to send messages and connect
+        HandlerThread thread = new HandlerThread("NetworkHandlerThread");
+        thread.start();
+        mNetworkHandler = new Handler(thread.getLooper());
+
+        mNetworkHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //Connect via XHR
+                    ServiceResponse responseConnect = ServiceManager.requestService(mFullUrl, XHR, ServiceManager.Method.POST, null);
+
+                    if (responseConnect != null && responseConnect.getStatus() == HttpStatus.SC_OK) {
+                        ServiceResponse responseAuth = ServiceManager.requestService(
+                                mFullUrl, XHR_SEND, ServiceManager.Method.POST, MessageBuilder.buildAuthMessage(authData));
+
+                        if (responseAuth != null && responseAuth.getStatus() == HttpStatus.SC_NO_CONTENT) {
+                            mIsConnected = true;
+                            //Start XHR polling thread when connected and authenticated
+                            mPollThread = new PollThread();
+                            mPollThread.start();
+
+                        } else {
+                            if (mTransportListener != null) {
+                                mTransportListener.onError(InternalErrorCodes.AUTHENTICATION_FAILED,
+                                        "Http status=" + (responseAuth == null ? "no response" : responseAuth.getStatus()));
+                            }
+                        }
+                    } else {
+                        if (mTransportListener != null) {
+                            mTransportListener.onError(InternalErrorCodes.CONNECTION_FAILED,
+                                    "Can't connect to host " + (responseConnect == null ? "no response" : responseConnect.getStatus()));
+                        }
+                    }
+                } catch (IOException | JSONException e) {
+                    if (mTransportListener != null) {
+                        mTransportListener.onError(InternalErrorCodes.CONNECTION_FAILED, e);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void send(JSONObject jsonObject) {
+        internalSend(jsonObject);
+    }
+
+    @Override
+    public JSONObject send(String to, Object content, int timeout, ResponseListener responseListener) {
+        JSONObject jsonMessage = super.send(to, content, timeout, responseListener);
+
+        internalSend(jsonMessage);
+        return jsonMessage;
+    }
+
+    private void internalSend(final JSONObject jsonObject) {
+        if (!isReady()) {
+            //It's normally not possible to be here, hubiquitus should check this case before calling this method
+            Log.e(getClass().getCanonicalName(), "try to send with not ready transport");
+            if (mTransportListener != null) {
+                mTransportListener.onError(InternalErrorCodes.TRANSPORT_NOT_READY, null);
+            }
+            return;
+        }
+
+        mNetworkHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ServiceManager.requestService(mFullUrl, XHR_SEND, ServiceManager.Method.POST, jsonObject);
+                } catch (IOException e) {
+                    Log.w(getClass().getCanonicalName(), e);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void sendHeartBeat() {
         try {
-            send(new JSONObject().put(Transport.HB,Transport.HB));
+            send(new JSONObject().put(Transport.HB, Transport.HB));
         } catch (JSONException e) {
-            Log.e(getClass().getCanonicalName(),"Unable to create json HeartBeat message");
+            Log.e(getClass().getCanonicalName(), "Unable to create json HeartBeat message");
         }
     }
 
+    @Override
+    public void disconnect() {
+        if (mTransportListener != null) {
+            mTransportListener.onDisconnect();
+        }
+        silentDisconnect();
+    }
+
+    @Override
+    public void silentDisconnect() {
+        super.silentDisconnect();
+        //The mTransportListener is set to null here to avoid have multiple transport
+        //calling the same TransportListener of the Hubiquitus instance
+        mTransportListener = null;
+        mIsAuthenticated = false;
+        mIsConnected = false;
+        mIsClosed = true;
+        if (mNetworkHandler != null) {
+            mNetworkHandler.removeCallbacksAndMessages(null); //Removes all pending task
+            mNetworkHandler.getLooper().quit();
+        }
+    }
+
+
     /**
-	 * Handler for messages to send
-	 */
-	private void handleQueueMessages() {
+     * Extracts a json object list from a String
+     *
+     * @param text the text to parse
+     * @return the parsed json object
+     */
+    private List<JSONObject> extractJSON(String text) {
 
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-		
-				if (!queue.isEmpty()) {
-					
-					try {
-					
-					if (queue.size() == 1) {
-						
-						Message message = queue.poll();
-						
-						if (message.getResponseListener() != null) {
-							XhrTransport.this.responseQueue.put(message.getJsonContent().getString(ID), message.getResponseListener());
-						}
-						
-						ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND,ServiceManager.Method.POST, message.getJsonContent());
-					}
-					else {
-						Iterator<Message> iter = queue.iterator();
-						while (iter.hasNext()) {
-							Message message = iter.next();
-							
-							if (message.getResponseListener() != null) {
-								XhrTransport.this.responseQueue.put(message.getJsonContent().getString(ID), message.getResponseListener());
-							}
-							
-							ServiceManager.requestService(XhrTransport.this.fullUrl, XHR_SEND, ServiceManager.Method.POST, message.getJsonContent());
-							iter.remove();
-						}
-					}
-					
-					} catch (JSONException | IOException e) {
-						Log.w(getClass().getCanonicalName(), e);
-					}
+
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(text);
+        } catch (JSONException e) {
+            Log.w(getClass().getCanonicalName(), "Unable to parse json data : " + text);
+            return null;
+        }
+
+        if (jsonArray.length() > 0) {
+            List<JSONObject> jsonObjects = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    if (HB.equals(jsonArray.optString(i))) {
+                        handleMessage(HB);
+                    } else {
+                        JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
+                        jsonObjects.add(jsonObject);
+                    }
+                } catch (JSONException e) {
+                    Log.w(getClass().getCanonicalName(), "Unable to parse json data : " + jsonArray.optString(i));
                 }
-			}
-		}).start();
-		
-	}
+            }
+            return jsonObjects;
+        }
+        return null;
+    }
 
-	/**
-	 * Extracts a json object from 
-	 * @param text the text to parse
-	 * @return the parsed json object
-	 * @throws JSONException
-	 * @throws IOException 
-	 */
-	private List<JSONObject> extractJSON(String text) throws JSONException, IOException {
-		
-		JSONArray jsonArray = new JSONArray(text);
-		
-		if (jsonArray.length() > 0) {
-			List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
-			for (int i = 0; i < jsonArray.length(); i++) {
-				if (HB.equals(jsonArray.getString(i))) {
-					handleMessage(HB);
-				}
-				else {
-					JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
-					jsonObjects.add(jsonObject);
-				}
-			}
-			return jsonObjects;
-		}
-		return null;
-	}
-	
-	/**
-	 * Handler for managing poll errors
-	 * @param e the raised exception
-	 */
-	private void handlerPollError(Exception e) {
-		XhrTransport.this.transportListener.onError(e.getMessage() != null ? e.getMessage() : "");
-		XhrTransport.this.transportListener.onDisconnect();
-		XhrTransport.this.authentified = false;
-		isConnected = false;
-		Log.w(getClass().getCanonicalName(), e);
-	}
-	
-	public void closeConnection() {
-		this.close = true;
-	}
-	
-	/**
-	 * Thread used for xhr-polling
-	 * 
-	 * @author t.bourgeois
-	 *
-	 */
-	private class PollThread extends Thread {
-		
-		@Override
-		public void run() {
-			
-			while (isConnected) {
-				
-				try {
-					
-					if (close) {
-						isConnected = false;
-						break;
-					}
-					
-					ServiceResponse response = ServiceManager.requestService(XhrTransport.this.fullUrl, XHR, ServiceManager.Method.POST, null);
-					if (response != null) {
-						String text = response.getText();
-						
-						if (text.startsWith(SOCKJS_START_MESSAGE)) {
-							
-							Log.d("DEBUG", "SOCKJS MESSAGE => " + text);
-							
-							try {
-								String stripText = text.replaceFirst(SOCKJS_START_MESSAGE, "");
-								if (HB_ARRAY.equals(stripText)) {
-									XhrTransport.this.handleMessage(HB);
-								}
-								else {
-									List<JSONObject> jsonObjects = extractJSON(stripText);
-									if (jsonObjects != null) {
-										for (JSONObject jsonObject : jsonObjects) {
-											XhrTransport.this.handleMessage(jsonObject.toString());
-										}
-									}
-								}
-							} catch (JSONException e) {
-								Log.w(getClass().getCanonicalName(), e);
-							}
-						}
-					}
-				} catch (IOException e) {
-					handlerPollError(e);
-				}
-				
-				try {
-					sleep(100);
-				} catch (InterruptedException e) {
-					handlerPollError(e);
-				}
-				
-			}
-			
-		}
-		
-	}
-	
+    /**
+     * @param e the raised exception
+     */
+    private void pollErrorHandler(Exception e) {
+        //If an exception is throw in the PollThread we assume the transport is closed
+        if (mTransportListener != null) {
+            mTransportListener.onError(InternalErrorCodes.UNEXPECTED_TRANSPORT_CLOSE, e);
+        }
+        disconnect();
+    }
+
+    /**
+     * Thread used for xhr-polling
+     *
+     * @author t.bourgeois
+     */
+    private class PollThread extends Thread {
+
+        @Override
+        public void run() {
+
+            while (mIsConnected && !mIsClosed) {
+
+                try {
+                    ServiceResponse response = ServiceManager.requestService(mFullUrl, XHR, ServiceManager.Method.POST, null);
+
+                    if (response != null) {
+                        String text = response.getText();
+                        if (text.startsWith(SOCKJS_START_MESSAGE)) {
+                            Log.d(getClass().getCanonicalName(), this + " SOCKJS MESSAGE => " + text);
+
+                            String stripText = text.replaceFirst(SOCKJS_START_MESSAGE, "");
+
+                            if (HB_ARRAY.equals(stripText)) {
+                                XhrTransport.this.handleMessage(HB);
+
+                            } else {
+                                List<JSONObject> jsonObjects = extractJSON(stripText);
+
+                                if (jsonObjects != null && jsonObjects.size() > 0) {
+                                    for (JSONObject jsonObject : jsonObjects) {
+                                        XhrTransport.this.handleMessage(jsonObject.toString());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    pollErrorHandler(e);
+                }
+
+                try {
+                    sleep(100);
+                } catch (InterruptedException e) {
+                    pollErrorHandler(e);
+                }
+
+            }
+
+        }
+
+    }
 }

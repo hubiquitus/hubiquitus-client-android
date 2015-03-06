@@ -7,445 +7,297 @@ import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.message.Message;
 import org.hubiquitus.hapi.message.MessageType;
 import org.hubiquitus.hapi.message.Request;
-import org.hubiquitus.hapi.transport.callback.ReplyCallback;
-import org.hubiquitus.hapi.transport.exception.TransportException;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
+import org.hubiquitus.hapi.transport.utils.MessageBuilder;
+import org.hubiquitus.hapi.utils.HubiquitusErrorCodes;
+import org.hubiquitus.hapi.utils.InternalErrorCodes;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
 
 /**
- * Transport class
- * 
- * @author teabow
- * 
+ * Created by m.Ruetsch on 03/02/15.
  */
 public abstract class Transport {
-	
-	/**
-	 * Transport endpoint
-	 */
-	protected String endpoint;
-	/**
-	 * Authentication data
-	 */
-	protected JSONObject authData;
+    public static final String HEARTBEAT_FREQUENCY = "heartbeatFreq";
+    public static final String HB = "hb";
 
-	protected static final String TYPE = "type";
-	protected static final String AUTH_DATA = "authData";
-	protected static final String TO = "to";
-	protected static final String FROM = "from";
-	protected static final String PAYLOAD = "payload";
-	protected static final String CB = "cb";
-	protected static final String ID = "id";
-	protected static final String DATE = "date";
-	protected static final String CONTENT = "content";
-	protected static final String CODE = "code";
-	protected static final String ERR = "err";
-	protected static final String TIMEOUT = "TIMEOUT";
-	protected static final String AUTHTIMEOUT = "AUTHTIMEOUT";
-	protected static final String HBTIMEOUT = "HBTIMEOUT";
-	protected static final String HEARTBEAT_FREQUENCY = "heartbeatFreq";
-	public static final String HB = "hb";
-	/**
-	 * Server id value
-	 */
-	protected static String serverId;
-	/**
-	 * Session id value
-	 */
-	protected static String sessionId;
+    protected HashMap<String, ResponseListener> mResponseQueue;
 
-	/**
-	 * Response message queue
-	 */
-	protected HashMap<String, ResponseListener> responseQueue;
+    protected boolean mIsAuthenticated = false;
+    protected JSONObject mAuthData;
+    protected boolean mDebugLog = false;
 
-	/**
-	 * Transport listener
-	 */
-	protected TransportListener transportListener;
-	
-	private int authTimeout = 20000;
-	
-	protected boolean authentified = false;
-	
-	private Timer sendTimeoutTimer;
-	
-	private long lastHeartbeat;
-	
-	private int heartbeatFreq = 15000;
-	
-	private Handler handler;
-	
-	protected boolean disconnected = true;
-	
-	private Runnable checkConnectionRunnable;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param transportListener
-	 *            transport listener
-	 */
-	public Transport(TransportListener transportListener) {
-		this.transportListener = transportListener;
-		this.responseQueue = new HashMap<String, ResponseListener>();
-		this.checkConnectionRunnable = new Runnable() {
-			
-			@Override
-			public void run() {
-				checkConnection();
-			}
-		};
-	}
-	
-	private void checkConnection() {
-		
-		Log.d("DEBUG", "checkConnection");
-		
-		if (new Date().getTime() - (Transport.this.lastHeartbeat + Transport.this.heartbeatFreq + (0.5 * Transport.this.heartbeatFreq)) > 0) {
-			
-			Log.d("DEBUG", "=======> checkConnection LOST");
-			
-			try {
-				Transport.this.disconnect();
-				Transport.this.transportListener.onError(Transport.this.buildErrorMessage(HBTIMEOUT));
-			} catch (JSONException e) {
-				Log.w(getClass().getCanonicalName(), e);
-			}
+    private long mLastHeartbeat;
+    private int mHeartbeatFreq = 15000;
+
+    private Handler mHandler;
+    protected TransportListener mTransportListener;
+
+    private Runnable mCheckConnectionRunnable;
+
+    public Transport(TransportListener transportListener) {
+        if (mDebugLog) {
+            Log.d(getClass().getCanonicalName(), "New " + this + " transport instanced");
         }
-		else {
-			// Remove any scheduled runnable to avoid several threads to do the same thing
-			handler.removeCallbacks(checkConnectionRunnable);
-			handler.postDelayed(checkConnectionRunnable, heartbeatFreq);
-		}
-	}
 
-	/**
-	 * Connect to endpoint
-	 * 
-	 * @param endpoint
-	 *            endpoint
-	 * @param authData
-	 *            authentication data
-	 */
-	public void connect(String endpoint, JSONObject authData) {
-		
-		Log.d("DEBUG", "Transport connect to " + endpoint + " with " + authData);
-		
-		Timer authTimeoutTimer = new Timer();
-		authTimeoutTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				if (!Transport.this.authentified) {
-					JSONObject jsonErr = new JSONObject();
-					JSONObject jsonCode = new JSONObject();
-					try {
-						jsonCode.put(CODE, AUTHTIMEOUT);
-						jsonErr.put(ERR, jsonCode);
-					} catch (JSONException e) {
-						Log.w(getClass().getCanonicalName(), e);
-					}
-					Transport.this.transportListener.onError(jsonErr);
-				}
-			}
-		}, this.authTimeout);
-	}
+        mTransportListener = transportListener;
+        mResponseQueue = new HashMap<>();
+        mCheckConnectionRunnable = new Runnable() {
+            @Override
+            public void run() {
+                checkConnection();
+            }
+        };
+    }
 
-	/**
-	 * Disconnect from endpoint
-	 */
-	public abstract void disconnect();
-	
-	/**
-	 * Disconnect from endpoint
-	 */
-	public abstract void silentDisconnect();
+    /**
+     * Set handler used for checking connection
+     * You shouldn't do long blocking tasks on this Handler
+     *
+     * @param handler the handler to use
+     */
+    public void setHandler(Handler handler) {
+        mHandler = handler;
+    }
 
-	/**
-	 * Send a hubiquitus message
-	 * 
-	 * @param jsonObject
-	 *            the json object describing the message
-	 * @throws TransportException
-	 */
-	protected abstract void send(JSONObject jsonObject)
-			throws TransportException;
+    /**
+     * Enable full debug output in log
+     *
+     * @param enable the full output (disabled by default)
+     */
+    public void enableFullDebugLog(boolean enable) {
+        mDebugLog = enable;
+    }
+
+    /**
+     * Connect to endpoint
+     *
+     * @param endpoint endpoint
+     * @param authData authentication data
+     */
+    public void connect(String endpoint, JSONObject authData) {
+        if (mDebugLog) {
+            Log.d(getClass().getCanonicalName(), this + " connect to " + endpoint + " with " + authData);
+        }
+
+        mAuthData = authData;
+    }
+
+
+    private void checkConnection() {
+        if (mDebugLog) {
+            Log.d(getClass().getCanonicalName(), this + " Check connection");
+        }
+
+
+        long hbInterval = System.currentTimeMillis() - mLastHeartbeat;
+
+        //In this special case the server closed the webSocket as we connect with invalid credential
+        if (mLastHeartbeat == 0 && this instanceof WebSocketTransport && ((WebSocketTransport) this).isWebSocketClosed()) {
+            if (mTransportListener != null) {
+                mTransportListener.onError(InternalErrorCodes.AUTHENTICATION_FAILED, null);
+            }
+            mLastHeartbeat = 0;
+
+            //If we don't get a HeartBeat since 3 time the HB frequency we assume connection lost
+        } else if (hbInterval > 3 * mHeartbeatFreq) {
+            Log.e(getClass().getCanonicalName(), this + " LOST Connection interval =" + (hbInterval) + " => disconnect");
+
+            if (mTransportListener != null) {
+                mTransportListener.onError(InternalErrorCodes.TRANSPORT_TIMEOUT, null);
+            }
+            disconnect();
+            mLastHeartbeat = 0;
+
+        } else {
+            // Remove any scheduled runnable to avoid several threads to do the same thing
+            mHandler.removeCallbacks(mCheckConnectionRunnable);
+            mHandler.postDelayed(mCheckConnectionRunnable, mHeartbeatFreq);
+        }
+    }
+
+    /**
+     * Handler for json messages
+     *
+     * @param stringMessage a json message
+     */
+    protected void handleMessage(String stringMessage) {
+        if (mDebugLog) {
+            Log.d(getClass().getCanonicalName(), this + " Got new message = " + stringMessage);
+        }
+
+        if (HB.equals(stringMessage)) {
+            //TODO Comment this for Hubiquitus < 0.9
+            //Respond to the hb message
+            sendHeartBeat();
+
+            mLastHeartbeat = System.currentTimeMillis();
+        } else {
+
+            JSONObject jsonMessage;
+            try {
+                jsonMessage = new JSONObject(stringMessage);
+            } catch (JSONException e) {
+                Log.w(getClass().getCanonicalName(), "Unable to parse json message = " + stringMessage);
+                return;
+            }
+
+
+            String messageId = jsonMessage.optString(MessageBuilder.ID);
+            String from = jsonMessage.optString(MessageBuilder.FROM);
+            Object content = jsonMessage.opt(MessageBuilder.CONTENT);
+            JSONObject err = null;
+
+            if (jsonMessage.has(MessageBuilder.ERR) && !jsonMessage.isNull(MessageBuilder.ERR)) {
+                err = jsonMessage.optJSONObject(MessageBuilder.ERR);
+            }
+
+            if (jsonMessage.has(MessageBuilder.TYPE)) {
+
+                String messageType = jsonMessage.optString(MessageBuilder.TYPE);
+
+                switch (MessageType.valueOf(messageType.toUpperCase(Locale.US))) {
+                    case LOGIN:
+                        if (mDebugLog) Log.d(getClass().getCanonicalName(), this + " Got LOGIN");
+
+                        mIsAuthenticated = true;
+                        if (mTransportListener != null) {
+                            mTransportListener.onConnect();
+                        }
+                        break;
+
+                    case NEGOTIATE:
+                        if (mDebugLog) {
+                            Log.d(getClass().getCanonicalName(), this + " Got NEGOTIATE");
+                        }
+
+                        int newHBFrequency = jsonMessage.optInt(HEARTBEAT_FREQUENCY);
+                        if (newHBFrequency > 0) {
+                            mHeartbeatFreq = newHBFrequency;
+                        }
+
+                        // Remove any scheduled runnable to avoid several threads to do the same thing
+                        mHandler.removeCallbacks(mCheckConnectionRunnable);
+                        mHandler.postDelayed(mCheckConnectionRunnable, mHeartbeatFreq);
+                        break;
+
+                    case REQ:
+                        if (mDebugLog) Log.d(getClass().getCanonicalName(), this + " Got REQ");
+
+                        Request request = MessageBuilder.buildRequest(this, mTransportListener, from, content, messageId);
+                        if (mTransportListener != null) {
+                            mTransportListener.onMessage(request);
+                        }
+                        break;
+
+                    case RES:
+                        final ResponseListener responseListener = mResponseQueue.get(messageId);
+                        if (mDebugLog) {
+                            Log.d(getClass().getCanonicalName(), this + " Got RES responseListener=" + (responseListener != null));
+                        }
+
+                        if (responseListener != null) {
+                            final Message message = new Message(from, content);
+                            final JSONObject error = err;
+
+                            // Runs in a new thread the request callback
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    responseListener.onResponse(error, message);
+                                }
+                            }).start();
+                            mResponseQueue.remove(messageId);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Send a hubiquitus message
+     *
+     * @param to               the recipient of the message
+     * @param content          the content of the message
+     * @param timeout          the timeout of the message
+     * @param responseListener the response listener
+     * @return a json object describing the message
+     */
+    public JSONObject send(String to, Object content, int timeout, ResponseListener responseListener) {
+
+
+        JSONObject jsonMessage = null;
+        try {
+            jsonMessage = MessageBuilder.buildMessage(to, content, responseListener != null);
+            final String messageId = jsonMessage.getString(MessageBuilder.ID);
+
+            if (responseListener != null) {
+                //Add an responseListener in the response queue
+                mResponseQueue.put(jsonMessage.getString(MessageBuilder.ID), responseListener);
+            }
+
+            //Post an timeOutListener
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    final ResponseListener responseListener = mResponseQueue.get(messageId);
+                    if (responseListener != null) {
+                        //Run this in an other thread
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                responseListener.onResponse(HubiquitusErrorCodes.TIME_OUT, null);
+                            }
+                        });
+                        mResponseQueue.remove(messageId);
+                    }
+                }
+            }, timeout);
+
+        } catch (JSONException e) {
+            Log.w(getClass().getCanonicalName(), "unable to construct the message to send " + e);
+        }
+
+        if (mDebugLog) {
+            Log.d(getClass().getCanonicalName(), this + " send new message = " + jsonMessage);
+        }
+        return jsonMessage;
+    }
+
+    public abstract boolean isReady();
+
+    /**
+     * Send a hubiquitus message
+     *
+     * @param jsonObject the json object describing the message
+     */
+    public abstract void send(JSONObject jsonObject);
 
     /**
      * Send the hb message in response of the hb received from the gateway
-     *
-     * @throws TransportException
      */
-    protected abstract void sendHeartBeat()
-            throws TransportException;
+    protected abstract void sendHeartBeat();
 
-	/**
-	 * Send a hubiquitus message
-	 * 
-	 * @param to
-	 *            the recipient of the message
-	 * @param content
-	 *            the content of the message
-	 * @param timeout
-	 *            the timeout of the message
-	 * @param responseListener
-	 *            the response listener
-	 * @return a json object describing the message
-	 * @throws TransportException
-	 * @throws JSONException
-	 */
-	public JSONObject send(String to, Object content, int timeout,
-			ResponseListener responseListener) throws TransportException {
+    /**
+     * Disconnect from endpoint
+     * {@link org.hubiquitus.hapi.transport.listener.TransportListener(Object)} will be called
+     */
+    protected abstract void disconnect();
 
-		JSONObject jsonMessage = null;
-		try {
-			jsonMessage = buildMessage(to, content, responseListener != null);
-			final String messageId = jsonMessage.getString(ID);
-			this.sendTimeoutTimer = new Timer();
-			this.sendTimeoutTimer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					ResponseListener responseListener = responseQueue
-							.get(messageId);
-					if (responseListener != null) {
-						JSONObject jsonErr = new JSONObject();
-						JSONObject jsonCode = new JSONObject();
-						try {
-							jsonCode.put(CODE, TIMEOUT);
-							jsonErr.put(ERR, jsonCode);
-						} catch (JSONException e) {
-							Log.w(getClass().getCanonicalName(), e);
-						}
-						responseListener.onResponse(jsonErr, null);
-						responseQueue.remove(messageId);
-					}
-				}
-			}, timeout);
-		} catch (JSONException e) {
-			Log.w(getClass().getCanonicalName(), e);
-		}
-		return jsonMessage;
-	}
-	
 
-	/**
-	 * Handler for json messages
-	 * 
-	 * @param stringMessage
-	 *            a json message
-	 * @throws JSONException
-	 */
-	protected void handleMessage(String stringMessage) throws JSONException, IOException {
-		
-		if (HB.equals(stringMessage)) {
-				
-            //Respond to the hb message
-            // TODO Comment this for Hubiquitus < 0.9
-            try {
-                sendHeartBeat();
-            } catch (TransportException e) {
-                Log.w(getClass().getCanonicalName(), "hb response error", e);
-            }
+    /**
+     * Silent disconnect from endpoint
+     * {@link org.hubiquitus.hapi.transport.listener.TransportListener(Object)} will not be called
+     */
+    public void silentDisconnect() {
+        mHandler.removeCallbacksAndMessages(null);
+        mLastHeartbeat = 0;
+    }
 
-            lastHeartbeat = new Date().getTime();
-		}
-		
-		else {
-			
-			JSONObject jsonMessage = new JSONObject(stringMessage);
-
-			String messageId = null;
-			String from = null;
-			JSONObject err = null;
-			Object content = null;
-			if (jsonMessage.has(ID)) {
-				messageId = jsonMessage.getString(ID);
-			}
-			if (jsonMessage.has(FROM)) {
-				from = jsonMessage.getString(FROM);
-			}
-			if (jsonMessage.has(CONTENT)) {
-				content = jsonMessage.get(CONTENT);
-			}
-			if (jsonMessage.has(ERR) && !jsonMessage.isNull(ERR)) {
-				err = jsonMessage.getJSONObject(ERR);
-			}
-			if (jsonMessage.has(TYPE)) {
-	
-				String mesageType = jsonMessage.getString(TYPE);
-	
-				switch (MessageType.valueOf(mesageType.toUpperCase(Locale.US))) {
-				case LOGIN:
-					this.authentified = true;
-					this.transportListener.onConnect();
-					break;
-				case NEGOTIATE:
-					if (this instanceof WebSocketTransport) {
-						((WebSocketTransport)this).cancelPingTimeout();
-						this.transportListener.OnWebSocketReady();
-					}
-					this.heartbeatFreq = jsonMessage.getInt(HEARTBEAT_FREQUENCY);
-					// Remove any scheduled runnable to avoid several threads to do the same thing
-					this.handler.removeCallbacks(checkConnectionRunnable);
-					this.handler.postDelayed(checkConnectionRunnable, this.heartbeatFreq);
-					break;
-				case REQ:
-					Request request = buildRequest(from, content, messageId);
-					transportListener.onMessage(request);
-					break;
-				case RES:
-					ResponseListener responseListener = responseQueue
-							.get(messageId);
-					if (responseListener != null) {
-						Message message = new Message();
-						message.setContent(content);
-						message.setFrom(from);
-						responseListener.onResponse(err, message);
-						responseQueue.remove(messageId);
-					}
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}
-	
-	//TODO extract methods in a buildMessageFactory class
-	
-	/**
-	 * Build an authentication message
-	 * 
-	 * @param authData
-	 *            authentication data
-	 * @return the builded message
-	 * @throws JSONException
-	 */
-	public JSONObject buildAuthData(JSONObject authData)
-			throws JSONException {
-		JSONObject authDataMessage = new JSONObject();
-		authDataMessage.put(TYPE, MessageType.LOGIN.format());
-		authDataMessage.put(AUTH_DATA, authData);
-		return authDataMessage;
-	}
-	
-	/**
-	 * Build a negociateMessage
-	 * @return the builded negotiate message
-	 * @throws JSONException
-	 */
-	protected JSONObject buildNegotiateMessage() throws JSONException {
-		JSONObject negociateMessage = new JSONObject();
-		negociateMessage.put(TYPE, MessageType.NEGOTIATE.format());
-		return negociateMessage;
-	}
-	
-	/**
-	 * Build an error message
-	 * @param error the error message
-	 * @return the builded error message
-	 * @throws JSONException
-	 */
-	protected JSONObject buildErrorMessage(String error) throws JSONException {
-		JSONObject errorMessage = new JSONObject();
-		errorMessage.put(CODE, HBTIMEOUT);
-		return errorMessage;
-	}
-	
-
-	/**
-	 * Build a hubiquitus message to send
-	 * 
-	 * @param to
-	 *            the recipient of the message
-	 * @param content
-	 *            the content of the message
-	 * @param cb
-	 *            true if callback needed
-	 * @return the builded message
-	 * @throws JSONException
-	 */
-	protected JSONObject buildMessage(String to, Object content, boolean cb)
-			throws JSONException {
-		JSONObject message = new JSONObject();
-		message.put(TO, to);
-		message.put(ID, UUID.randomUUID().toString());
-		message.put(DATE, new Date().getTime());
-		message.put(TYPE, MessageType.REQ.format());
-		message.put(CONTENT, content);
-		if (cb) {
-			message.put(CB, cb);
-		}
-		return message;
-	}
-
-	/**
-	 * Builds a hubiquitus response object
-	 * 
-	 * @param from
-	 *            recipient of the message
-	 * @param messageId
-	 *            the message id of the message
-	 * @param err
-	 *            the error
-	 * @param content
-	 *            the content of the message
-	 * @return
-	 * @throws JSONException
-	 */
-	protected JSONObject buildResponse(String from, String messageId,
-			Object err, Object content) throws JSONException {
-		JSONObject response = new JSONObject();
-		response.put(TYPE, MessageType.RES.format());
-		response.put(ID, messageId);
-		response.put(TO, from);
-		response.put(CONTENT, content);
-		response.put(ERR, err);
-		return response;
-	}
-
-	/**
-	 * Build a hubiquitus request response object
-	 * 
-	 * @param from
-	 *            recipient of the message
-	 * @param content
-	 *            the content of the message
-	 * @param messageId
-	 *            the message id of the message
-	 * @return
-	 */
-	private Request buildRequest(final String from, Object content,
-			final String messageId) {
-		Request request = new Request();
-		request.setContent(content);
-		request.setFrom(from);
-		request.setReplyCallback(new ReplyCallback() {
-			@Override
-			public void reply(Object err, Object content) {
-				try {
-					JSONObject response = buildResponse(from, messageId, err,
-							content);
-					Transport.this.send(response);
-				} catch (TransportException | JSONException e) {
-					Log.w(getClass().getCanonicalName(), e);
-				}
-            }
-		});
-		return request;
-	}
-
-	public void setHandler(Handler handler) {
-		this.handler = handler;	
-	}
-	
 }

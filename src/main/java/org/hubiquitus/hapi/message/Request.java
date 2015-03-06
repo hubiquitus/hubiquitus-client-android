@@ -4,23 +4,25 @@ import org.hubiquitus.hapi.transport.callback.ReplyCallback;
 
 /**
  * Models representing a request message
- * 
- * @author t.bourgeois
  *
+ * @author t.bourgeois
  */
 public class Request extends Message {
-	
-	/**
-	 * The reply callback
-	 */
-	private ReplyCallback replyCallback;
 
-	public ReplyCallback getReplyCallback() {
-		return replyCallback;
-	}
+    private ReplyCallback mReplyCallback;
 
-	public void setReplyCallback(ReplyCallback replyCallback) {
-		this.replyCallback = replyCallback;
-	}
+    /**
+     * Get class to respond to the request
+     *
+     * @return a {@link org.hubiquitus.hapi.transport.callback.ReplyCallback} implementation for the request.
+     */
+    public ReplyCallback getReplyCallback() {
+        return mReplyCallback;
+    }
+
+
+    public void setReplyCallback(ReplyCallback replyCallback) {
+        this.mReplyCallback = replyCallback;
+    }
 
 }
