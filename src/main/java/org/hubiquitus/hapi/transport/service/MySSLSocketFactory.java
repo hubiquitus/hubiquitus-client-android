@@ -16,7 +16,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
- class MySSLSocketFactory extends SSLSocketFactory {
+class MySSLSocketFactory extends SSLSocketFactory {
     private SSLContext mSslContext = SSLContext.getInstance("TLS");
 
     public MySSLSocketFactory(KeyStore keyStore)

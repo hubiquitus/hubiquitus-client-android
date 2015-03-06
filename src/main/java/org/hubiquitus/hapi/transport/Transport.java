@@ -56,6 +56,7 @@ public abstract class Transport {
     /**
      * Set handler used for checking connection
      * You shouldn't do long blocking tasks on this Handler
+     *
      * @param handler the handler to use
      */
     public void setHandler(Handler handler) {
@@ -64,6 +65,7 @@ public abstract class Transport {
 
     /**
      * Enable full debug output in log
+     *
      * @param enable the full output (disabled by default)
      */
     public void enableFullDebugLog(boolean enable) {

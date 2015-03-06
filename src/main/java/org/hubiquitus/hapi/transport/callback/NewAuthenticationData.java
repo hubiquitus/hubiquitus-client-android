@@ -9,12 +9,10 @@ import org.json.JSONObject;
 public interface NewAuthenticationData {
 
     /**
-     *
      * It's safe to do network here
      *
      * @return you should return a {@link org.json.JSONObject} with auth data,
      * or null if you can't give new authData at this time.
-     *
      */
     public JSONObject getNewAuthData();
 }

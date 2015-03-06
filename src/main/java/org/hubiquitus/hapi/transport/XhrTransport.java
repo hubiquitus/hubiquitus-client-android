@@ -119,7 +119,7 @@ public class XhrTransport extends Transport {
     private void internalSend(final JSONObject jsonObject) {
         if (!isReady()) {
             //It's normally not possible to be here, hubiquitus should check this case before calling this method
-            Log.wtf(getClass().getCanonicalName(),"try to send with not ready transport");
+            Log.e(getClass().getCanonicalName(), "try to send with not ready transport");
             if (mTransportListener != null) {
                 mTransportListener.onError(InternalErrorCodes.TRANSPORT_NOT_READY, null);
             }

@@ -166,7 +166,7 @@ public class Hubiquitus implements TransportListener {
                 initTransport();
 
             } else {
-                onError(InternalErrorCodes.INIT_TRANSPORT,null);
+                onError(InternalErrorCodes.INIT_TRANSPORT, null);
                 Log.e(getClass().getCanonicalName(), "IllegalState in connect" + mState);
             }
         } else {
@@ -199,10 +199,10 @@ public class Hubiquitus implements TransportListener {
                             .requestService(mEndpoint, INFO, ServiceManager.Method.GET, null);
 
                     //The result is stored in a Boolean wrapper to have a three state var;
-                    Boolean WsSupported = HubiquitusInfoUtils.parseWebSocketSupported(responseWSSupported);
+                    Boolean wsSupported = HubiquitusInfoUtils.parseWebSocketSupported(responseWSSupported);
 
                     synchronized (Hubiquitus.this) {
-                        mWebSocketSupported = WsSupported;
+                        mWebSocketSupported = wsSupported;
                     }
                 } catch (IOException e) {
                     // Call onError for log purpose
@@ -216,7 +216,7 @@ public class Hubiquitus implements TransportListener {
     synchronized private void createTransport() {
         if (!isTransportInit() || isTransportReady()) {
             if (mDebugLog) {
-                Log.w(getClass().getCanonicalName(), "Try to instantiate a new transport while the actual is ready !");
+                Log.w(getClass().getCanonicalName(), "Try to instantiate a new transport while the current is ready !");
             }
             //We assume here that hubiquitus is already connecting
             return;
@@ -238,7 +238,7 @@ public class Hubiquitus implements TransportListener {
         }
 
         mTransport.enableFullDebugLog(mDebugLog);
-        mTransport.setHandler(Hubiquitus.this.mHandler);
+        mTransport.setHandler(mHandler);
         if (mDebugLog) {
             Log.d(getClass().getCanonicalName(), "new transport =" + mTransport);
         }

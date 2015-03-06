@@ -15,7 +15,7 @@ public interface TransportListener {
     void onMessage(Request request);
 
     /**
-     * @param cause the cause of the error
+     * @param cause   the cause of the error
      * @param message the message can be an {@link java.lang.Exception},
      *                an {@link java.lang.String} or {@code null}
      */

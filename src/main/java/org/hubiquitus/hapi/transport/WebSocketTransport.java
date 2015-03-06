@@ -92,7 +92,7 @@ public class WebSocketTransport extends Transport {
                         }, PING_TIMEOUT);
                     } catch (JSONException e) {
                         if (mTransportListener != null) {
-                            mTransportListener.onError(InternalErrorCodes.CONNECTION_FAILED,null);
+                            mTransportListener.onError(InternalErrorCodes.CONNECTION_FAILED, null);
                         }
                         Log.w(getClass().getCanonicalName(), e);
                     }

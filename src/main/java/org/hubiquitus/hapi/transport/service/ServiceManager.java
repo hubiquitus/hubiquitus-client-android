@@ -34,10 +34,11 @@ public class ServiceManager {
 
     /**
      * Request a web service
+     *
      * @param serverUrl the url of the server to request
-     * @param service the service to request
-     * @param method the {@link org.hubiquitus.hapi.transport.service.ServiceManager.Method} of the request
-     * @param request the {@link org.json.JSONObject} with the request for the web service
+     * @param service   the service to request
+     * @param method    the {@link org.hubiquitus.hapi.transport.service.ServiceManager.Method} of the request
+     * @param request   the {@link org.json.JSONObject} with the request for the web service
      * @return the response of the service in a {@link org.hubiquitus.hapi.transport.service.ServiceResponse}
      * @throws IOException
      */
