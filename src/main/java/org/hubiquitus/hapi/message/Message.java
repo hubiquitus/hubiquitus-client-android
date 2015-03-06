@@ -2,71 +2,72 @@ package org.hubiquitus.hapi.message;
 
 /**
  * Model representing a message
- * 
- * @author t.bourgeois
  *
+ * @author t.bourgeois
  */
 public class Message {
 
-	/**
-	 * Emitter of the message
-	 */
-	private String from;
-	/**
-	 * Content of the message
-	 */
-	private Object content;
+    private String mFrom;
+    private Object mContent;
 
-	public String getFrom() {
-		return from;
-	}
+    public Message() {
+    }
 
-	public void setFrom(String from) {
-		this.from = from;
-	}
+    public Message(String from, Object content) {
+        mFrom = from;
+        mContent = content;
+    }
 
-	public Object getContent() {
-		return content;
-	}
+    public String getFrom() {
+        return mFrom;
+    }
 
-	public void setContent(Object content) {
-		this.content = content;
-	}
+    public void setFrom(String from) {
+        this.mFrom = from;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((content == null) ? 0 : content.hashCode());
-		result = prime * result + ((from == null) ? 0 : from.hashCode());
-		return result;
-	}
+    public Object getContent() {
+        return mContent;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Message other = (Message) obj;
-		if (content == null) {
-			if (other.content != null)
-				return false;
-		} else if (!content.equals(other.content))
-			return false;
-		if (from == null) {
-			if (other.from != null)
-				return false;
-		} else if (!from.equals(other.from))
-			return false;
-		return true;
-	}
+    public void setContent(Object content) {
+        this.mContent = content;
+    }
 
-	@Override
-	public String toString() {
-		return "Message [from=" + from + ", content=" + content + "]";
-	}
-	
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((mContent == null) ? 0 : mContent.hashCode());
+        result = prime * result + ((mFrom == null) ? 0 : mFrom.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Message other = (Message) obj;
+        if (mContent == null) {
+            if (other.mContent != null)
+                return false;
+        } else if (!mContent.equals(other.mContent))
+            return false;
+        if (mFrom == null) {
+            if (other.mFrom != null)
+                return false;
+        } else if (!mFrom.equals(other.mFrom))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Message [from=" + mFrom + ", content=" + mContent + "]";
+    }
+
 }
