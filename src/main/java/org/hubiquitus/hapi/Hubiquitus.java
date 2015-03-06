@@ -292,7 +292,7 @@ public class Hubiquitus implements TransportListener {
 
     // ============ Methods ============
 
-    public JSONObject generateAuthDataWithCredential(String urn, String password) throws JSONException {
+    public static JSONObject generateAuthDataWithCredential(String urn, String password) throws JSONException {
         JSONObject authData = new JSONObject();
         authData.put(URN, urn);
         authData.put(TICKET, password);
