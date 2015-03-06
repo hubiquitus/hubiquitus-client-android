@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.1.0'
     }
 }
 
@@ -42,7 +42,7 @@ uploadArchives {
     repositories.mavenDeployer {
         pom.groupId = 'com.hubiquitus'
         pom.artifactId = 'android-sdk'
-        pom.version = '0.9.3beta'
+        pom.version = '0.9.3'
         repository(url: 'file://deploy')
     }
 }

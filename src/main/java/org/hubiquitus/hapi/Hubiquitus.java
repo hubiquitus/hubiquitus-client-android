@@ -441,7 +441,6 @@ public class Hubiquitus implements TransportListener {
                 connect();
                 break;
 
-            //case AUTHENTICATION_TIMEOUT: TODO seems useless
             case TRANSPORT_NOT_READY:
             case GET_HUBI_INFOS:
             default:

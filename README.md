@@ -30,7 +30,7 @@ allprojects {
 ```
 dependencies {
 	...
-	compile 'com.hubiquitus:android-sdk:0.9.2'
+	compile 'com.hubiquitus:android-sdk:0.9.3'
 	...
 }
 ```

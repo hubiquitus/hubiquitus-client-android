@@ -17,7 +17,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Locale;
 
-//TODO enhancement reusable transports
 /**
  * Created by m.Ruetsch on 03/02/15.
  */
@@ -36,8 +35,6 @@ public abstract class Transport {
 
     private Handler mHandler;
     protected TransportListener mTransportListener;
-
-    //TODO used ? private int mAuthTimeout = 15000; //keep just in case, seems useless
 
     private Runnable mCheckConnectionRunnable;
 
@@ -85,19 +82,6 @@ public abstract class Transport {
         }
 
         mAuthData = authData;
-
-        //TODO realy needed ?
-        //Keep code just in case but seems useless
-        /*mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!Transport.this.mIsAuthenticated) {
-                    if (mTransportListener != null) {
-                        mTransportListener.onError(ErrorCodes.AUTHENTICATION_TIMEOUT, null);
-                    }
-                }
-            }
-        }, this.mAuthTimeout);*/
     }
 
 
@@ -144,14 +128,9 @@ public abstract class Transport {
         }
 
         if (HB.equals(stringMessage)) {
-
+            //TODO Comment this for Hubiquitus < 0.9
             //Respond to the hb message
-            // TODO Comment this for Hubiquitus < 0.9
-            /*try {
-                sendHeartBeat();
-            } catch (TransportException e) {
-                Log.w(getClass().getCanonicalName(), "hb response error", e);
-            }*/
+            sendHeartBeat();
 
             mLastHeartbeat = System.currentTimeMillis();
         } else {
