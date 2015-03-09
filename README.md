@@ -42,6 +42,7 @@ TBD
 ## Licensing
 (The MIT License)
 
+Copyright (c) Intent Technologies 2014.<br/>
 Copyright (c) Novedia Group 2012.
 
 Permission is hereby granted, free of charge, to any person obtaining
