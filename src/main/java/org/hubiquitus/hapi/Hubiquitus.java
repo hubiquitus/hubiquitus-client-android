@@ -225,7 +225,7 @@ public class Hubiquitus implements TransportListener {
             mTransport.silentDisconnect();
         }
 
-        if (mWebSocketSupported && mWSConnectionTryCount++ < MAX_RECONNECT_TRY_COUNT) {
+        if (mWebSocketSupported != null && mWebSocketSupported && mWSConnectionTryCount++ < MAX_RECONNECT_TRY_COUNT) {
             mTransport = new WebSocketTransport(Hubiquitus.this);
 
         } else if (mXHRConnectionTryCount++ < MAX_RECONNECT_TRY_COUNT) {
