@@ -2,18 +2,17 @@ package org.hubiquitus.hapi.transport.service;
 
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.StringEntity;
 import org.hubiquitus.hapi.transport.Transport;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 
 public class ServiceManager {
 
@@ -21,16 +20,7 @@ public class ServiceManager {
         POST, GET
     }
 
-    public static ServiceResponse initConnectionService(String serverUrl) throws IOException {
-
-        HttpClient httpClient = WebServiceConnexionManager.getConnexionService().getHttpClient();
-
-        HttpGet httpGet = new HttpGet(serverUrl);
-        httpGet.setHeader("Connection", "Keep-Alive");
-        HttpResponse httpResponse = httpClient.execute(httpGet);
-        return readResponse(httpResponse);
-    }
-
+    private static final String TAG = ServiceManager.class.getCanonicalName();
 
     /**
      * Request a web service
@@ -45,38 +35,60 @@ public class ServiceManager {
     public static ServiceResponse requestService(String serverUrl, String service, Method method,
                                                  JSONObject request) throws IOException {
 
-        HttpClient httpClient = WebServiceConnexionManager.getConnexionService().getHttpClient();
+        String url = serverUrl + service;
+        HttpURLConnection connection;
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(serverUrl).append(service);
+        try {
+            connection = WebServiceConnexionManager.getUrlConnection(url);
 
-        HttpRequestBase httpRequest = null;
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "error while connecting to service", e);
+            return null;
+        }
+
+
+
         switch (method) {
             case GET:
-                httpRequest = new HttpGet(sb.toString());
+
                 break;
+
             case POST:
-                httpRequest = new HttpPost(sb.toString());
-                if (request != null) {
-                    StringEntity entity;
+                try {
+                    connection.setRequestMethod("POST");
+                    connection.getOutputStream();
+
+                    connection.setDoOutput(true);
+                    StringBuilder sb = new StringBuilder();
                     if (request.has(Transport.HB) && Transport.HB.equals(request.optString(Transport.HB))) {
-                        //Object send from XHR Transport for sending heartbeat : new JSONObject().put(Transport.HB,Transport.HB)
-                        entity = new StringEntity(Transport.HB);
+                        sb.append(Transport.HB);
                     } else {
-                        entity = new StringEntity("[" + JSONObject.quote(request.toString()) + "]");
+                        Iterator<String> iterator = request.keys();
+                        while (iterator.hasNext()) {
+                            String key = iterator.next();
+                            if (sb.length() > 0) {
+                                sb.append("&");
+                            } else if (sb.length() == 0) {
+                                sb.append("[");
+                            }
+                            sb.append(key).append("=").append(request.getString(key));
+                        }
+                        sb.append("]");
                     }
-                    ((HttpPost) httpRequest).setEntity(entity);
-                    httpRequest.setHeader("Content-Type", "text/plain");
+
+                    OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+                    out.write(sb.toString());
+                    out.close();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
                 }
-                break;
-            default:
                 break;
         }
 
         ServiceResponse serviceResponse = null;
         try {
-            HttpResponse httpResponse = httpClient.execute(httpRequest);
-            serviceResponse = readResponse(httpResponse);
+            serviceResponse = readResponse(connection);
         } catch (IOException | IllegalStateException e) {
             Log.w(ServiceManager.class.getCanonicalName(), e);
         }
@@ -84,25 +96,21 @@ public class ServiceManager {
     }
 
 
-    private static ServiceResponse readResponse(HttpResponse response) throws IOException {
+    private static ServiceResponse readResponse(HttpURLConnection connection) throws IOException {
 
         ServiceResponse serviceResponse = new ServiceResponse();
 
-        if (response.getEntity() != null) {
-            BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent()));
-
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-            bufferedReader.close();
-
-            serviceResponse.setText(stringBuilder.toString());
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = in.readLine()) != null) {
+            sb.append(line);
         }
+        in.close();
 
-        serviceResponse.setStatus(response.getStatusLine().getStatusCode());
+        serviceResponse.setText(sb.toString());
+        serviceResponse.setStatus(connection.getResponseCode());
+
         return serviceResponse;
     }
 
