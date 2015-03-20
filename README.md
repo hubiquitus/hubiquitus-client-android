@@ -1,6 +1,6 @@
 # Hubiquitus Android
 This is the Hubiquitus client API for Android. It should be used with a hNode.
-It currently allows to do pubsub with an xmpp server. For more information, please visit [hubiquitus.com](www.hubiquitus.com).
+It currently allows to do pubsub with an xmpp server. For more information, please visit [hubiquitus.com](http://www.hubiquitus.com).
 
 ## Third party libraries
 This project currently relies on:
