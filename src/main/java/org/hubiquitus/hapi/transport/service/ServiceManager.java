@@ -3,7 +3,6 @@ package org.hubiquitus.hapi.transport.service;
 import android.util.Log;
 
 import org.hubiquitus.hapi.transport.Transport;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -12,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 
 public class ServiceManager {
 
@@ -46,44 +44,23 @@ public class ServiceManager {
             return null;
         }
 
-
-
-        switch (method) {
-            case GET:
-
-                break;
-
-            case POST:
-                try {
-                    connection.setRequestMethod("POST");
-                    connection.getOutputStream();
-
-                    connection.setDoOutput(true);
-                    StringBuilder sb = new StringBuilder();
-                    if (request.has(Transport.HB) && Transport.HB.equals(request.optString(Transport.HB))) {
-                        sb.append(Transport.HB);
-                    } else {
-                        Iterator<String> iterator = request.keys();
-                        while (iterator.hasNext()) {
-                            String key = iterator.next();
-                            if (sb.length() > 0) {
-                                sb.append("&");
-                            } else if (sb.length() == 0) {
-                                sb.append("[");
-                            }
-                            sb.append(key).append("=").append(request.getString(key));
-                        }
-                        sb.append("]");
-                    }
-
-                    OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-                    out.write(sb.toString());
-                    out.close();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
+        if (Method.POST == method) {
+            connection.setRequestMethod("POST");
+            if (request != null) {
+                connection.setDoOutput(true);
+                StringBuilder sb = new StringBuilder();
+                if (request.has(Transport.HB) && Transport.HB.equals(request.optString(Transport.HB))) {
+                    sb.append(Transport.HB);
+                } else {
+                    sb.append("[")
+                            .append(JSONObject.quote(request.toString()))
+                            .append("]");
                 }
-                break;
+
+                OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+                out.write(sb.toString());
+                out.close();
+            }
         }
 
         ServiceResponse serviceResponse = null;

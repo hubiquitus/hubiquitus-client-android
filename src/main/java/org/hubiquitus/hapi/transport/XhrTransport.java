@@ -236,7 +236,9 @@ public class XhrTransport extends Transport {
                     if (response != null) {
                         String text = response.getText();
                         if (text.startsWith(SOCKJS_START_MESSAGE)) {
-                            Log.d(getClass().getCanonicalName(), this + " SOCKJS MESSAGE => " + text);
+                            if (mDebugLog) {
+                                Log.d(getClass().getCanonicalName(), this + " SOCKJS MESSAGE => " + text);
+                            }
 
                             String stripText = text.replaceFirst(SOCKJS_START_MESSAGE, "");
 

@@ -31,7 +31,6 @@ public class WebServiceConnexionManager {
         connection.setUseCaches(false);
         connection.setChunkedStreamingMode(0);
         connection.setRequestProperty("Content-Type", "text/plain; charset=UTF-8");
-        connection.setRequestProperty("Expect", "100-continue");
 
         if (connection instanceof HttpsURLConnection) {
             SSLContext context = SSLContext.getInstance("TLS");
