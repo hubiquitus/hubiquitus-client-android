@@ -42,7 +42,7 @@ uploadArchives {
     repositories.mavenDeployer {
         pom.groupId = 'com.hubiquitus'
         pom.artifactId = 'android-sdk'
-        pom.version = '0.9.4'
+        pom.version = '0.9.5'
         repository(url: 'file://deploy')
     }
 }
