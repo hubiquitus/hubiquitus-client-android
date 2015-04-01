@@ -1,22 +1,17 @@
 package org.hubiquitus.hapi.transport.service;
 
-import android.util.Log;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-
-import java.security.KeyStore;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Web service connection manager singleton
@@ -24,52 +19,41 @@ import java.security.KeyStore;
  * @author j.varin
  */
 public class WebServiceConnexionManager {
-    private static final int CONNEXION_TIMEOUT = 15000;
-    private static final int SOCKET_TIMEOUT = 20000;
+    private static final int CONNEXION_TIMEOUT = 10000;
+    private static final int SOCKET_TIMEOUT = 15000;
 
-    private static WebServiceConnexionManager SINGLETON = new WebServiceConnexionManager();
 
-    private ClientConnectionManager mConnexionManager;
-    private HttpParams mHttpParameters;
+    public static HttpURLConnection getUrlConnection (String url) throws IOException, NoSuchAlgorithmException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
-    public static WebServiceConnexionManager getConnexionService() {
-        return SINGLETON;
-    }
+        connection.setConnectTimeout(CONNEXION_TIMEOUT);
+        connection.setReadTimeout(SOCKET_TIMEOUT);
+        connection.setUseCaches(false);
+        connection.setChunkedStreamingMode(0);
+        connection.setRequestProperty("Content-Type", "text/plain; charset=UTF-8");
 
-    private WebServiceConnexionManager() {
+        if (connection instanceof HttpsURLConnection) {
+            SSLContext context = SSLContext.getInstance("TLS");
 
-        try {
+            try {
+                context.init(null, new TrustManager[]{new X509TrustManager() {
+                    public void checkClientTrusted(X509Certificate[] chain, String authType)
+                    throws CertificateException {
+                    }
 
-            mHttpParameters = new BasicHttpParams();
-            mHttpParameters.setBooleanParameter("http.protocol.expect-continue", false);
+                    public void checkServerTrusted(X509Certificate[] chain, String authType)
+                            throws CertificateException {
+                    }
 
-            HttpProtocolParams.setVersion(mHttpParameters, HttpVersion.HTTP_1_1);
-            HttpProtocolParams.setContentCharset(mHttpParameters, "utf-8");
-
-            HttpConnectionParams.setConnectionTimeout(mHttpParameters, CONNEXION_TIMEOUT);
-            HttpConnectionParams.setSoTimeout(mHttpParameters, SOCKET_TIMEOUT);
-
-            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null, null);
-
-            SSLSocketFactory sslSocketFactory = new MySSLSocketFactory(trustStore);
-            sslSocketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-            SchemeRegistry registry = new SchemeRegistry();
-            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            registry.register(new Scheme("https", sslSocketFactory, 443));
-
-            mConnexionManager = new ThreadSafeClientConnManager(mHttpParameters, registry);
-
-        } catch (Exception e) {
-            Log.w(getClass().getCanonicalName(), e);
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+                }},null);
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            }
+            ((HttpsURLConnection) connection).setSSLSocketFactory(context.getSocketFactory());
         }
-    }
-
-    /**
-     * @return a new {@link org.apache.http.client.HttpClient}
-     */
-    public HttpClient getHttpClient() {
-        return new DefaultHttpClient(this.mConnexionManager, this.mHttpParameters);
+        return connection;
     }
 }

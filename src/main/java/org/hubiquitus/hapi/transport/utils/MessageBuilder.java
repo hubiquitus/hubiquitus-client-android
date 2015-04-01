@@ -34,7 +34,7 @@ public class MessageBuilder {
      * Build an authentication message
      *
      * @param authData authentication data
-     * @return the builded message
+     * @return the built message
      * @throws org.json.JSONException
      */
     public static JSONObject buildAuthMessage(JSONObject authData)
@@ -48,7 +48,7 @@ public class MessageBuilder {
     /**
      * Build a negociateMessage
      *
-     * @return the builded negotiate message
+     * @return the built negotiate message
      * @throws JSONException
      */
     public static JSONObject buildNegotiateMessage() throws JSONException {
@@ -61,7 +61,7 @@ public class MessageBuilder {
      * Build an error message
      *
      * @param error the error message
-     * @return the buildt error message
+     * @return the built error message
      * @throws JSONException
      */
     public static JSONObject buildErrorMessage(String error) throws JSONException {

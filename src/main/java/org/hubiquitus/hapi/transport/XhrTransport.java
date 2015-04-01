@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-import org.apache.http.HttpStatus;
 import org.hubiquitus.hapi.listener.ResponseListener;
 import org.hubiquitus.hapi.transport.listener.TransportListener;
 import org.hubiquitus.hapi.transport.service.ServiceManager;
@@ -17,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,11 +72,11 @@ public class XhrTransport extends Transport {
                     //Connect via XHR
                     ServiceResponse responseConnect = ServiceManager.requestService(mFullUrl, XHR, ServiceManager.Method.POST, null);
 
-                    if (responseConnect != null && responseConnect.getStatus() == HttpStatus.SC_OK) {
+                    if (responseConnect != null && responseConnect.getStatus() == HttpURLConnection.HTTP_OK) {
                         ServiceResponse responseAuth = ServiceManager.requestService(
                                 mFullUrl, XHR_SEND, ServiceManager.Method.POST, MessageBuilder.buildAuthMessage(authData));
 
-                        if (responseAuth != null && responseAuth.getStatus() == HttpStatus.SC_NO_CONTENT) {
+                        if (responseAuth != null && responseAuth.getStatus() == HttpURLConnection.HTTP_NO_CONTENT) {
                             mIsConnected = true;
                             //Start XHR polling thread when connected and authenticated
                             mPollThread = new PollThread();
@@ -236,7 +236,9 @@ public class XhrTransport extends Transport {
                     if (response != null) {
                         String text = response.getText();
                         if (text.startsWith(SOCKJS_START_MESSAGE)) {
-                            Log.d(getClass().getCanonicalName(), this + " SOCKJS MESSAGE => " + text);
+                            if (mDebugLog) {
+                                Log.d(getClass().getCanonicalName(), this + " SOCKJS MESSAGE => " + text);
+                            }
 
                             String stripText = text.replaceFirst(SOCKJS_START_MESSAGE, "");
 
