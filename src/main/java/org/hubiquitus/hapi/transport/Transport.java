@@ -29,13 +29,10 @@ public abstract class Transport {
     protected boolean mIsAuthenticated = false;
     protected JSONObject mAuthData;
     protected boolean mDebugLog = false;
-
-    private long mLastHeartbeat;
-    private int mHeartbeatFreq = 15000;
-
-    private Handler mHandler;
     protected TransportListener mTransportListener;
-
+    private long mLastMessageTime;
+    private int mHeartbeatFreq = 15000;
+    private Handler mHandler;
     private Runnable mCheckConnectionRunnable;
 
     public Transport(TransportListener transportListener) {
@@ -93,14 +90,14 @@ public abstract class Transport {
         }
 
 
-        long hbInterval = System.currentTimeMillis() - mLastHeartbeat;
+        long hbInterval = System.currentTimeMillis() - mLastMessageTime;
 
         //In this special case the server closed the webSocket as we connect with invalid credential
-        if (mLastHeartbeat == 0 && this instanceof WebSocketTransport && ((WebSocketTransport) this).isWebSocketClosed()) {
+        if (mLastMessageTime == 0 && this instanceof WebSocketTransport && ((WebSocketTransport) this).isWebSocketClosed()) {
             if (mTransportListener != null) {
                 mTransportListener.onError(InternalErrorCodes.AUTHENTICATION_FAILED, null);
             }
-            mLastHeartbeat = 0;
+            mLastMessageTime = 0;
 
             //If we don't get a HeartBeat since 3 time the HB frequency we assume connection lost
         } else if (hbInterval > 3 * mHeartbeatFreq) {
@@ -110,7 +107,7 @@ public abstract class Transport {
                 mTransportListener.onError(InternalErrorCodes.TRANSPORT_TIMEOUT, null);
             }
             disconnect();
-            mLastHeartbeat = 0;
+            mLastMessageTime = 0;
 
         } else {
             // Remove any scheduled runnable to avoid several threads to do the same thing
@@ -129,12 +126,13 @@ public abstract class Transport {
             Log.d(getClass().getCanonicalName(), this + " Got new message = " + stringMessage);
         }
 
-        if (HB.equals(stringMessage)) {
-            //TODO Comment this for Hubiquitus < 0.9
-            //Respond to the hb message
-            sendHeartBeat();
+        // Whatever the message is, we are still connected to the server
+        mLastMessageTime = System.currentTimeMillis();
 
-            mLastHeartbeat = System.currentTimeMillis();
+        if (HB.equals(stringMessage)) {
+            // TODO Comment this for Hubiquitus < 0.9
+            // Respond to the hb message
+            sendHeartBeat();
         } else {
 
             JSONObject jsonMessage;
@@ -297,7 +295,7 @@ public abstract class Transport {
      */
     public void silentDisconnect() {
         mHandler.removeCallbacksAndMessages(null);
-        mLastHeartbeat = 0;
+        mLastMessageTime = 0;
     }
 
 }
